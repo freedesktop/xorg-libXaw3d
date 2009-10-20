@@ -907,9 +907,13 @@ WriteToFile(_Xconst _XtString string, _Xconst _XtString name)
 {
   int fd;
 
-  if ( ((fd = creat(name, 0666)) == -1 ) ||
-       (write(fd, string, sizeof(unsigned char) * strlen(string)) == -1) )
+  if ((fd = creat(name, 0666)) == -1)
     return(FALSE);
+
+  if (write(fd, string, sizeof(unsigned char) * strlen(string)) == -1) {
+    close(fd);
+    return(FALSE);
+  }
 
   if ( close(fd) == -1 )
     return(FALSE);
