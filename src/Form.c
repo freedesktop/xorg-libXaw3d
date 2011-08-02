@@ -778,7 +778,7 @@ static XtGeometryResult PreferredGeometry( widget, request, reply  )
     reply->width = w->form.preferred_width;
     reply->height = w->form.preferred_height;
     reply->request_mode = CWWidth | CWHeight;
-    if (  request->request_mode & (CWWidth | CWHeight) ==
+    if (  (request->request_mode & (CWWidth | CWHeight)) ==
 	    (CWWidth | CWHeight)
 	  && request->width == reply->width
 	  && request->height == reply->height)
