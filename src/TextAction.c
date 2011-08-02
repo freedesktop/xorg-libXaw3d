@@ -43,6 +43,7 @@ in this Software without prior written authorization from the X Consortium.
 #include "XawI18n.h"
 #endif
 #include <stdio.h>
+#include <stdlib.h>
 #include <ctype.h>
 
 #define SrcScan                XawTextSourceScan

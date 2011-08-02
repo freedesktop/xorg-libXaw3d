@@ -35,6 +35,7 @@ SOFTWARE.
 #include <X11/Xaw3d/XawInit.h>
 #include <X11/Xaw3d/ThreeDP.h>
 #include <X11/Xosdefs.h>
+#include <X11/Xmu/CharSet.h>
 
 /* Initialization of defaults */
 

@@ -79,6 +79,7 @@ SOFTWARE.
 #include <X11/Xaw3d/TextP.h>
 #include "XawI18n.h"
 #include <stdio.h>
+#include <stdlib.h>
 #include <ctype.h>
 
 #ifdef GETLASTPOS

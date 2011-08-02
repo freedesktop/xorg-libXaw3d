@@ -56,6 +56,7 @@ SOFTWARE.
 #include "XawI18n.h"
 #endif
 #include <stdio.h>
+#include <stdlib.h>
 #include <X11/Xmu/Atoms.h>
 #include <X11/Xmu/CharSet.h>
 #include <X11/Xmu/Converters.h>

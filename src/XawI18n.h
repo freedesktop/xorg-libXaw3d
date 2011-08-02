@@ -25,15 +25,17 @@ in this Software without prior written authorization from the X Consortium.
 
 ********************************************************/
 
-#ifdef HAS_WCTYPE_H
+#ifdef HAVE_WCTYPE_H
 #include <wctype.h>
+#ifdef HAVE_WIDEC_H
 #include <widec.h>
+#endif
 #define wcslen(c) wslen(c)
 #define wcscpy(d,s) wscpy(d,s)
 #define wcsncpy(d,s,l) wsncpy(d,s,l)
 #endif
 
-#ifdef HAS_WCHAR_H
+#ifdef HAVE_WCHAR_H
 #include <wchar.h>
 #endif
 
@@ -68,7 +70,7 @@ extern wchar_t _Xaw_atowc (
 #endif
 );
 
-#ifndef HAS_ISW_FUNCS
+#ifndef HAVE_ISW_FUNCS
 #include <ctype.h>
 #ifndef iswspace
 #define iswspace(c) (isascii(c) && isspace(toascii(c)))

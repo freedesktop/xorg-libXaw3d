@@ -34,7 +34,7 @@ in this Software without prior written authorization from the X Consortium.
 #include <X11/Xmu/Misc.h>		/* for Min */
 #include <X11/Xmu/Drawing.h>
 #include <ctype.h>			/* for isascii() etc. */
-#include <math.h>			/* for atof() */
+#include <stdlib.h>			/* for atof() */
 
 extern Bool XmuDistinguishablePixels(); /* not defined in any Xmu headers */
 

@@ -62,6 +62,8 @@ in this Software without prior written authorization from the X Consortium.
 #include <X11/Xaw3d/MultiSinkP.h>
 #include <X11/Xaw3d/XawImP.h>
 #include <X11/Xaw3d/VendorEP.h>
+#include <X11/ResourceI.h>
+#include <X11/VarargsI.h>
 #include "XawI18n.h"
 #include <ctype.h>
 
