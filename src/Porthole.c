@@ -23,7 +23,7 @@ used in advertising or otherwise to promote the sale, use or other dealings
 in this Software without prior written authorization from the X Consortium.
  *
  * Author:  Jim Fulton, MIT X Consortium
- * 
+ *
  * This widget is a trivial clipping widget.  It is typically used with a
  * panner or scrollbar to navigate.
  */
@@ -230,7 +230,7 @@ static void Resize (gw)
 	Position x, y;
 	Dimension width, height;
 
-	layout_child (pw, child, (XtWidgetGeometry *)NULL, 
+	layout_child (pw, child, (XtWidgetGeometry *)NULL,
 		      &x, &y, &width, &height);
 	XtConfigureWidget (child, x, y, width, height, (Dimension) 0);
     }
@@ -262,7 +262,7 @@ static XtGeometryResult QueryGeometry (gw, intended, preferred)
 	else
 	  return XtGeometryAlmost;
 #undef SIZEONLY
-    } 
+    }
     return XtGeometryNo;
 }
 
@@ -355,7 +355,7 @@ static void ChangeManaged (gw)
 	        (void) XtMakeGeometryRequest (gw, &retgeom, (XtWidgetGeometry *)NULL);
 	    }
 	}
-	
+
 	XtResizeWidget (child, Max (child->core.width, pw->core.width),
 			Max (child->core.height, pw->core.height), 0);
 

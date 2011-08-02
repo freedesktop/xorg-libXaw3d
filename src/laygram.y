@@ -29,7 +29,7 @@ static LayoutPtr    *dest;
 %type	<pval>	    bothparams oneparams
 %type	<gval>	    glue opStretch opShrink
 %type	<lval>	    orientation
-%type	<eval>	    signedExpr simpleExpr expr 
+%type	<eval>	    signedExpr simpleExpr expr
 
 %token		    OC CC OA CA OP CP
 %token	<qval>	    NAME
@@ -93,9 +93,9 @@ compositebox	:   orientation OC boxes CC
 			box->type = BoxBox;
 			box->u.box.dir = $1;
 			box->u.box.firstChild = $3;
-			for (child = $3; child; child = child->nextSibling) 
+			for (child = $3; child; child = child->nextSibling)
 			{
-			    if (child->type == GlueBox) 
+			    if (child->type == GlueBox)
 			    {
 				child->params.stretch[!$1].expr = 0;
 				child->params.shrink[!$1].expr = 0;
@@ -110,7 +110,7 @@ compositebox	:   orientation OC boxes CC
 		    }
 		;
 boxes		:   box boxes
-		    { 
+		    {
 			$1->nextSibling = $2;
 			$$ = $1;
 		    }
@@ -118,9 +118,9 @@ boxes		:   box boxes
 		    {	$$ = $1; }
 		;
 bothparams	:   OA opStretch opShrink TIMES opStretch opShrink CA
-		    {	
+		    {
 			BoxParamsPtr	p = New(BoxParamsRec);
-			
+
 			p->stretch[LayoutHorizontal] = $2;
 			p->shrink[LayoutHorizontal] = $3;
 			p->stretch[LayoutVertical] = $5;
@@ -128,9 +128,9 @@ bothparams	:   OA opStretch opShrink TIMES opStretch opShrink CA
 			$$ = p;
 		    }
 		|
-		    {	
+		    {
 			BoxParamsPtr	p = New(BoxParamsRec);
-			
+
 			ZeroGlue (p->stretch[LayoutHorizontal]);
 			ZeroGlue (p->shrink[LayoutHorizontal]);
 			ZeroGlue (p->stretch[LayoutVertical]);
@@ -139,9 +139,9 @@ bothparams	:   OA opStretch opShrink TIMES opStretch opShrink CA
 		    }
 		;
 oneparams 	:   OA opStretch opShrink CA
-		    {	
+		    {
 			BoxParamsPtr	p = New(BoxParamsRec);
-			
+
 			p->stretch[LayoutHorizontal] = $2;
 			p->shrink[LayoutHorizontal] = $3;
 			p->stretch[LayoutVertical] = $2;
@@ -149,9 +149,9 @@ oneparams 	:   OA opStretch opShrink CA
 			$$ = p;
 		    }
 		|
-		    {	
+		    {
 			BoxParamsPtr	p = New(BoxParamsRec);
-			
+
 			ZeroGlue (p->stretch[LayoutHorizontal]);
 			ZeroGlue (p->shrink[LayoutHorizontal]);
 			ZeroGlue (p->stretch[LayoutVertical]);

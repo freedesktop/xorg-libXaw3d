@@ -15,7 +15,7 @@
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL M.I.T.
  * BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
  * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION
- * OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN 
+ * OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
  * CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *
  * Author:  Keith Packard, MIT X Consortium
@@ -58,7 +58,7 @@ static int DBUG_level = 0;
     {fprintf(stderr,"       (%d) %s:",DBUG_level, DBUG_currentproc); \
     fprintf(stderr,f,s);fprintf(stderr,"\n");}
 #else
-# define DBUG_ENTER(s) 
+# define DBUG_ENTER(s)
 # define DBUG_VOID_RETURN return
 # define DBUG_PRINT(f,s)
 # define DBUG_RETURN(f,v) return(v)
@@ -178,7 +178,7 @@ LayoutClassRec layoutClassRec = {
     NULL,                                 /* extension              */
    },
 #endif
-   { /* layout_class fields */     
+   { /* layout_class fields */
     0
    }
 };
@@ -192,7 +192,7 @@ WidgetClass layoutWidgetClass = (WidgetClass) &layoutClassRec;
 
 /************************************************************
  *
- * Semi-public routines. 
+ * Semi-public routines.
  *
  ************************************************************/
 
@@ -212,7 +212,7 @@ CvtStringToLayout (dpy, args, num_args, from, to, converter_data)
     XtPointer	*converter_data;
 {
     static BoxPtr tmp;
-    
+
     LayYYsetsource ((char *) from->addr);
     if (!to->addr) to->addr = (XtPointer)&tmp;
     LayYYsetdest ((BoxPtr *) to->addr);
@@ -232,16 +232,16 @@ DisposeLayout (app, to, data, args, num_args)
     LayoutFreeLayout (* (LayoutPtr *) to->addr);
 }
 
-static void 
+static void
 ClassInitialize()
 {
     XtSetTypeConverter ( XtRString, XtRLayout, CvtStringToLayout,
-		    (XtConvertArgList)NULL, (Cardinal)0, XtCacheNone, 
+		    (XtConvertArgList)NULL, (Cardinal)0, XtCacheNone,
  		    DisposeLayout );
 }
 
 #ifdef MOTIF
-static void Redisplay ( gw, event, region ) 
+static void Redisplay ( gw, event, region )
 Widget gw;
 XEvent *event;
 Region region;
@@ -249,8 +249,8 @@ Region region;
    /*
     * If the Layout widget is visible, redraw gadgets.
     */
- 
-    if ( XtIsRealized ( gw ) && gw->core.visible ) 
+
+    if ( XtIsRealized ( gw ) && gw->core.visible )
     {
         _XmRedisplayGadgets ( gw, event, region );
     }
@@ -272,7 +272,7 @@ static XtGeometryResult GeometryManager(child, request, reply)
     changed = FALSE;
     bwChanged = FALSE;
     if (request->request_mode & CWBorderWidth &&
-	request->border_width != child->core.border_width) 
+	request->border_width != child->core.border_width)
     {
 	p->naturalBw = bw;
 	bw = request->border_width;
@@ -317,7 +317,7 @@ static void ChangeManaged(gw)
 	GetDesiredSize (*children);
     LayoutLayout ((LayoutWidget) w, TRUE);
 #ifdef MOTIF
-    _XmNavigChangeManaged ( gw );        
+    _XmNavigChangeManaged ( gw );
 #endif
     DBUG_VOID_RETURN;
 }
@@ -328,7 +328,7 @@ GetDesiredSize (child)
 {
     XtWidgetGeometry	desired;
     SubInfoPtr		p;
-    
+
     XtQueryGeometry (child, (XtWidgetGeometry *) NULL, &desired);
     p = SubInfo (child);
     p->naturalBw = desired.border_width;
@@ -351,7 +351,7 @@ Resize(gw)
 }
 
 /* ARGSUSED */
-static Boolean 
+static Boolean
 SetValues(gold, greq, gnew, args, num_args)
     Widget gold, greq, gnew;
     ArgList args;
@@ -452,7 +452,7 @@ PrintDirection (dir)
     default:
 	(void) printf ("Unknown layout direction %d\n", dir);
 	break;
-  
+
     }
 }
 
@@ -470,17 +470,17 @@ PrintBox (box, level)
     int		    level;
 {
     BoxPtr	child;
-    
+
     TabTo (level);
     (void) printf ("%s", "< ");
-    (void) printf ("%s", " + "); 
+    (void) printf ("%s", " + ");
     PrintGlue (box->params.stretch[LayoutHorizontal]);
-    (void) printf ("%s", " - "); 
+    (void) printf ("%s", " - ");
     PrintGlue (box->params.shrink[LayoutHorizontal]);
     (void) printf ("%s", " * ");
-    (void) printf ("%s", " + "); 
+    (void) printf ("%s", " + ");
     PrintGlue (box->params.stretch[LayoutVertical]);
-    (void) printf ("%s", " - "); 
+    (void) printf ("%s", " - ");
     PrintGlue (box->params.shrink[LayoutVertical]);
     (void) printf ("%s", " >");
     (void) printf (" size: %d x %d", box->size[0], box->size[1]);
@@ -516,8 +516,8 @@ LookupVariable (child, quark)
     DBUG_PRINT("child = %p",child);
     while ((parent = child->parent))
     {
-	for (box = parent->u.box.firstChild; 
-	     box != child; 
+	for (box = parent->u.box.firstChild;
+	     box != child;
 	     box = box->nextSibling)
 	{
 	    if (box->type == VariableBox && box->u.variable.quark == quark)
@@ -527,7 +527,7 @@ LookupVariable (child, quark)
     }
     DBUG_RETURN("failure -> %d",0);
 }
-		
+
 static double
 Evaluate (l, box, expr, natural)
     LayoutWidget    l;
@@ -582,10 +582,10 @@ Evaluate (l, box, expr, natural)
 	    return 0;
 	info = SubInfo (widget);
 	return info->naturalSize[LayoutVertical];
-    case Variable: 
+    case Variable:
         {
-	/* in the original code there was no nexpr, 
-	   expr was overwritten by LookupVariable and 
+	/* in the original code there was no nexpr,
+	   expr was overwritten by LookupVariable and
 	   the expression "expr->u.variable" to obtain the
 	   variable name for the errormessage cause a segmentation
 	   violation */
@@ -640,7 +640,7 @@ DisposeExpr (expr)
 
 #define DoStretch(l, box, dir) \
     CheckGlue (l, box, box->params.stretch[dir], (double) box->natural[dir]);
-	
+
 #define DoShrink(l, box, dir) \
     CheckGlue (l, box, box->params.shrink[dir], (double) box->natural[dir])
 
@@ -667,7 +667,7 @@ ComputeNaturalSizes (l, box, dir)
 	    box->natural[LayoutHorizontal] = 0;
 	    box->natural[LayoutVertical] = 0;
 	}
-	else 
+	else
 	{
 	    info = SubInfo (w);
 	    box->natural[LayoutHorizontal] = info->naturalSize[LayoutHorizontal];
@@ -694,7 +694,7 @@ ComputeNaturalSizes (l, box, dir)
 	ZeroGlue (box->params.stretch[thisDir]);
 	box->params.shrink[!thisDir].order = 100000;
 	box->params.stretch[!thisDir].order = 100000;
-	for (child = box->u.box.firstChild; child; child = child->nextSibling) 
+	for (child = box->u.box.firstChild; child; child = child->nextSibling)
 	{
 	    ComputeNaturalSizes (l, child, thisDir);
 	    /*
@@ -747,9 +747,9 @@ ComputeNaturalSizes (l, box, dir)
 	{
 	    int	    minSize;
 	    int	    largestMinSize;
-	    
+
 	    largestMinSize = 0;
-	    for (child = box->u.box.firstChild; child; child = child->nextSibling) 
+	    for (child = box->u.box.firstChild; child; child = child->nextSibling)
 	    {
 		if (child->params.shrink[!thisDir].order <= 0)
 		{
@@ -801,21 +801,21 @@ ComputeSizes (box)
 
     dir = box->u.box.dir;
     size = box->size[dir];
-    
+
     stretch = box->params.stretch[dir];
     shrink = box->params.shrink[dir];
-    
+
     /* pick the correct adjustment parameters based on the change direction */
 
     totalChange[0] = size - box->natural[dir];
 
     shrinking = totalChange[0] < 0;
-    
+
     totalChange[1] = 0;
     totalGlue[1].order = 100000;
     totalGlue[1].value = 0;
     maxGlue = 1;
-    if (shrinking) 
+    if (shrinking)
     {
 	totalGlue[0] = shrink;
 	/* for first-order infinites, shrink it to zero and then
@@ -824,9 +824,9 @@ ComputeSizes (box)
 	if (shrink.order == 1) {
 	    totalSizes = 0;
 	    remainingGlue = 0;
-	    for (child = box->u.box.firstChild; 
-		 child; 
-		 child = child->nextSibling) 
+	    for (child = box->u.box.firstChild;
+		 child;
+		 child = child->nextSibling)
 	    {
 		switch (child->params.shrink[dir].order) {
 		case 0:
@@ -847,7 +847,7 @@ ComputeSizes (box)
 		maxGlue = 2;
 	    }
 	}
-	if (totalGlue[0].order <= 0 && 
+	if (totalGlue[0].order <= 0 &&
 	    totalChange[0] > totalGlue[0].value)
 	{
 	    totalChange[0] = totalGlue[0].value;
@@ -861,7 +861,7 @@ ComputeSizes (box)
     remainingGlue = totalGlue[0].value + totalGlue[1].value;
     remainingChange = totalChange[0] + totalChange[1];
     happy = True;
-    for (child = box->u.box.firstChild; child; child = child->nextSibling) 
+    for (child = box->u.box.firstChild; child; child = child->nextSibling)
     {
         /* never add glue or stretch to a VariableBox! */
         if (child->type == VariableBox) continue;
@@ -870,7 +870,7 @@ ComputeSizes (box)
 	    glue = &child->params.shrink[dir];
 	else
 	    glue = &child->params.stretch[dir];
-    
+
 	child->size[dir] = child->natural[dir];
 	for (i = 0; i < maxGlue; i++)
 	{
@@ -880,8 +880,8 @@ ComputeSizes (box)
 		if (remainingGlue <= 0)
 		    change = remainingChange;
 		else
-		    change = GluePart (glue->value, 
-				       totalGlue[i].value, 
+		    change = GluePart (glue->value,
+				       totalGlue[i].value,
 				       totalChange[i]);
 		child->size[dir] += change;
 		remainingChange -= change;
@@ -906,7 +906,7 @@ SetSizes (box, x, y)
     int		bw;
     Widget	w;
     SubInfoPtr	info;
-    
+
     switch (box->type) {
     case WidgetBox:
 	w = box->u.widget.widget;
@@ -920,7 +920,7 @@ SetSizes (box, x, y)
 	    width -= bw * 2;
 	    height -= bw * 2;
 	    /* Widgets which grow too small are placed off screen */
-	    if (width <= 0 || height <= 0) 
+	    if (width <= 0 || height <= 0)
 	    {
 		width = 1;
 		height = 1;
@@ -928,13 +928,13 @@ SetSizes (box, x, y)
 		x = -1;
 		y = -1;
 	    }
-	    XtConfigureWidget (w, x, y, 
-			      (Dimension)width, (Dimension)height, 
+	    XtConfigureWidget (w, x, y,
+			      (Dimension)width, (Dimension)height,
 			      (Dimension)bw);
 	}
 	break;
     case BoxBox:
-	for (child = box->u.box.firstChild; child; child = child->nextSibling) 
+	for (child = box->u.box.firstChild; child; child = child->nextSibling)
 	{
 	    SetSizes (child, x, y);
 	    if (box->u.box.dir == LayoutHorizontal)
@@ -954,7 +954,7 @@ LayoutFreeLayout (box)
     BoxPtr  box;
 {
     BoxPtr  child, next;
-    
+
     switch (box->type) {
     case BoxBox:
 	for (child = box->u.box.firstChild; child; child = next)
@@ -968,7 +968,7 @@ LayoutFreeLayout (box)
 	break;
     case WidgetBox:
     case VariableBox:
-    default: 
+    default:
 	break;
     }
     DisposeExpr (box->params.stretch[LayoutHorizontal].expr);
@@ -988,7 +988,7 @@ LayoutGetNaturalSize (l, widthp, heightp)
 
     DBUG_ENTER("LayoutGetNaturalSize");
     box = l->layout.layout;
-    if (box) 
+    if (box)
     {
 	ComputeNaturalSizes (l, box, LayoutHorizontal);
 	*widthp = box->natural[LayoutHorizontal];

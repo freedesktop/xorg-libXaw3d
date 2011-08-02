@@ -23,7 +23,7 @@ used in advertising or otherwise to promote the sale, use or other dealings
 in this Software without prior written authorization from the X Consortium.
  *
  * Author:  Jim Fulton, MIT X Consortium
- * 
+ *
  * This widget is used for press-and-hold style buttons.
  */
 
@@ -52,7 +52,7 @@ static void tic();			/* clock timeout */
 /*
  * Translations to give user interface of press-notify...-release_or_leave
  */
-static char defaultTranslations[] = 
+static char defaultTranslations[] =
   "<EnterWindow>:     highlight() \n\
    <LeaveWindow>:     unhighlight() \n\
    <Btn1Down>:        set() start() \n\
@@ -228,7 +228,7 @@ static Boolean SetValues (gcur, greq, gnew, args, num_args)
     Boolean redisplay = FALSE;
 
     if (cur->repeater.minimum_delay != new->repeater.minimum_delay) {
-	if (new->repeater.next_delay < new->repeater.minimum_delay) 
+	if (new->repeater.next_delay < new->repeater.minimum_delay)
 	  new->repeater.next_delay = new->repeater.minimum_delay;
     }
 
@@ -251,7 +251,7 @@ static void ActionStart (gw, event, params, num_params)
     RepeaterWidget rw = (RepeaterWidget) gw;
 
     CLEAR_TIMEOUT (rw);
-    if (rw->repeater.start_callbacks) 
+    if (rw->repeater.start_callbacks)
       XtCallCallbackList (gw, rw->repeater.start_callbacks, (XtPointer)NULL);
 
     DO_CALLBACK (rw);
@@ -270,7 +270,7 @@ static void ActionStop (gw, event, params, num_params)
     RepeaterWidget rw = (RepeaterWidget) gw;
 
     CLEAR_TIMEOUT ((RepeaterWidget) gw);
-    if (rw->repeater.stop_callbacks) 
+    if (rw->repeater.stop_callbacks)
       XtCallCallbackList (gw, rw->repeater.stop_callbacks, (XtPointer)NULL);
 }
 

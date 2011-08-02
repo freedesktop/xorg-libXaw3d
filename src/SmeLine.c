@@ -31,7 +31,7 @@ in this Software without prior written authorization from the X Consortium.
  * Date:    September 26, 1989
  *
  * By:      Chris D. Peterson
- *          MIT X Consortium 
+ *          MIT X Consortium
  *          kit@expo.lcs.mit.edu
  */
 
@@ -53,11 +53,11 @@ static XtResource resources[] = {
      offset(stipple), XtRImmediate, (XtPointer) XtUnspecifiedPixmap},
   {XtNforeground, XtCForeground, XtRPixel, sizeof(Pixel),
      offset(foreground), XtRString, XtDefaultForeground},
-};   
+};
 #undef offset
 
 /*
- * Function definitions. 
+ * Function definitions.
  */
 
 static void Redisplay(), Initialize();
@@ -84,7 +84,7 @@ SmeLineClassRec smeLineClassRec = {
     /* resources          */    resources,
     /* resource_count     */	XtNumber(resources),
     /* xrm_class          */    NULLQUARK,
-    /* compress_motion    */    FALSE, 
+    /* compress_motion    */    FALSE,
     /* compress_exposure  */    FALSE,
     /* compress_enterleave*/ 	FALSE,
     /* visible_interest   */    FALSE,
@@ -93,8 +93,8 @@ SmeLineClassRec smeLineClassRec = {
     /* expose             */    Redisplay,
     /* set_values         */    SetValues,
     /* set_values_hook    */	NULL,
-    /* set_values_almost  */	XtInheritSetValuesAlmost,  
-    /* get_values_hook    */	NULL,			
+    /* set_values_almost  */	XtInheritSetValuesAlmost,
+    /* get_values_hook    */	NULL,
     /* accept_focus       */    NULL,
     /* intrinsics version */	XtVersion,
     /* callback offsets   */    NULL,
@@ -104,14 +104,14 @@ SmeLineClassRec smeLineClassRec = {
     /* extension	  */    NULL
   },{
     /* Menu Entry Fields */
-      
+
     /* highlight */             XtInheritHighlight,
     /* unhighlight */           XtInheritUnhighlight,
-    /* notify */		XtInheritNotify,		
-    /* extension */             NULL				
+    /* notify */		XtInheritNotify,
+    /* extension */             NULL
   },{
     /* Line Menu Entry Fields */
-    /* extension */             NULL				
+    /* extension */             NULL
   }
 };
 
@@ -162,17 +162,17 @@ Widget w;
     SmeLineObject entry = (SmeLineObject) w;
     XGCValues values;
     XtGCMask mask = GCForeground | GCGraphicsExposures | GCLineWidth ;
-    
+
     values.foreground = entry->sme_line.foreground;
     values.graphics_exposures = FALSE;
     values.line_width = entry->sme_line.line_width;
-    
+
     if (entry->sme_line.stipple != XtUnspecifiedPixmap) {
 	values.stipple = entry->sme_line.stipple;
-	values.fill_style = FillStippled; 
+	values.fill_style = FillStippled;
 	mask |= GCStipple | GCFillStyle;
-	
-	entry->sme_line.gc = XCreateGC(XtDisplayOfObject(w), 
+
+	entry->sme_line.gc = XCreateGC(XtDisplayOfObject(w),
 				      RootWindowOfScreen(XtScreenOfObject(w)),
 				      mask, &values);
     }
@@ -192,7 +192,7 @@ Widget w;
 {
     SmeLineObject entry = (SmeLineObject) w;
 
-    if (entry->sme_line.stipple != XtUnspecifiedPixmap) 
+    if (entry->sme_line.stipple != XtUnspecifiedPixmap)
 	XFreeGC(XtDisplayOfObject(w), entry->sme_line.gc);
     else
 	XtReleaseGC(w, entry->sme_line.gc);
@@ -216,14 +216,14 @@ Region region;
     SimpleMenuWidget smw = (SimpleMenuWidget) XtParent (w);
     ThreeDWidget tdw = (ThreeDWidget) smw->simple_menu.threeD;
     Dimension s = tdw->threeD.shadow_width;
-    int y = entry->rectangle.y + 
+    int y = entry->rectangle.y +
 	    (int)(entry->rectangle.height - entry->sme_line.line_width) / 2;
 
-    if (entry->sme_line.stipple != XtUnspecifiedPixmap) 
+    if (entry->sme_line.stipple != XtUnspecifiedPixmap)
 	XSetTSOrigin(XtDisplayOfObject(w), entry->sme_line.gc, 0, y);
 
     XFillRectangle(XtDisplayOfObject(w), XtWindowOfObject(w),
-		   entry->sme_line.gc, 
+		   entry->sme_line.gc,
 		   s, y, (unsigned int) entry->rectangle.width - 2 * s,
 		   (unsigned int) entry->sme_line.line_width );
 }
@@ -245,7 +245,7 @@ Cardinal *num_args;
 {
     SmeLineObject entry = (SmeLineObject) new;
     SmeLineObject old_entry = (SmeLineObject) current;
-  
+
     if ( (entry->sme_line.line_width != old_entry->sme_line.line_width) &&
 	 (entry->sme_line.stipple != old_entry->sme_line.stipple) ) {
 	DestroyGC(current);
@@ -262,12 +262,12 @@ Cardinal *num_args;
  *	Returns: A Geometry Result.
  *
  * See the Intrinsics manual for details on what this function is for.
- * 
+ *
  * I just return the height and a width of 1.
  */
 
 static XtGeometryResult
-QueryGeometry(w, intended, return_val) 
+QueryGeometry(w, intended, return_val)
 Widget w;
 XtWidgetGeometry *intended, *return_val;
 {
@@ -283,7 +283,7 @@ XtWidgetGeometry *intended, *return_val;
 	return_val->request_mode |= CWWidth;
 	return_val->width = width;
 	mode = return_val->request_mode;
-	
+
 	if ( (mode & CWWidth) && (width == entry->rectangle.width) )
 	    return(XtGeometryNo);
 	return(XtGeometryAlmost);

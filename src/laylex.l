@@ -49,7 +49,7 @@ inff*			{ yylval.ival = count(yytext, 'f'); return INFINITY; }
 %[ \t\n]*of		{ yylval.oval = Percent; return PERCENTOF; }
 width			return WIDTH;
 height			return HEIGHT;
-\\[a-zA-Z_][a-zA-Z0-9_]* { 
+\\[a-zA-Z_][a-zA-Z0-9_]* {
 #ifdef FLEX_SCANNER
 			    yytext[yyleng] = '\0';
 #else
@@ -59,7 +59,7 @@ height			return HEIGHT;
  			    return NAME;
 			}
 
-[a-zA-Z_][a-zA-Z0-9_]*	{ 
+[a-zA-Z_][a-zA-Z0-9_]*	{
 #ifdef FLEX_SCANNER
 			    yytext[yyleng] = '\0';
 #else
@@ -96,7 +96,7 @@ yyerror(s)
     char    *s;
 {
     char    *t;
-    
+
     fprintf (stderr, "%s\n", s);
     t = yysource - 50;
     if (t < yysourcebase)

@@ -28,13 +28,13 @@ Copyright 1987, 1988 by Digital Equipment Corporation, Maynard, Massachusetts.
 
                         All Rights Reserved
 
-Permission to use, copy, modify, and distribute this software and its 
-documentation for any purpose and without fee is hereby granted, 
+Permission to use, copy, modify, and distribute this software and its
+documentation for any purpose and without fee is hereby granted,
 provided that the above copyright notice appear in all copies and that
-both that copyright notice and this permission notice appear in 
+both that copyright notice and this permission notice appear in
 supporting documentation, and that the name of Digital not be
 used in advertising or publicity pertaining to distribution of the
-software without specific, written prior permission.  
+software without specific, written prior permission.
 
 DIGITAL DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING
 ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL
@@ -125,7 +125,7 @@ static void ClassInitialize()
         {XtWidgetBaseOffset, (XtPointer) XtOffsetOf(WidgetRec, core.screen),
 	     sizeof(Screen *)},
         {XtResourceString, (XtPointer) XtNpointerColor, sizeof(Pixel)},
-        {XtResourceString, (XtPointer) XtNpointerColorBackground, 
+        {XtResourceString, (XtPointer) XtNpointerColorBackground,
 	     sizeof(Pixel)},
         {XtWidgetBaseOffset, (XtPointer) XtOffsetOf(WidgetRec, core.colormap),
 	     sizeof(Colormap)}
@@ -133,7 +133,7 @@ static void ClassInitialize()
 
     XawInitializeWidgetSet();
     XtSetTypeConverter( XtRString, XtRColorCursor, XmuCvtStringToColorCursor,
-		       convertArg, XtNumber(convertArg), 
+		       convertArg, XtNumber(convertArg),
 		       XtCacheByDisplay, (XtDestructor)NULL);
 }
 
@@ -170,7 +170,7 @@ static void Realize(w, valueMask, attributes)
 	if (((SimpleWidget)w)->simple.insensitive_border == None)
 	    ((SimpleWidget)w)->simple.insensitive_border =
 		XmuCreateStippledPixmap(XtScreen(w),
-					w->core.border_pixel, 
+					w->core.border_pixel,
 					w->core.background_pixel,
 					w->core.depth);
         border_pixmap = w->core.border_pixmap;
@@ -206,7 +206,7 @@ Widget w;
     SimpleWidget simple = (SimpleWidget) w;
     XrmValue from, to;
     Cursor cursor;
-   
+
     if (simple->simple.cursor_name == NULL)
 	return;
 
@@ -217,9 +217,9 @@ Widget w;
     to.addr = (XPointer) &cursor;
 
     if (XtConvertAndStore(w, XtRString, &from, XtRColorCursor, &to)) {
-	if ( cursor !=  None) 
+	if ( cursor !=  None)
 	    simple->simple.cursor = cursor;
-    } 
+    }
     else {
 	XtAppErrorMsg(XtWidgetToApplicationContext(w),
 		      "convertFailed","ConvertCursor","XawError",
@@ -251,7 +251,7 @@ static Boolean SetValues(current, request, new, args, num_args)
     if (s_old->simple.cursor != s_new->simple.cursor) {
 	new_cursor = TRUE;
     }
-	
+
 /*
  * We are not handling the string cursor_name correctly here.
  */
@@ -266,7 +266,7 @@ static Boolean SetValues(current, request, new, args, num_args)
     if (new_cursor && XtIsRealized(new))
         XDefineCursor(XtDisplay(new), XtWindow(new), s_new->simple.cursor);
 
-    return False;   
+    return False;
 }
 
 
@@ -279,13 +279,13 @@ static Boolean ChangeSensitive(w)
 		XSetWindowBorderPixmap( XtDisplay(w), XtWindow(w),
 				        w->core.border_pixmap );
 	    else
-		XSetWindowBorder( XtDisplay(w), XtWindow(w), 
+		XSetWindowBorder( XtDisplay(w), XtWindow(w),
 				  w->core.border_pixel );
 	else {
 	    if (((SimpleWidget)w)->simple.insensitive_border == None)
 		((SimpleWidget)w)->simple.insensitive_border =
 		    XmuCreateStippledPixmap(XtScreen(w),
-					    w->core.border_pixel, 
+					    w->core.border_pixel,
 					    w->core.background_pixel,
 					    w->core.depth);
 	    XSetWindowBorderPixmap( XtDisplay(w), XtWindow(w),

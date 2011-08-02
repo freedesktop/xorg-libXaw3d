@@ -28,13 +28,13 @@ Copyright 1987, 1988 by Digital Equipment Corporation, Maynard, Massachusetts.
 
                         All Rights Reserved
 
-Permission to use, copy, modify, and distribute this software and its 
-documentation for any purpose and without fee is hereby granted, 
+Permission to use, copy, modify, and distribute this software and its
+documentation for any purpose and without fee is hereby granted,
 provided that the above copyright notice appear in all copies and that
-both that copyright notice and this permission notice appear in 
+both that copyright notice and this permission notice appear in
 supporting documentation, and that the name of Digital not be
 used in advertising or publicity pertaining to distribution of the
-software without specific, written prior permission.  
+software without specific, written prior permission.
 
 DIGITAL DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING
 ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL
@@ -211,7 +211,7 @@ static void ClassInitialize()
     XtQChainBottom = XrmPermStringToQuark("chainbottom");
     XtQRubber      = XrmPermStringToQuark("rubber");
 
-    XtAddConverter( XtRString, XtREdgeType, _CvtStringToEdgeType, 
+    XtAddConverter( XtRString, XtREdgeType, _CvtStringToEdgeType,
 		    (XtConvertArgList)NULL, 0 );
     XtSetTypeConverter (XtRString, XtRWidget, XmuNewCvtStringToWidget,
 			parentCvtArgs, XtNumber(parentCvtArgs), XtCacheNone,
@@ -222,7 +222,7 @@ static void ClassPartInitialize(class)
     WidgetClass class;
 {
     FormWidgetClass c = (FormWidgetClass)class;
-    FormWidgetClass super = (FormWidgetClass) 
+    FormWidgetClass super = (FormWidgetClass)
 	c->core_class.superclass;
 
     if (c->form_class.layout == XtInheritLayout)
@@ -344,7 +344,7 @@ static Boolean Layout(fw, width, height, force_relayout)
 
 	    LayoutChild(*childP);
 
-	    x = form->form.new_x + (*childP)->core.width + 
+	    x = form->form.new_x + (*childP)->core.width +
 		((*childP)->core.border_width << 1);
 	    if (x > (int)maxx)
 		maxx = x;
@@ -362,8 +362,8 @@ static Boolean Layout(fw, width, height, force_relayout)
     if (fw->form.resize_in_layout) {
 	Boolean always_resize_children;
 
-	always_resize_children = 
-	    ChangeFormGeometry( (Widget) fw, FALSE, maxx, maxy, 
+	always_resize_children =
+	    ChangeFormGeometry( (Widget) fw, FALSE, maxx, maxy,
 				(Dimension *)NULL, (Dimension *)NULL);
 
 	fw->form.old_width  = fw->core.width;
@@ -391,7 +391,7 @@ static Boolean Layout(fw, width, height, force_relayout)
  *	Returns: none.
  */
 
-static void ResizeChildren(w) 
+static void ResizeChildren(w)
 Widget w;
 {
     FormWidget fw = (FormWidget) w;
@@ -402,18 +402,18 @@ Widget w;
     for (childP = children; childP - children < num_children; childP++) {
 	FormConstraints form;
 
-	if (!XtIsManaged(*childP)) 
+	if (!XtIsManaged(*childP))
 	    continue;
 
 	form = (FormConstraints)(*childP)->core.constraints;
 	if (fw->form.no_refigure) {
-/* 
+/*
  * I am changing the widget wrapper w/o modifing the window.  This is
  * risky, but I can get away with it since I am the parent of this
  * widget, and he must ask me for any geometry changes.
  *
  * The window will be updated when no_refigure is set back to False.
- */	
+ */
 	    (*childP)->core.x = form->form.new_x;
 	    (*childP)->core.y = form->form.new_y;
 	}
@@ -458,14 +458,14 @@ static void LayoutChild(w)
 	FormConstraints ref_form = (FormConstraints) ref->core.constraints;
 
 	LayoutChild(ref);
-	form->form.new_x += (ref_form->form.new_x + 
+	form->form.new_x += (ref_form->form.new_x +
 			     ref->core.width + (ref->core.border_width << 1));
     }
     if ((ref = form->form.vert_base) != (Widget)NULL) {
 	FormConstraints ref_form = (FormConstraints) ref->core.constraints;
 
 	LayoutChild(ref);
-	form->form.new_y += (ref_form->form.new_y + 
+	form->form.new_y += (ref_form->form.new_y +
 			     ref->core.height + (ref->core.border_width << 1));
     }
 
@@ -508,7 +508,7 @@ static void Resize(w)
 			       fw->core.width, form->form.left );
 	    y = TransformCoord( (*childP)->core.y, fw->form.old_height,
 			       fw->core.height, form->form.top );
-	    
+
 	    form->form.virtual_width =
 		TransformCoord((Position)((*childP)->core.x
 					  + form->form.virtual_width
@@ -516,20 +516,20 @@ static void Resize(w)
 			       fw->form.old_width, fw->core.width,
 			       form->form.right )
 		    - (x + 2 * (*childP)->core.border_width);
-	    
+
 	    form->form.virtual_height =
 		TransformCoord((Position)((*childP)->core.y
 					  + form->form.virtual_height
 					  + 2 * (*childP)->core.border_width),
 			       fw->form.old_height, fw->core.height,
-			       form->form.bottom ) 
+			       form->form.bottom )
 		    - ( y + 2 * (*childP)->core.border_width);
-	    
-	    width = (Dimension) 
+
+	    width = (Dimension)
 		(form->form.virtual_width < 1) ? 1 : form->form.virtual_width;
 	    height = (Dimension)
 	       (form->form.virtual_height < 1) ? 1 : form->form.virtual_height;
-	    
+
 	    XtConfigureWidget(*childP,x,y, (Dimension)width, (Dimension)height,
 			      (*childP)->core.border_width );
 	}
@@ -561,7 +561,7 @@ static XtGeometryResult GeometryManager(w, request, reply)
          * then it is necessary to compute a new layout if ConstraintSetValues
          * allowed any constraint changes. */
 
-	if (fw->form.needs_relayout) 
+	if (fw->form.needs_relayout)
 	    (*((FormWidgetClass)fw->core.widget_class)->form_class.layout)
 		(fw, 0, 0, True);
 	return(XtGeometryNo);
@@ -583,7 +583,7 @@ static XtGeometryResult GeometryManager(w, request, reply)
          * then it is necessary to compute a new layout if ConstraintSetValues
          * allowed any constraint changes. */
 
-	if (fw->form.needs_relayout) 
+	if (fw->form.needs_relayout)
 	    (*((FormWidgetClass)fw->core.widget_class)->form_class.layout)
 		(fw, 0, 0, True);
 	return(XtGeometryNo);
@@ -617,12 +617,12 @@ static XtGeometryResult GeometryManager(w, request, reply)
 
 	fw->form.resize_in_layout = TRUE;
 
-	always_resize_children = ChangeFormGeometry(w, TRUE, 
+	always_resize_children = ChangeFormGeometry(w, TRUE,
 				   fw->form.preferred_width,
 				   fw->form.preferred_height,
 				   &ret_width, &ret_height);
 
-	if (always_resize_children || 
+	if (always_resize_children ||
 	    ((ret_width >= fw->form.preferred_width) &&
 	     (ret_height >= fw->form.preferred_height)))
 	{
@@ -639,17 +639,17 @@ static XtGeometryResult GeometryManager(w, request, reply)
 	    form->form.virtual_width = w->core.width;   /* reset virtual */
 	    form->form.virtual_height = w->core.height; /* width and height. */
 	    if (fw->form.no_refigure) {
-/* 
+/*
  * I am changing the widget wrapper w/o modifing the window.  This is
  * risky, but I can get away with it since I am the parent of this
  * widget, and he must ask me for any geometry changes.
  *
  * The window will be updated when no_refigure is set back to False.
- */	
+ */
 		form->form.deferred_resize = True;
 		ret_val = XtGeometryDone;
 	    }
-	    else 
+	    else
 		ret_val = XtGeometryYes;
 	}
 	else {
@@ -702,7 +702,7 @@ static Boolean ConstraintSetValues(current, request, new, args, num_args)
 {
   FormConstraints cfc = (FormConstraints) current->core.constraints;
   FormConstraints nfc = (FormConstraints) new->core.constraints;
-  
+
   if (cfc->form.top          != nfc->form.top         ||
       cfc->form.bottom       != nfc->form.bottom      ||
       cfc->form.left         != nfc->form.left        ||
@@ -742,7 +742,7 @@ static void ChangeManaged(w)
   /*
    * Reset virtual width and height for all children.
    */
-  
+
   for (children = childP = fw->composite.children ;
        childP - children < num_children; childP++) {
     child = *childP;
@@ -756,7 +756,7 @@ static void ChangeManaged(w)
  *
  * Chris D. Peterson 2/9/89.
  */
-	 
+
       if ( child->core.width != 1)
 	form->form.virtual_width = (int) child->core.width;
       if ( child->core.height != 1)
@@ -764,7 +764,7 @@ static void ChangeManaged(w)
     }
   }
   (*((FormWidgetClass)w->core.widget_class)->form_class.layout)
-  	                                 ((FormWidget) w, w->core.width, 
+  	                                 ((FormWidget) w, w->core.width,
 					  w->core.height, TRUE);
 }
 
@@ -774,7 +774,7 @@ static XtGeometryResult PreferredGeometry( widget, request, reply  )
     XtWidgetGeometry *request, *reply;
 {
     FormWidget w = (FormWidget)widget;
-    
+
     reply->width = w->form.preferred_width;
     reply->height = w->form.preferred_height;
     reply->request_mode = CWWidth | CWHeight;
@@ -796,7 +796,7 @@ static XtGeometryResult PreferredGeometry( widget, request, reply  )
  *
  **********************************************************************/
 
-/* 
+/*
  * Set or reset figuring (ignored if not realized)
  */
 
@@ -833,7 +833,7 @@ Boolean doit;
 	     */
 
 	    XMoveResizeWindow(XtDisplay(w), XtWindow(w),
-			      w->core.x, w->core.y, 
+			      w->core.x, w->core.y,
 			      w->core.width, w->core.height);
 
 	    if (form->form.deferred_resize &&

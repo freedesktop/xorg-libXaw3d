@@ -28,13 +28,13 @@ Copyright 1987, 1988 by Digital Equipment Corporation, Maynard, Massachusetts.
 
                         All Rights Reserved
 
-Permission to use, copy, modify, and distribute this software and its 
-documentation for any purpose and without fee is hereby granted, 
+Permission to use, copy, modify, and distribute this software and its
+documentation for any purpose and without fee is hereby granted,
 provided that the above copyright notice appear in all copies and that
-both that copyright notice and this permission notice appear in 
+both that copyright notice and this permission notice appear in
 supporting documentation, and that the name of Digital not be
 used in advertising or publicity pertaining to distribution of the
-software without specific, written prior permission.  
+software without specific, written prior permission.
 
 DIGITAL DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING
 ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL
@@ -58,7 +58,7 @@ SOFTWARE.
 
 #include <X11/Xaw3d/XawInit.h>
 #include <X11/Xaw3d/AsciiText.h>
-#include <X11/Xaw3d/Command.h>	
+#include <X11/Xaw3d/Command.h>
 #include <X11/Xaw3d/Label.h>
 #include <X11/Xaw3d/DialogP.h>
 #include <X11/Xaw3d/Cardinals.h>
@@ -182,7 +182,7 @@ Cardinal *num_args;
 	XtSetArg( arglist[0], XtNheight, dw->dialog.iconW->core.height );
 	XtSetValues( dw->dialog.labelW, arglist, ONE );
     }
-    if (dw->dialog.value != NULL) 
+    if (dw->dialog.value != NULL)
         CreateDialogValueWidget( (Widget) dw);
     else
         dw->dialog.valueW = NULL;
@@ -201,7 +201,7 @@ Cardinal *num_args;
 	return;					/* then just use defaults */
 
     constraint->form.left = constraint->form.right = XtChainLeft;
-    if (dw->dialog.valueW == NULL) 
+    if (dw->dialog.valueW == NULL)
       constraint->form.vert_base = dw->dialog.labelW;
     else
       constraint->form.vert_base = dw->dialog.valueW;
@@ -297,7 +297,7 @@ Cardinal *in_num_args;
  * any subclasses will currently have to deal with the fact that
  * we're about to change our real size.
  */
-	    w->form.resize_in_layout = False; 
+	    w->form.resize_in_layout = False;
 	    CreateDialogValueWidget( (Widget) w);
 	    w->core.width = w->form.preferred_width;
 	    w->core.height = w->form.preferred_height;
@@ -335,7 +335,7 @@ Cardinal * num_args;
   String s;
   DialogWidget src = (DialogWidget) w;
   int i;
-  
+
   for (i=0; i < *num_args; i++)
     if (streq(args[i].name, XtNvalue)) {
       XtSetArg(a[0], XtNstring, &s);
@@ -357,7 +357,7 @@ static void
 CreateDialogValueWidget(w)
 Widget w;
 {
-    DialogWidget dw = (DialogWidget) w;    
+    DialogWidget dw = (DialogWidget) w;
     Arg arglist[10];
     Cardinal num_args = 0;
 
@@ -395,7 +395,7 @@ Widget w;
     }
     XtManageChild(dw->dialog.valueW);
 
-/* 
+/*
  * Value widget gets the keyboard focus.
  */
 
@@ -421,7 +421,7 @@ XtPointer param;
  */
     Widget button;
 
-    button = XtCreateManagedWidget( name, commandWidgetClass, dialog, 
+    button = XtCreateManagedWidget( name, commandWidgetClass, dialog,
 				    (ArgList)NULL, (Cardinal)0 );
 
     if (function != NULL)	/* don't add NULL callback func. */

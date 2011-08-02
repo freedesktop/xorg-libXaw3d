@@ -28,13 +28,13 @@ Copyright 1987, 1988 by Digital Equipment Corporation, Maynard, Massachusetts.
 
                         All Rights Reserved
 
-Permission to use, copy, modify, and distribute this software and its 
-documentation for any purpose and without fee is hereby granted, 
+Permission to use, copy, modify, and distribute this software and its
+documentation for any purpose and without fee is hereby granted,
 provided that the above copyright notice appear in all copies and that
-both that copyright notice and this permission notice appear in 
+both that copyright notice and this permission notice appear in
 supporting documentation, and that the name of Digital not be
 used in advertising or publicity pertaining to distribution of the
-software without specific, written prior permission.  
+software without specific, written prior permission.
 
 DIGITAL DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING
 ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL
@@ -55,13 +55,13 @@ SOFTWARE.
 /*
  * AsciiText.c - Source code for AsciiText Widget.
  *
- * This Widget is intended to be used as a simple front end to the 
+ * This Widget is intended to be used as a simple front end to the
  * text widget with an ascii source and ascii sink attached to it.
  *
  * Date:    June 29, 1989
  *
  * By:      Chris D. Peterson
- *          MIT X Consortium 
+ *          MIT X Consortium
  *          kit@expo.lcs.mit.edu
  */
 
@@ -164,7 +164,7 @@ Cardinal *num_args;
   }
   else
 #endif
-  { 
+  {
 
       w->text.source = XtCreateWidget( "textSource", asciiSrcObjectClass,
 				  new, args, *num_args );
@@ -175,9 +175,9 @@ Cardinal *num_args;
   if (w->core.height == DEFAULT_TEXT_HEIGHT)
     w->core.height = VMargins(w) + XawTextSinkMaxHeight(w->text.sink, 1);
 
-  for (i=0, tab=0 ; i < TAB_COUNT ; i++) 
+  for (i=0, tab=0 ; i < TAB_COUNT ; i++)
     tabs[i] = (tab += 8);
-  
+
   XawTextSinkSetTabs(w->text.sink, TAB_COUNT, tabs);
 
   XawTextDisableRedisplay(new);
@@ -202,7 +202,7 @@ Cardinal *num_args;
 #endif
 }
 
-static void 
+static void
 Destroy(w)
 Widget w;
 {

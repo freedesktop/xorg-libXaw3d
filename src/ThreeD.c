@@ -5,13 +5,13 @@ Copyright 1992 by Kaleb Keithley
 
                         All Rights Reserved
 
-Permission to use, copy, modify, and distribute this software and its 
-documentation for any purpose and without fee is hereby granted, 
+Permission to use, copy, modify, and distribute this software and its
+documentation for any purpose and without fee is hereby granted,
 provided that the above copyright notice appear in all copies and that
-both that copyright notice and this permission notice appear in 
-supporting documentation, and that the names of Digital, MIT, or Kaleb 
-Keithley not be used in advertising or publicity pertaining to distribution 
-of the software without specific, written prior permission.  
+both that copyright notice and this permission notice appear in
+supporting documentation, and that the names of Digital, MIT, or Kaleb
+Keithley not be used in advertising or publicity pertaining to distribution
+of the software without specific, written prior permission.
 
 DIGITAL DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING
 ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL
@@ -220,13 +220,13 @@ static void AllocTopShadowPixmap (new)
 	    tdw->core.background_pixel == BlackPixelOfScreen (scn)) {
 	    pm_data = mtshadowpm_bits;
        	    pm_size = mtshadowpm_size;
-       } else 
+       } else
 #endif
        {
        	    pm_data = shadowpm_bits;
             pm_size = shadowpm_size;
        }
-	
+
 	create_pixmap = TRUE;
     } else {
 	pm_size = 0; /* keep gcc happy */
@@ -277,7 +277,7 @@ static void AllocBotShadowPixmap (new)
 	    tdw->core.background_pixel == BlackPixelOfScreen (scn)) {
 	    pm_data = mbshadowpm_bits;
 	    pm_size = mbshadowpm_size;
-	} else 
+	} else
 #endif
         {
 	    pm_data = shadowpm_bits;
@@ -427,7 +427,7 @@ static void _CvtStringToRelief(args, num_args, fromVal, toVal)
     if (q == XtQReliefSunken) {
        relief = XtReliefSunken;
        done(&relief, XtRelief);
-    }    
+    }
     if (q == XtQReliefRidge) {
        relief = XtReliefRidge;
        done(&relief, XtRelief);
@@ -450,7 +450,7 @@ static void ClassInitialize()
     XtQReliefRidge  = XrmPermStringToQuark("ridge");
     XtQReliefGroove = XrmPermStringToQuark("groove");
 
-    XtAddConverter( XtRString, XtRRelief, _CvtStringToRelief, 
+    XtAddConverter( XtRString, XtRRelief, _CvtStringToRelief,
                    (XtConvertArgList)NULL, 0 );
 }
 
@@ -482,8 +482,8 @@ static void Initialize (request, new, args, num_args)
 	AllocBotShadowPixmap (new);
     } else {
 	if (tdw->threeD.top_shadow_pixel == tdw->threeD.bot_shadow_pixel) {
-	    /* 
-		Eeek.  We're probably going to XQueryColor() twice 
+	    /*
+		Eeek.  We're probably going to XQueryColor() twice
 		for each widget.  Necessary because you can set the
 		top and bottom shadows independent of each other in
 		SetValues.  Some cacheing would certainly help...
@@ -502,7 +502,7 @@ static void Realize (gw, valueMask, attrs)
     XtValueMask *valueMask;
     XSetWindowAttributes *attrs;
 {
- /* 
+ /*
   * This is necessary because Simple doesn't have a realize method
   * XtInheritRealize in the ThreeD class record doesn't work.  This
   * daisychains through Simple to the Core class realize method
@@ -548,7 +548,7 @@ static Boolean SetValues (gcurrent, grequest, gnew, args, num_args)
     Boolean alloc_top_pxmap = FALSE;
     Boolean alloc_bot_pxmap = FALSE;
 
-    (*threeDWidgetClass->core_class.superclass->core_class.set_values) 
+    (*threeDWidgetClass->core_class.superclass->core_class.set_values)
 	(gcurrent, grequest, gnew, NULL, 0);
     if (new->threeD.relief != current->threeD.relief)
 	redisplay = TRUE;
@@ -631,12 +631,12 @@ _Xaw3dDrawShadows (gw, event, region, relief, out)
     ThreeDWidget tdw = (ThreeDWidget) gw;
     Dimension	s = tdw->threeD.shadow_width;
 
-    /* 
-     * Draw the shadows using the core part width and height, 
+    /*
+     * Draw the shadows using the core part width and height,
      * and the threeD part relief and shadow_width.
      * No point to do anything if the shadow_width is 0 or the
      * widget has not been realized.
-     */ 
+     */
     if ((s > 0) && XtIsRealized (gw)) {
 	Dimension	h = tdw->core.height;
 	Dimension	w = tdw->core.width;
@@ -678,10 +678,10 @@ _Xaw3dDrawShadows (gw, event, region, relief, out)
 		    (XRectInRegion (region, wms, 0, s, h) != RectangleOut)) {
 		pt[0].x = 0;	pt[0].y = h;
 		pt[1].x = w;	pt[1].y = h;
-		pt[2].x = w;	pt[2].y = 0; 
+		pt[2].x = w;	pt[2].y = 0;
 		pt[3].x = wms;	pt[3].y = s;
 		pt[4].x = wms;	pt[4].y = hms;
-		pt[5].x = s;	pt[5].y = hms; 
+		pt[5].x = s;	pt[5].y = hms;
 		XFillPolygon (dpy, win,
 			(relief == XtReliefRaised) ? bot : top,
 			pt, 6, Complex, CoordModeOrigin);
@@ -711,10 +711,10 @@ _Xaw3dDrawShadows (gw, event, region, relief, out)
 		    (XRectInRegion (region, wms, 0, s, h) != RectangleOut)) {
 		pt[0].x = 0;	pt[0].y = h;
 		pt[1].x = w;	pt[1].y = h;
-		pt[2].x = w;	pt[2].y = 0; 
+		pt[2].x = w;	pt[2].y = 0;
 		pt[3].x = wms;	pt[3].y = s;
 		pt[4].x = wms;	pt[4].y = hms;
-		pt[5].x = s;	pt[5].y = hms; 
+		pt[5].x = s;	pt[5].y = hms;
 		XFillPolygon (dpy, win,
 			(relief == XtReliefRidge) ? realbot : realtop,
 			pt, 6, Complex, CoordModeOrigin);
@@ -741,10 +741,10 @@ _Xaw3dDrawShadows (gw, event, region, relief, out)
 		    (XRectInRegion (region, wms, 0, s, h) != RectangleOut)) {
 		pt[0].x = s;		pt[0].y = hms;
 		pt[1].x = wms;		pt[1].y = hms;
-		pt[2].x = wms;		pt[2].y = s; 
+		pt[2].x = wms;		pt[2].y = s;
 		pt[3].x = wms - s;	pt[3].y = s * 2;
 		pt[4].x = wms - s;	pt[4].y = hms - s;
-		pt[5].x = s * 2;	pt[5].y = hms - s; 
+		pt[5].x = s * 2;	pt[5].y = hms - s;
 		XFillPolygon (dpy, win,
 			(relief == XtReliefRidge) ? top : bot,
 			pt, 6, Complex, CoordModeOrigin);

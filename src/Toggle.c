@@ -29,9 +29,9 @@ in this Software without prior written authorization from the X Consortium.
  * Toggle.c - Toggle button widget
  *
  * Author: Chris D. Peterson
- *         MIT X Consortium 
+ *         MIT X Consortium
  *         kit@expo.lcs.mit.edu
- *  
+ *
  * Date:   January 12, 1989
  *
  */
@@ -53,7 +53,7 @@ in this Software without prior written authorization from the X Consortium.
 
 /* Private Data */
 
-/* 
+/*
  * The order of toggle and notify are important, as the state has
  * to be set when we call the notify proc.
  */
@@ -65,12 +65,12 @@ static char defaultTranslations[] =
 
 #define offset(field) XtOffsetOf(ToggleRec, field)
 
-static XtResource resources[] = { 
-   {XtNstate, XtCState, XtRBoolean, sizeof(Boolean), 
+static XtResource resources[] = {
+   {XtNstate, XtCState, XtRBoolean, sizeof(Boolean),
       offset(command.set), XtRString, "off"},
-   {XtNradioGroup, XtCWidget, XtRWidget, sizeof(Widget), 
+   {XtNradioGroup, XtCWidget, XtRWidget, sizeof(Widget),
       offset(toggle.widget), XtRWidget, (XtPointer) NULL },
-   {XtNradioData, XtCRadioData, XtRPointer, sizeof(XtPointer), 
+   {XtNradioData, XtCRadioData, XtRPointer, sizeof(XtPointer),
       offset(toggle.radio_data), XtRPointer, (XtPointer) NULL },
 };
 
@@ -98,7 +98,7 @@ static XtActionsRec actionsList[] =
 
 ToggleClassRec toggleClassRec = {
   {
-    (WidgetClass) SuperClass,		/* superclass		  */	
+    (WidgetClass) SuperClass,		/* superclass		  */
     "Toggle",				/* class_name		  */
     sizeof(ToggleRec),			/* size			  */
     ClassInit,				/* class_initialize	  */
@@ -132,7 +132,7 @@ ToggleClassRec toggleClassRec = {
     NULL				/* extension		  */
   },  /* CoreClass fields initialization */
   {
-    XtInheritChangeSensitive		/* change_sensitive	  */ 
+    XtInheritChangeSensitive		/* change_sensitive	  */
   },  /* SimpleClass fields initialization */
   {
     XtInheritXaw3dShadowDraw            /* shadowdraw          */
@@ -175,8 +175,8 @@ ClassInit()
   XtSetTypeConverter(XtRString, XtRWidget, XmuNewCvtStringToWidget,
 		     parentCvtArgs, XtNumber(parentCvtArgs), XtCacheNone,
 		     (XtDestructor)NULL);
-/* 
- * Find the set and unset actions in the command widget's action table. 
+/*
+ * Find the set and unset actions in the command widget's action table.
  */
 
   XtGetActionList(commandWidgetClass, &actions, &num_actions);
@@ -184,7 +184,7 @@ ClassInit()
   for (i = 0 ; i < num_actions ; i++) {
     if (streq(actions[i].string, "set"))
 	class->toggle_class.Set = actions[i].proc;
-    if (streq(actions[i].string, "unset")) 
+    if (streq(actions[i].string, "unset"))
 	class->toggle_class.Unset = actions[i].proc;
 
     if ( (class->toggle_class.Set != NULL) &&
@@ -192,7 +192,7 @@ ClassInit()
 	XtFree((char *) actions);
 	return;
     }
-  }  
+  }
 
 /* We should never get here. */
   XtError("Aborting, due to errors resolving bindings in the Toggle widget.");
@@ -209,25 +209,25 @@ static void Initialize(request, new, args, num_args)
 
     tw->toggle.radio_group = NULL;
 
-    if (tw->toggle.radio_data == NULL) 
+    if (tw->toggle.radio_data == NULL)
       tw->toggle.radio_data = (XtPointer) new->core.name;
 
     if (tw->toggle.widget != NULL) {
-      if ( GetRadioGroup(tw->toggle.widget) == NULL) 
+      if ( GetRadioGroup(tw->toggle.widget) == NULL)
 	CreateRadioGroup(new, tw->toggle.widget);
       else
 	AddToRadioGroup( GetRadioGroup(tw->toggle.widget), new);
-    }      
+    }
     XtAddCallback(new, XtNdestroyCallback, ToggleDestroy, (XtPointer)NULL);
 
 /*
- * Command widget assumes that the widget is unset, so we only 
+ * Command widget assumes that the widget is unset, so we only
  * have to handle the case where it needs to be set.
  *
  * If this widget is in a radio group then it may cause another
  * widget to be unset, thus calling the notify proceedure.
  *
- * I want to set the toggle if the user set the state to "On" in 
+ * I want to set the toggle if the user set the state to "On" in
  * the resource group, reguardless of what my ancestors did.
  */
 
@@ -242,7 +242,7 @@ static void Initialize(request, new, args, num_args)
  ************************************************************/
 
 /* ARGSUSED */
-static void 
+static void
 ToggleSet(w,event,params,num_params)
 Widget w;
 XEvent *event;
@@ -256,7 +256,7 @@ Cardinal *num_params;	/* unused */
 }
 
 /* ARGSUSED */
-static void 
+static void
 Toggle(w,event,params,num_params)
 Widget w;
 XEvent *event;
@@ -266,9 +266,9 @@ Cardinal *num_params;	/* unused */
   ToggleWidget tw = (ToggleWidget)w;
   ToggleWidgetClass class = (ToggleWidgetClass) w->core.widget_class;
 
-  if (tw->command.set) 
+  if (tw->command.set)
     class->toggle_class.Unset(w, event, NULL, 0);
-  else 
+  else
     ToggleSet(w, event, params, num_params);
 }
 
@@ -292,7 +292,7 @@ Cardinal *num_params;	/* unused */
  ***********************************************************/
 
 /* ARGSUSED */
-static Boolean 
+static Boolean
 SetValues (current, request, new, args, num_args)
 Widget current, request, new;
 ArgList args;
@@ -333,7 +333,7 @@ XtPointer junk, garbage;
 
 /************************************************************
  *
- * Below are all the private procedures that handle 
+ * Below are all the private procedures that handle
  * radio toggle buttons.
  *
  ************************************************************/
@@ -359,7 +359,7 @@ Widget w;
  *	Description: Creates a radio group. give two widgets.
  *	Arguments: w1, w2 - the toggle widgets to add to the radio group.
  *	Returns: none.
- * 
+ *
  *      NOTE:  A pointer to the group is added to each widget's radio_group
  *             field.
  */
@@ -468,7 +468,7 @@ Widget w;
  * Public Routines
  *
  ************************************************************/
-   
+
 /*	Function Name: XawToggleChangeRadioGroup
  *	Description: Allows a toggle widget to change radio groups.
  *	Arguments: w - The toggle widget to change groups.
@@ -490,7 +490,7 @@ Widget w, radio_group;
   RemoveFromRadioGroup(w);
 
 /*
- * If the toggle that we are about to add is set then we will 
+ * If the toggle that we are about to add is set then we will
  * unset all toggles in the new radio group.
  */
 
@@ -550,7 +550,7 @@ XtPointer radio_data;
 #endif
 {
   RadioGroup * group;
-  ToggleWidget local_tog; 
+  ToggleWidget local_tog;
 
 /* Special case of no radio group. */
 
@@ -565,7 +565,7 @@ XtPointer radio_data;
   }
 
 /*
- * find top of radio_roup 
+ * find top of radio_roup
  */
 
   for ( ; group->prev != NULL ; group = group->prev);
@@ -586,7 +586,7 @@ XtPointer radio_data;
     group = group->next;
   }
 }
- 
+
 /*	Function Name: XawToggleUnsetCurrent
  *	Description: Unsets all Toggles in the radio_group specified.
  *	Arguments: radio_group - any toggle widget in the toggle group.

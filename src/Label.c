@@ -28,13 +28,13 @@ Copyright 1987, 1988 by Digital Equipment Corporation, Maynard, Massachusetts.
 
                         All Rights Reserved
 
-Permission to use, copy, modify, and distribute this software and its 
-documentation for any purpose and without fee is hereby granted, 
+Permission to use, copy, modify, and distribute this software and its
+documentation for any purpose and without fee is hereby granted,
 provided that the above copyright notice appear in all copies and that
-both that copyright notice and this permission notice appear in 
+both that copyright notice and this permission notice appear in
 supporting documentation, and that the name of Digital not be
 used in advertising or publicity pertaining to distribution of the
-software without specific, written prior permission.  
+software without specific, written prior permission.
 
 DIGITAL DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING
 ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL
@@ -127,7 +127,7 @@ static XtGeometryResult QueryGeometry();
 
 LabelClassRec labelClassRec = {
   {
-/* core_class fields */	
+/* core_class fields */
     /* superclass	  	*/	(WidgetClass) &threeDClassRec,
     /* class_name	  	*/	"Label",
     /* widget_size	  	*/	sizeof(LabelRec),
@@ -186,7 +186,7 @@ WidgetClass labelWidgetClass = (WidgetClass)&labelClassRec;
 static void ClassInitialize()
 {
     XawInitializeWidgetSet();
-    XtAddConverter( XtRString, XtRJustify, XmuCvtStringToJustify, 
+    XtAddConverter( XtRString, XtRJustify, XmuCvtStringToJustify,
 		    (XtConvertArgList)NULL, 0 );
 }
 
@@ -392,7 +392,7 @@ static void GetgrayGC(lw)
     values.font	      = lw->label.font->fid;
     values.fill_style = FillTiled;
     values.tile       = XmuCreateStippledPixmap(XtScreen((Widget)lw),
-						lw->label.foreground, 
+						lw->label.foreground,
 						lw->core.background_pixel,
 						lw->core.depth);
     values.graphics_exposures = False;
@@ -408,7 +408,7 @@ static void GetgrayGC(lw)
 				&values, GCFont, 0);
     else
 #endif
-        lw->label.gray_GC = XtGetGC((Widget)lw, 
+        lw->label.gray_GC = XtGetGC((Widget)lw,
 				(unsigned) GCForeground | GCBackground |
 					   GCFont | GCTile | GCFillStyle |
 					   GCGraphicsExposures,
@@ -453,7 +453,7 @@ static void Initialize(request, new, args, num_args)
     if (!XtIsSubclass(new, commandWidgetClass))
 	lw->threeD.shadow_width = 0;
 
-    if (lw->label.label == NULL) 
+    if (lw->label.label == NULL)
         lw->label.label = XtNewString(lw->core.name);
     else
         lw->label.label = XtNewString(lw->label.label);
@@ -500,7 +500,7 @@ static void Redisplay(gw, event, region)
     Pixmap pm;
     GC gc;
 
-    /* 
+    /*
      * Don't draw shadows if Command is going to redraw them.
      * The shadow draw method is region aware, but since 99% of
      * all labels don't have shadows, we'll check for a shadow
@@ -600,7 +600,7 @@ static void Redisplay(gw, event, region)
 		    else
 		        XDrawString(XtDisplay(gw), XtWindow(gw), gc,
 			       		w->label.label_x, y, label, (int)(nl - label));
-		    y += w->label.font->max_bounds.ascent + 
+		    y += w->label.font->max_bounds.ascent +
 		                        w->label.font->max_bounds.descent;
 		    label = nl + 1;
 	        }
@@ -851,10 +851,10 @@ static XtGeometryResult QueryGeometry(w, intended, preferred)
     LabelWidget lw = (LabelWidget)w;
 
     preferred->request_mode = CWWidth | CWHeight;
-    preferred->width = (lw->label.label_width + 
+    preferred->width = (lw->label.label_width +
 			    2 * lw->label.internal_width +
 			    LEFT_OFFSET(lw));
-    preferred->height = lw->label.label_height + 
+    preferred->height = lw->label.label_height +
 			    2 * lw->label.internal_height;
     if (  ((intended->request_mode & (CWWidth | CWHeight))
 	   	== (CWWidth | CWHeight)) &&

@@ -40,7 +40,7 @@ in this Software without prior written authorization from the X Consortium.
  * Date:    May 2, 1989
  *
  * By:      Chris D. Peterson
- *          MIT X Consortium 
+ *          MIT X Consortium
  *          kit@expo.lcs.mit.edu
  */
 
@@ -56,7 +56,7 @@ static void PopupMenu();
 
 #define superclass ((CommandWidgetClass)&commandClassRec)
 
-static char defaultTranslations[] = 
+static char defaultTranslations[] =
 "<EnterWindow>: highlight()\n\
  <LeaveWindow>: reset()\n\
  Any<BtnDown>:  reset() PopupMenu()";
@@ -72,7 +72,7 @@ static char defaultTranslations[] =
 #define offset(field) XtOffsetOf(MenuButtonRec, field)
 static XtResource resources[] = {
   {
-    XtNmenuName, XtCMenuName, XtRString, sizeof(String), 
+    XtNmenuName, XtCMenuName, XtRString, sizeof(String),
     offset(menu_button.menu_name), XtRString, (XtPointer)"menu"},
 };
 #undef offset
@@ -84,7 +84,7 @@ static XtActionsRec actionsList[] =
 
 MenuButtonClassRec menuButtonClassRec = {
   {
-    (WidgetClass) superclass,		/* superclass		  */	
+    (WidgetClass) superclass,		/* superclass		  */
     "MenuButton",			/* class_name		  */
     sizeof(MenuButtonRec),       	/* size			  */
     ClassInitialize,			/* class_initialize	  */
@@ -118,7 +118,7 @@ MenuButtonClassRec menuButtonClassRec = {
     NULL				/* extension		  */
   },  /* CoreClass fields initialization */
   {
-    XtInheritChangeSensitive		/* change_sensitive	  */ 
+    XtInheritChangeSensitive		/* change_sensitive	  */
   },  /* SimpleClass fields initialization */
   {
     XtInheritXaw3dShadowDraw,           /* shadowdraw           */
@@ -146,7 +146,7 @@ WidgetClass menuButtonWidgetClass = (WidgetClass) &menuButtonClassRec;
 static void ClassInitialize()
 {
     XawInitializeWidgetSet();
-    XtRegisterGrabAction(PopupMenu, True, 
+    XtRegisterGrabAction(PopupMenu, True,
 			 (unsigned int)(ButtonPressMask | ButtonReleaseMask),
 			 GrabModeAsync, GrabModeAsync);
 }
@@ -169,7 +169,7 @@ Cardinal * num_params;
   temp = w;
   while(temp != NULL) {
     menu = XtNameToWidget(temp, mbw->menu_button.menu_name);
-    if (menu == NULL) 
+    if (menu == NULL)
       temp = XtParent(temp);
     else
       break;
@@ -184,7 +184,7 @@ Cardinal * num_params;
   }
   if (!XtIsRealized(menu))
     XtRealizeWidget(menu);
-  
+
   menu_width = menu->core.width + 2 * menu->core.border_width;
   button_height = w->core.height + 2 * w->core.border_width;
   menu_height = menu->core.height + 2 * menu->core.border_width;
@@ -198,7 +198,7 @@ Cardinal * num_params;
     if (menu_x + menu_width > scr_width)
       menu_x = scr_width - menu_width;
   }
-  if (menu_x < 0) 
+  if (menu_x < 0)
     menu_x = 0;
 
   if (menu_y >= 0) {

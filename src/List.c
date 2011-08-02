@@ -54,11 +54,11 @@ I also added the freedoms member of the list widget part. */
 #define WidthFree( w )   !(((ListWidget)(w))->list.freedoms & WidthLock )
 #define LongestFree( w ) !(((ListWidget)(w))->list.freedoms & LongestLock )
 
-/* 
+/*
  * Default Translation table.
  */
 
-static char defaultTranslations[] =  
+static char defaultTranslations[] =
   "<Btn1Down>:   Set()\n\
    <Btn1Up>:     Notify()";
 
@@ -127,7 +127,7 @@ static XtActionsRec actions[] = {
 
 ListClassRec listClassRec = {
   {
-/* core_class fields */	
+/* core_class fields */
     /* superclass	  	*/	(WidgetClass) &simpleClassRec,
     /* class_name	  	*/	"List",
     /* widget_size	  	*/	sizeof(ListRec),
@@ -181,7 +181,7 @@ static void GetGCs(w)
 Widget w;
 {
     XGCValues	values;
-    ListWidget lw = (ListWidget) w;    
+    ListWidget lw = (ListWidget) w;
 
     values.foreground	= lw->list.foreground;
     values.font		= lw->list.font->fid;
@@ -206,7 +206,7 @@ Widget w;
         lw->list.revgc = XtGetGC( w, (unsigned) GCForeground | GCFont,
 				 &values);
 
-    values.tile       = XmuCreateStippledPixmap(XtScreen(w), 
+    values.tile       = XmuCreateStippledPixmap(XtScreen(w),
 						lw->list.foreground,
 						lw->core.background_pixel,
 						lw->core.depth);
@@ -355,7 +355,7 @@ Dimension width, height;
  */
 
 /* ARGSUSED */
-static void 
+static void
 Initialize(junk, new, args, num_args)
 Widget junk, new;
 ArgList args;
@@ -363,7 +363,7 @@ Cardinal *num_args;
 {
     ListWidget lw = (ListWidget) new;
 
-/* 
+/*
  * Initialize all private resources.
  */
 
@@ -414,7 +414,7 @@ int *item;
     if (lw->list.vertical_cols) {
         one = lw->list.nrows * ((xloc - (int) lw->list.internal_width)
 	    / lw->list.col_width);
-        another = (yloc - (int) lw->list.internal_height) 
+        another = (yloc - (int) lw->list.internal_height)
 	        / lw->list.row_height;
 	 /* If out of range, return minimum possible value. */
 	if (another >= lw->list.nrows) {
@@ -423,15 +423,15 @@ int *item;
 	}
     }
     else {
-        one = (lw->list.ncols * ((yloc - (int) lw->list.internal_height) 
+        one = (lw->list.ncols * ((yloc - (int) lw->list.internal_height)
               / lw->list.row_height)) ;
 	/* If in right margin handle things right. */
         another = (xloc - (int) lw->list.internal_width) / lw->list.col_width;
 	if (another >= lw->list.ncols) {
-	    another = lw->list.ncols - 1; 
+	    another = lw->list.ncols - 1;
 	    ret_val = OUT_OF_RANGE;
 	}
-    }  
+    }
     if ((xloc < 0) || (yloc < 0))
         ret_val = OUT_OF_RANGE;
     if (one < 0) one = 0;
@@ -481,8 +481,8 @@ int ul, lr, item;
     ListWidget lw = (ListWidget) w;
     int mod_item;
     int things;
-    
-    if (item < ul || item > lr) 
+
+    if (item < ul || item > lr)
         return(FALSE);
     if (lw->list.vertical_cols)
         things = lw->list.nrows;
@@ -552,7 +552,7 @@ GC gc;
  * columns, though, this prevents items from overwriting other items. */
 
 static void ClipToShadowInteriorAndLongest(lw, gc_p, x)
-    ListWidget lw; 
+    ListWidget lw;
     GC* gc_p;
     Dimension x;
 {
@@ -607,7 +607,7 @@ int item;
 
 #ifdef XAW_INTERNATIONALIZATION
     if ( lw->simple.international == True )
-        str_y = y + abs(ext->max_ink_extent.y); 
+        str_y = y + abs(ext->max_ink_extent.y);
     else
 #endif
         str_y = y + lw->list.font->max_bounds.ascent;
@@ -618,7 +618,7 @@ int item;
 	    HighlightBackground(w, x, y, lw->list.normgc);
 	}
         else {
-	    if (XtIsSensitive(w)) 
+	    if (XtIsSensitive(w))
 	        gc = lw->list.normgc;
 	    else
 	        gc = lw->list.graygc;
@@ -633,7 +633,7 @@ int item;
 	    lw->list.is_highlighted = item;
 	}
 	else {
-	    if (XtIsSensitive(w)) 
+	    if (XtIsSensitive(w))
 	        gc = lw->list.normgc;
 	    else
 	        gc = lw->list.graygc;
@@ -664,7 +664,7 @@ int item;
     XSetClipMask( XtDisplay( w ), gc, None );
 }
 
-    
+
 /* Redisplay()
  *
  * Repaints the widget window on expose events.
@@ -673,7 +673,7 @@ int item;
  * junk - not used, unless three-d patch enabled. */
 
 /* ARGSUSED */
-static void 
+static void
 Redisplay(w, event, junk)
 Widget w;
 XEvent *event;
@@ -690,7 +690,7 @@ Region junk;
     }
     else
         FindCornerItems(w, event, &ul_item, &lr_item);
-    
+
     for (item = ul_item; (item <= lr_item && item < lw->list.nitems) ; item++)
       if (ItemInRectangle(w, ul_item, lr_item, item))
 	PaintItemName(w, item);
@@ -705,14 +705,14 @@ Region junk;
  * intended - what the parent intends to do with us.
  * requested - what we want to happen. */
 
-static XtGeometryResult 
+static XtGeometryResult
 PreferredGeom(w, intended, requested)
 Widget w;
 XtWidgetGeometry *intended, *requested;
 {
     Dimension new_width, new_height;
     Boolean change, width_req, height_req;
-    
+
     width_req = intended->request_mode & CWWidth;
     height_req = intended->request_mode & CWHeight;
 
@@ -727,14 +727,14 @@ XtWidgetGeometry *intended, *requested;
       new_height = w->core.height;
 
     requested->request_mode = 0;
-    
+
 /*
  * We only care about our height and width.
  */
 
     if ( !width_req && !height_req)
       return(XtGeometryYes);
-    
+
     change = Layout(w, !width_req, !height_req, &new_width, &new_height);
 
     requested->request_mode |= CWWidth;
@@ -776,7 +776,7 @@ Resize(w)
  * width, height- the is the current width and height that we are going
  *                we are going to layout the list widget to,
  *                depending on xfree and yfree of course.
- *                               
+ *
  * RETURNS: TRUE if width or height have been changed. */
 
 static Boolean
@@ -787,8 +787,8 @@ Dimension *width, *height;
 {
     ListWidget lw = (ListWidget) w;
     Boolean change = FALSE;
-    
-/* 
+
+/*
  * If force columns is set then always use number of columns specified
  * by default_cols.
  */
@@ -832,7 +832,7 @@ Dimension *width, *height;
                 + 2 * lw->list.internal_height;
 	change = TRUE;
     }
-/* 
+/*
  * If the width is fixed then use it to determine the number of columns.
  * If the height is free to move (width still fixed) then resize the height
  * of the widget to fit the current list exactly.
@@ -848,20 +848,20 @@ Dimension *width, *height;
 	    change = TRUE;
 	}
     }
-/* 
+/*
  * The last case is xfree and !yfree we use the height to determine
  * the number of rows and then set the width to just fit the resulting
  * number of columns.
  */
     else if (!yfree) {		/* xfree must be TRUE. */
-        lw->list.nrows = (int)(*height - 2 * lw->list.internal_height) 
+        lw->list.nrows = (int)(*height - 2 * lw->list.internal_height)
 	                 / (int)lw->list.row_height;
 	if (lw->list.nrows <= 0) lw->list.nrows = 1;
 	lw->list.ncols = (( lw->list.nitems - 1 ) / lw->list.nrows) + 1;
-	*width = lw->list.ncols * lw->list.col_width 
+	*width = lw->list.ncols * lw->list.col_width
 	       + 2 * lw->list.internal_width;
 	change = TRUE;
-    }      
+    }
     return(change);
 }
 
@@ -884,9 +884,9 @@ Cardinal *num_params;
     int item, item_len;
     XawListReturnStruct ret_value;
 
-/* 
- * Find item and if out of range then unhighlight and return. 
- * 
+/*
+ * Find item and if out of range then unhighlight and return.
+ *
  * If the current item is unhighlighted then the user has aborted the
  * notify, so unhighlight and return.
  */
@@ -902,13 +902,13 @@ Cardinal *num_params;
     if ( lw->list.paste )	/* if XtNpasteBuffer set then paste it. */
         XStoreBytes(XtDisplay(w), lw->list.list[item], item_len);
 
-/* 
+/*
  * Call Callback function.
  */
 
     ret_value.string = lw->list.list[item];
     ret_value.list_index = item;
-    
+
     XtCallCallbacks( w, XtNcallback, (XtPointer) &ret_value);
 }
 
@@ -955,7 +955,7 @@ Cardinal *num_params;
  * Set specified arguments into widget
  */
 
-static Boolean 
+static Boolean
 SetValues(current, request, new, args, num_args)
 Widget current, request, new;
 ArgList args;
@@ -1065,10 +1065,10 @@ Cardinal *num_args;
         nl->list.highlight = NO_HIGHLIGHT;
 	redraw = TRUE;
     }
-    
+
     if (!XtIsRealized(current))
       return(FALSE);
-      
+
     return(redraw);
 }
 
@@ -1077,7 +1077,7 @@ static void Destroy(w)
 {
     ListWidget lw = (ListWidget) w;
     XGCValues values;
-    
+
     XGetGCValues(XtDisplay(w), lw->list.graygc, GCTile, &values);
     XmuReleaseStippledPixmap(XtScreen(w), values.tile);
     XtReleaseGC(w, lw->list.graygc);
@@ -1188,12 +1188,12 @@ int item;
 #endif
 {
     ListWidget lw = ( ListWidget ) w;
-    
+
     if (XtIsSensitive(w)) {
         lw->list.highlight = item;
         if (lw->list.is_highlighted != NO_HIGHLIGHT)
             PaintItemName(w, lw->list.is_highlighted);  /* Unhighlight. */
-	PaintItemName(w, item); /* HIGHLIGHT this one. */ 
+	PaintItemName(w, item); /* HIGHLIGHT this one. */
     }
 }
 
@@ -1214,9 +1214,9 @@ Widget w;
     ListWidget lw = ( ListWidget ) w;
     XawListReturnStruct * ret_val;
 
-    ret_val = (XawListReturnStruct *) 
+    ret_val = (XawListReturnStruct *)
 	          XtMalloc (sizeof (XawListReturnStruct));/* SPARE MALLOC OK */
-    
+
     ret_val->list_index = lw->list.highlight;
     if (ret_val->list_index == XAW_LIST_NONE)
       ret_val->string = "";

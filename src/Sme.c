@@ -29,7 +29,7 @@ in this Software without prior written authorization from the X Consortium.
  * Date:    September 26, 1989
  *
  * By:      Chris D. Peterson
- *          MIT X Consortium 
+ *          MIT X Consortium
  *          kit@expo.lcs.mit.edu
  */
 
@@ -49,11 +49,11 @@ static XtResource resources[] = {
   {XtNinternational, XtCInternational, XtRBoolean, sizeof(Boolean),
      offset(international), XtRImmediate, (XtPointer) FALSE},
 #endif
-};   
+};
 #undef offset
 
 /*
- * Semi Public function definitions. 
+ * Semi Public function definitions.
  */
 
 static void Unhighlight(), Highlight(), Notify(), ClassPartInitialize();
@@ -78,7 +78,7 @@ SmeClassRec smeClassRec = {
     /* resources          */    resources,
     /* resource_count     */	XtNumber(resources),
     /* xrm_class          */    NULLQUARK,
-    /* compress_motion    */    FALSE, 
+    /* compress_motion    */    FALSE,
     /* compress_exposure  */    FALSE,
     /* compress_enterleave*/ 	FALSE,
     /* visible_interest   */    FALSE,
@@ -87,8 +87,8 @@ SmeClassRec smeClassRec = {
     /* expose             */    NULL,
     /* set_values         */    NULL,
     /* set_values_hook    */	NULL,
-    /* set_values_almost  */	XtInheritSetValuesAlmost,  
-    /* get_values_hook    */	NULL,			
+    /* set_values_almost  */	XtInheritSetValuesAlmost,
+    /* get_values_hook    */	NULL,
     /* accept_focus       */    NULL,
     /* intrinsics version */	XtVersion,
     /* callback offsets   */    NULL,
@@ -98,11 +98,11 @@ SmeClassRec smeClassRec = {
     /* extension	  */    NULL
   },{
     /* Simple Menu Entry Fields */
-      
+
     /* highlight */             Highlight,
     /* unhighlight */           Unhighlight,
-    /* notify */		Notify,		
-    /* extension */             NULL				
+    /* notify */		Notify,
+    /* extension */             NULL
   }
 };
 
@@ -129,18 +129,18 @@ WidgetClass class;
     m_ent = (SmeObjectClass) class;
     superC = (SmeObjectClass) m_ent->rect_class.superclass;
 
-/* 
+/*
  * We don't need to check for null super since we'll get to TextSink
  * eventually.
  */
 
-    if (m_ent->sme_class.highlight == XtInheritHighlight) 
+    if (m_ent->sme_class.highlight == XtInheritHighlight)
 	m_ent->sme_class.highlight = superC->sme_class.highlight;
 
     if (m_ent->sme_class.unhighlight == XtInheritUnhighlight)
 	m_ent->sme_class.unhighlight = superC->sme_class.unhighlight;
 
-    if (m_ent->sme_class.notify == XtInheritNotify) 
+    if (m_ent->sme_class.notify == XtInheritNotify)
 	m_ent->sme_class.notify = superC->sme_class.notify;
 }
 
@@ -150,7 +150,7 @@ WidgetClass class;
  *                 new     - the new widget with both resource and non
  *                           resource values.
  *      Returns: none.
- * 
+ *
  * MENU ENTRIES CANNOT HAVE BORDERS.
  */
 
@@ -201,7 +201,7 @@ Widget w;
  */
 
 static void
-Notify(w) 
+Notify(w)
 Widget w;
 {
     XtCallCallbacks(w, XtNcallback, (XtPointer)NULL);
@@ -214,12 +214,12 @@ Widget w;
  *	Returns: A Geometry Result.
  *
  * See the Intrinsics manual for details on what this function is for.
- * 
+ *
  * I just return the height and a width of 1.
  */
 
 static XtGeometryResult
-QueryGeometry(w, intended, return_val) 
+QueryGeometry(w, intended, return_val)
 Widget w;
 XtWidgetGeometry *intended, *return_val;
 {
@@ -235,7 +235,7 @@ XtWidgetGeometry *intended, *return_val;
 	return_val->request_mode |= CWWidth;
 	return_val->width = width;
 	mode = return_val->request_mode;
-	
+
 	if ( (mode & CWWidth) && (width == entry->rectangle.width) )
 	    return(XtGeometryNo);
 	return(XtGeometryAlmost);

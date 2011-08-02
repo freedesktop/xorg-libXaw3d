@@ -38,7 +38,7 @@ so I am adding one more translation:
 	<Key>Kanji:		reconnect-im()
 
 The Japanese user typically hits their Kanji key when they want to do
-input.  This merely makes sure the input is connected. 
+input.  This merely makes sure the input is connected.
 */
 
 char *_XawDefaultTextTranslations1 =

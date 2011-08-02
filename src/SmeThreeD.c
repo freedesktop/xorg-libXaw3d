@@ -5,13 +5,13 @@ Copyright 1992, 1993 by Kaleb Keithley
 
                         All Rights Reserved
 
-Permission to use, copy, modify, and distribute this software and its 
-documentation for any purpose and without fee is hereby granted, 
+Permission to use, copy, modify, and distribute this software and its
+documentation for any purpose and without fee is hereby granted,
 provided that the above copyright notice appear in all copies and that
-both that copyright notice and this permission notice appear in 
-supporting documentation, and that the names of Digital, MIT, or Kaleb 
-Keithley not be used in advertising or publicity pertaining to distribution 
-of the software without specific, written prior permission.  
+both that copyright notice and this permission notice appear in
+supporting documentation, and that the names of Digital, MIT, or Kaleb
+Keithley not be used in advertising or publicity pertaining to distribution
+of the software without specific, written prior permission.
 
 DIGITAL DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING
 ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL
@@ -234,7 +234,7 @@ static void AllocTopShadowPixmap (new)
 	if (parent->core.background_pixel == WhitePixelOfScreen (scn) ||
 	    parent->core.background_pixel == BlackPixelOfScreen (scn)) {
 	    pm_data = mtshadowpm_bits;
-       } else 
+       } else
 #endif
 	    pm_data = shadowpm_bits;
 
@@ -405,7 +405,7 @@ static void ClassPartInitialize (wc)
     WidgetClass	wc;
 {
     SmeThreeDClassRec *tdwc = (SmeThreeDClassRec *) wc;
-    SmeThreeDClassRec *super = 
+    SmeThreeDClassRec *super =
 	(SmeThreeDClassRec *) tdwc->rect_class.superclass;
 
     if (tdwc->sme_threeD_class.shadowdraw == XtInheritXawSme3dShadowDraw)
@@ -464,7 +464,7 @@ static Boolean SetValues (gcurrent, grequest, gnew, args, num_args)
     Boolean alloc_bot_pixmap = FALSE;
 
 #if 0
-    (*threeDWidgetClass->core_class.superclass->core_class.set_values) 
+    (*threeDWidgetClass->core_class.superclass->core_class.set_values)
 	(gcurrent, grequest, gnew, NULL, 0);
 #endif
     if (new->sme_threeD.shadow_width != current->sme_threeD.shadow_width)
@@ -534,7 +534,7 @@ static Boolean SetValues (gcurrent, grequest, gnew, args, num_args)
 }
 
 /* ARGSUSED */
-static void 
+static void
 _XawSme3dDrawShadows(gw)
     Widget gw;
 {
@@ -545,13 +545,13 @@ _XawSme3dDrawShadows(gw)
     Dimension ps = tdw->threeD.shadow_width;
     XPoint pt[6];
 
-    /* 
-     * draw the shadows using the core part width and height, 
+    /*
+     * draw the shadows using the core part width and height,
      * and the threeD part shadow_width.
      *
      * no point to do anything if the shadow_width is 0 or the
      * widget has not been realized.
-     */ 
+     */
     if (s > 0 && XtIsRealized(gw))
     {
 	Dimension	h = tdo->rectangle.height;

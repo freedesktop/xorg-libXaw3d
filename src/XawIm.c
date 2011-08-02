@@ -17,12 +17,12 @@
  * ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,
  * WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION,
  * ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
- * SOFTWARE. 
+ * SOFTWARE.
  *
  *	Author:	Seiji Kuwari	OMRON Corporation
  *				kuwa@omron.co.jp
  *				kuwa%omron.co.jp@uunet.uu.net
- */				
+ */
 
 
 /*
@@ -91,16 +91,16 @@ in this Software without prior written authorization from the X Consortium.
  * Forward reference prototypes
  *
  *****************************************************/
- 
-static XawIcTableList CurrentSharedIcTable( 
+
+static XawIcTableList CurrentSharedIcTable(
 #if NeedFunctionPrototypes
-    XawVendorShellExtPart* /* ve */ 
+    XawVendorShellExtPart* /* ve */
 #endif
 );
 
-static void DestroyIC( 
+static void DestroyIC(
 #if NeedFunctionPrototypes
-    Widget /* w */, 
+    Widget /* w */,
     XawVendorShellExtPart* /* ve */
 #endif
 );
@@ -444,7 +444,7 @@ static void OpenIM(ve)
     }
     if (XGetIMValues(xim, XNQueryInputStyle, &xim_styles, NULL)
 	|| !xim_styles) {
-	XtAppWarning(XtWidgetToApplicationContext(ve->parent), 
+	XtAppWarning(XtWidgetToApplicationContext(ve->parent),
 	    "input method doesn't support any style");
 	XCloseIM(xim);
 	return;
@@ -575,7 +575,7 @@ static XawIcTableList CreateIcTable( w, ve )
 }
 
 static Boolean RegisterToVendorShell( w, ve )
-    Widget w; 
+    Widget w;
     XawVendorShellExtPart * ve;
 {
     XawIcTableList	table;
@@ -745,7 +745,7 @@ static void CreateIC( w, ve )
 
     if (IsSharedIC(ve)) SetICValuesShared(w, ve, p, FALSE);
     XFlush(XtDisplay(w));
-    
+
     if (p->input_style & (XIMPreeditArea|XIMPreeditPosition|XIMStatusArea)) {
 	if (p->flg & CIFontSet) {
 	    SetVaArg( &pe_a[pe_cnt], (XPointer) XNFontSet); pe_cnt++;
@@ -1368,13 +1368,13 @@ static void Destroy( w, ve )
 	return;
     XtFree( (char*) ve->im.resources );
 
-    if (extContext != (XContext)NULL && 
-	!XFindContext (XtDisplay (w), (Window)w, 
+    if (extContext != (XContext)NULL &&
+	!XFindContext (XtDisplay (w), (Window)w,
 		       extContext, (XPointer*)&contextData))
         XtFree( (char*) contextData );
 
-    if (errContext != (XContext)NULL && 
-	!XFindContext (XDisplayOfIM( ve->im.xim ), (Window) ve->im.xim, 
+    if (errContext != (XContext)NULL &&
+	!XFindContext (XDisplayOfIM( ve->im.xim ), (Window) ve->im.xim,
 		       errContext, (XPointer*) &contextErrData))
         XtFree( (char*) contextErrData );
 }
@@ -1388,7 +1388,7 @@ static void Destroy( w, ve )
 
 void
 #if NeedFunctionPrototypes
-_XawImResizeVendorShell( 
+_XawImResizeVendorShell(
     Widget w )
 #else
 _XawImResizeVendorShell( w )
@@ -1405,7 +1405,7 @@ _XawImResizeVendorShell( w )
 
 Dimension
 #if NeedFunctionPrototypes
-_XawImGetShellHeight( 
+_XawImGetShellHeight(
     Widget w )
 #else
 _XawImGetShellHeight( w )
@@ -1423,7 +1423,7 @@ _XawImGetShellHeight( w )
 
 void
 #if NeedFunctionPrototypes
-_XawImRealize( 
+_XawImRealize(
     Widget w )
 #else
 _XawImRealize( w )
@@ -1443,8 +1443,8 @@ _XawImRealize( w )
 
 void
 #if NeedFunctionPrototypes
-_XawImInitialize( 
-    Widget w, 
+_XawImInitialize(
+    Widget w,
     Widget ext )
 #else
 _XawImInitialize( w, ext )
@@ -1463,7 +1463,7 @@ _XawImInitialize( w, ext )
 
 void
 #if NeedFunctionPrototypes
-_XawImReconnect( 
+_XawImReconnect(
     Widget inwidg )
 #else
 _XawImReconnect( inwidg )
@@ -1517,9 +1517,9 @@ _XawImUnregister(inwidg)
 
 void
 #if NeedFunctionPrototypes
-_XawImSetValues( 
-    Widget inwidg, 
-    ArgList args, 
+_XawImSetValues(
+    Widget inwidg,
+    ArgList args,
     Cardinal num_args )
 #else
 _XawImSetValues( inwidg, args, num_args )
@@ -1562,8 +1562,8 @@ _XawImVASetValues( inwidg, va_alist )
 void
 #if NeedFunctionPrototypes
 _XawImSetFocusValues(
-    Widget inwidg, 
-    ArgList args, 
+    Widget inwidg,
+    ArgList args,
     Cardinal num_args)
 #else
 _XawImSetFocusValues(inwidg, args, num_args)
@@ -1617,12 +1617,12 @@ _XawImUnsetFocus(inwidg)
 
 int
 #if NeedFunctionPrototypes
-_XawImWcLookupString( 
-    Widget inwidg, 
+_XawImWcLookupString(
+    Widget inwidg,
     XKeyPressedEvent *event,
-    wchar_t* buffer_return, 
+    wchar_t* buffer_return,
     int bytes_buffer,
-    KeySym *keysym_return, 
+    KeySym *keysym_return,
     Status *status_return)
 #else
 _XawImWcLookupString( inwidg, event, buffer_return, bytes_buffer,
@@ -1699,8 +1699,8 @@ _XawImCallVendorShellExtResize( w )
 
 void
 #if NeedFunctionPrototypes
-_XawImDestroy( 
-    Widget w, 
+_XawImDestroy(
+    Widget w,
     Widget ext )
 #else
 _XawImDestroy( w, ext )

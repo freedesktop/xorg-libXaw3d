@@ -28,13 +28,13 @@ Copyright 1987, 1988 by Digital Equipment Corporation, Maynard, Massachusetts.
 
                         All Rights Reserved
 
-Permission to use, copy, modify, and distribute this software and its 
-documentation for any purpose and without fee is hereby granted, 
+Permission to use, copy, modify, and distribute this software and its
+documentation for any purpose and without fee is hereby granted,
 provided that the above copyright notice appear in all copies and that
-both that copyright notice and this permission notice appear in 
+both that copyright notice and this permission notice appear in
 supporting documentation, and that the name of Digital not be
 used in advertising or publicity pertaining to distribution of the
-software without specific, written prior permission.  
+software without specific, written prior permission.
 
 DIGITAL DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING
 ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL
@@ -71,10 +71,10 @@ SOFTWARE.
 
 /* I don't know why Paned.c calls _XawImCallVendorShellExtResize, but... */
 #ifdef XAW_INTERNATIONALIZATION
-#include <X11/Xaw3d/XawImP.h> 
+#include <X11/Xaw3d/XawImP.h>
 #endif
 
-typedef enum {UpLeftPane = 'U', LowRightPane = 'L', 
+typedef enum {UpLeftPane = 'U', LowRightPane = 'L',
 	      ThisBorderOnly = 'T', AnyPane = 'A' } Direction;
 
 #define NO_INDEX -100
@@ -115,7 +115,7 @@ static char defGripTranslations[] =
 
 static XtResource resources[] = {
     {XtNinternalBorderColor, XtCBorderColor, XtRPixel, sizeof(Pixel),
-	 offset(internal_bp), XtRString, 
+	 offset(internal_bp), XtRString,
          (XtPointer) XtDefaultForeground},
     {XtNinternalBorderWidth, XtCBorderWidth, XtRDimension, sizeof(Dimension),
 	 offset(internal_bw), XtRImmediate, (XtPointer) 1},
@@ -171,7 +171,7 @@ static XtResource subresources[] = {
     {XtNmax, XtCMax, XtRDimension, sizeof(Dimension),
          offset(max), XtRImmediate, (XtPointer) ~0},
     {XtNpreferredPaneSize, XtCPreferredPaneSize, XtRDimension,
-	 sizeof(Dimension), offset(preferred_size), 
+	 sizeof(Dimension), offset(preferred_size),
          XtRImmediate, (XtPointer) PANED_ASK_CHILD},
     {XtNresizeToPreferred, XtCBoolean, XtRBoolean, sizeof(Boolean),
          offset(resize_to_pref), XtRImmediate, (XtPointer) FALSE},
@@ -385,14 +385,14 @@ Boolean vert;
  *                   3) widget not its prefered height &&
  *                      this change will bring it closer &&
  *                      The user has not resized this pane.
- *           
+ *
  *                   If no widgets are found that fits all the rules then
  *                      rule #3 is broken.
  *                   If there are still no widgets found than
  *                      rule #2 is broken.
  *                   Rule #1 is never broken.
  *                   If no widgets are found then NULL is returned.
- * 
+ *
  *	Arguments: pw - the paned widget.
  *                 paneindex - the index of the current pane.
  *                 dir - direction to search first.
@@ -422,7 +422,7 @@ Boolean shrink;
     /* CONSTCOND */
     while(TRUE) {
         Pane pane = PaneInfo(*childP);
-        
+
         if ( (rules < 3 || SatisfiesRule3(pane, shrink)) &&
 	     (rules < 2 || SatisfiesRule2(pane))         &&
 	     (SatisfiesRule1(pane, shrink))              &&
@@ -441,7 +441,7 @@ Boolean shrink;
  * If we have come to and edge then reduce the rule set, and try again.
  * If we are reduced the rules to none, then return NULL.
  */
-	
+
 	if ( (childP - pw->composite.children < 0) ||
 	     (childP - pw->composite.children >= pw->paned.num_panes) ) {
 	    if (--rules < 1)  /* less strict rules. */
@@ -466,7 +466,7 @@ Boolean shrink;
   return( (shrink && (pane->size != pane->min)) ||
 	  (!shrink && (pane->size != pane->max)) );
 }
- 
+
 /*	Function Name: StatisfiesRule2
  *	Description: check for to see if this pane satisfies rule 2.
  *	Arguments: pane - the pane to check.
@@ -479,7 +479,7 @@ Pane pane;
 {
   return(!pane->skip_adjust || pane->paned_adjusted_me);
 }
- 
+
 /*	Function Name: StatisfiesRule3
  *	Description: check for to see if this pane satisfies rule 3.
  *	Arguments: pane - the pane to check.
@@ -504,7 +504,7 @@ Boolean shrink;
  *	Arguments: pw - the paned widget.
  *                 paneindex - the number of the pane border we are moving.
  *                 dir - the pane to move (either UpLeftPane or LowRightPane).
- *                 sizeused - current amount of space used. 
+ *                 sizeused - current amount of space used.
  *                            THIS VALUE IS USED AND RETURNED.
  *	Returns: none.
  */
@@ -534,7 +534,7 @@ Direction dir;
 	GetPaneStack(pw, shrink, &pane, &start_size);
 	if (pane == NULL) {
 	    pane = ChoosePaneToResize(pw, paneindex, dir, shrink);
-	    if (pane == NULL) 
+	    if (pane == NULL)
 	        return; /* no one to resize, give up. */
 
 	    rule3_ok = SatisfiesRule3(pane, shrink);
@@ -590,7 +590,7 @@ Direction dir;
  *      last child.
  */
 
-static void 
+static void
 RefigureLocations(pw, paneindex, dir)
 PanedWidget pw;
 int paneindex;
@@ -615,10 +615,10 @@ Direction dir;
     }
     sizeused -= (int) pw->paned.internal_bw;
 
-    if ( (dir != ThisBorderOnly) && (sizeused != pane_size) ) 
+    if ( (dir != ThisBorderOnly) && (sizeused != pane_size) )
       LoopAndRefigureChildren(pw, paneindex, dir, &sizeused);
 
-/* 
+/*
  * If we still are not the right size, then tell the pane that
  * wanted to resize that it can't.
  */
@@ -633,7 +633,7 @@ Direction dir;
 	AssignMin(pane->size, (int) pane->max);
 	sizeused += pane->size - old;
     }
-    
+
 /*
  * It is possible that the panes will not fit inside the vpaned widget, but
  * we have tried out best.
@@ -653,7 +653,7 @@ Direction dir;
  *	Returns: none.
  */
 
-static void 
+static void
 CommitNewLocations(pw)
 PanedWidget pw;
 {
@@ -675,7 +675,7 @@ PanedWidget pw;
 	        changes.x = pw->core.width - pw->paned.grip_indent -
 		            grip->core.width - grip->core.border_width*2;
 		changes.y = (*childP)->core.y + (*childP)->core.height -
-		            grip->core.height/2 - grip->core.border_width + 
+		            grip->core.height/2 - grip->core.border_width +
 			    pw->paned.internal_bw/2;
 	    }
 	}
@@ -687,7 +687,7 @@ PanedWidget pw;
 
 	    if (HasGrip(*childP)) {	    /* Move and Display the Grip */
 	        changes.x = (*childP)->core.x + (*childP)->core.width -
-	                    grip->core.width/2 - grip->core.border_width + 
+	                    grip->core.width/2 - grip->core.border_width +
 			    pw->paned.internal_bw/2;
 		changes.y = pw->core.height - pw->paned.grip_indent -
 	                    grip->core.height - grip->core.border_width*2;
@@ -695,7 +695,7 @@ PanedWidget pw;
 	}
 
 /*
- * This should match XtMoveWidget, except that we're also insuring the 
+ * This should match XtMoveWidget, except that we're also insuring the
  * grip is Raised in the same request.
  */
 
@@ -725,7 +725,7 @@ PanedWidget pw;
  *      NOTE: This is the resize Procedure for the Paned widget.
  */
 
-static void 
+static void
 RefigureLocationsAndCommit(w)
 Widget w;
 {
@@ -753,8 +753,8 @@ GC gc;
 int on_loc, off_loc;
 unsigned int on_size, off_size;
 {
-  if (IsVert(pw)) 
-    XFillRectangle(XtDisplay(pw), XtWindow(pw), gc, 
+  if (IsVert(pw))
+    XFillRectangle(XtDisplay(pw), XtWindow(pw), gc,
 		   off_loc, on_loc, off_size, on_size);
   else
     XFillRectangle(XtDisplay(pw), XtWindow(pw), gc,
@@ -785,7 +785,7 @@ GC gc;
     if (pw->core.background_pixel == pw->paned.internal_bp)
 	return;
 
-    off_loc = 0; 
+    off_loc = 0;
     off_size = (unsigned int) PaneSize( (Widget) pw, !IsVert(pw) );
     on_size = (unsigned int) pw->paned.internal_bw;
 
@@ -797,7 +797,7 @@ GC gc;
     }
 }
 
-/* 
+/*
  * This allows good reuse of code, as well as descriptive function names.
  */
 
@@ -829,7 +829,7 @@ Boolean erase;
     ForAllPanes(pw, childP) {
         pane = PaneInfo(*childP);
 	if ( erase || (pane->olddelta != pane->delta) ) {
-	    on_size = pw->paned.internal_bw; 
+	    on_size = pw->paned.internal_bw;
 	    if (!erase) {
 	        on_loc = PaneInfo(*childP)->olddelta - (int) on_size;
 
@@ -847,7 +847,7 @@ Boolean erase;
     }
 }
 
-/* 
+/*
  * This allows good reuse of code, as well as descriptive function names.
  */
 
@@ -870,24 +870,24 @@ XEvent *event;
 
     switch (event->xany.type) {
         case ButtonPress:
-	case ButtonRelease: 
+	case ButtonRelease:
             x = event->xbutton.x_root;
 	    y = event->xbutton.y_root;
 	    break;
 	case KeyPress:
-	case KeyRelease:    
+	case KeyRelease:
 	    x = event->xkey.x_root;
 	    y = event->xkey.y_root;
 	    break;
-        case MotionNotify:  
+        case MotionNotify:
 	    x = event->xmotion.x_root;
 	    y = event->xmotion.y_root;
 	    break;
-	default:	    
+	default:
 	    x = pw->paned.start_loc;
 	    y = pw->paned.start_loc;
     }
-    if (IsVert(pw)) 
+    if (IsVert(pw))
         return(y);
     return(x);
 }
@@ -922,9 +922,9 @@ Direction dir;
 
     if (XtIsRealized(grip)) {
         if ( IsVert(pw) ) {
-	    if (dir == UpLeftPane) 
+	    if (dir == UpLeftPane)
 	        cursor = pw->paned.adjust_upper_cursor;
-	    else if (dir == LowRightPane) 
+	    else if (dir == LowRightPane)
   	        cursor = pw->paned.adjust_lower_cursor;
 	    else {
 	        if ( pw->paned.adjust_this_cursor == None)
@@ -934,9 +934,9 @@ Direction dir;
 	    }
 	}
 	else {
-	    if (dir == UpLeftPane) 
+	    if (dir == UpLeftPane)
 	        cursor = pw->paned.adjust_left_cursor;
-	    else if (dir == LowRightPane) 
+	    else if (dir == LowRightPane)
   	        cursor = pw->paned.adjust_right_cursor;
 	    else {
 	        if (pw->paned.adjust_this_cursor == None)
@@ -945,17 +945,17 @@ Direction dir;
 		    cursor = pw->paned.adjust_this_cursor;
 	    }
 	}
-    
+
 	XDefineCursor(XtDisplay(grip), XtWindow(grip), cursor);
     }
 
     EraseInternalBorders(pw);
-    ForAllPanes(pw, childP) 
+    ForAllPanes(pw, childP)
         PaneInfo(*childP)->olddelta = -99;
 }
 
 /*	Function Name: MoveGripAdjustment
- *	Description: This routine moves all panes around when a grip is moved. 
+ *	Description: This routine moves all panes around when a grip is moved.
  *	Arguments: pw - the paned widget.
  *                 grip - the grip that we are moving.
  *                 dir - the direction the pane we are interested is w.r.t the
@@ -975,10 +975,10 @@ int loc;
 
     diff = loc - pw->paned.start_loc;
 
-    if (pw->paned.whichadd) 
+    if (pw->paned.whichadd)
         add_size = PaneSize(pw->paned.whichadd, IsVert(pw) ) + diff;
 
-    if (pw->paned.whichsub) 
+    if (pw->paned.whichsub)
         sub_size = PaneSize(pw->paned.whichsub, IsVert(pw) ) - diff;
 
 /*
@@ -991,7 +991,7 @@ int loc;
 
       AssignMax(add_size, (int) PaneInfo(pw->paned.whichadd)->min);
       AssignMin(add_size, (int) PaneInfo(pw->paned.whichadd)->max);
-      if (add_size != old_add_size) 
+      if (add_size != old_add_size)
 	  sub_size += old_add_size - add_size;
 
       old_sub_size = sub_size;
@@ -1021,9 +1021,9 @@ PanedWidget pw;
     EraseTrackLines(pw);
     CommitNewLocations(pw);
     DrawInternalBorders(pw);
-	   
+
 /*
- * Since the user selected this size then use it as the preferred size. 
+ * Since the user selected this size then use it as the preferred size.
  */
 
     if (pw->paned.whichadd) {
@@ -1080,10 +1080,10 @@ XtPointer junk, callData;
 	case 'S':		/* Start adjustment */
             pw->paned.resize_children_to_pref = FALSE;
             StartGripAdjustment(pw, grip, direction);
-	    pw->paned.start_loc = loc;	
+	    pw->paned.start_loc = loc;
 	    break;
 
-	case 'M': 
+	case 'M':
 	    MoveGripAdjustment(pw, grip, direction, loc);
 	    break;
 
@@ -1118,14 +1118,14 @@ PanedWidget pw;
 	   /*
 	    * We only keep track of the first unmanaged pane.
 	    */
-	   if (unmanagedP == NULL)    
+	   if (unmanagedP == NULL)
 	       unmanagedP = childP;
        }
        else {			     /* must be a managed pane */
 	   /*
-	    * If an earlier widget was not a managed pane, then swap 
+	    * If an earlier widget was not a managed pane, then swap
 	    */
-	   if (unmanagedP != NULL) {	   
+	   if (unmanagedP != NULL) {
 	       Widget child = *unmanagedP;
 	       *unmanagedP = *childP;
 	       *childP = child;
@@ -1143,7 +1143,7 @@ PanedWidget pw;
  *	Returns: none.
  */
 
-static void   
+static void
 ManageAndUnmanageGrips(pw)
 PanedWidget pw;
 {
@@ -1155,13 +1155,13 @@ PanedWidget pw;
    managedP = managed_grips = (WidgetList) XtMalloc(alloc_size);
    unmanagedP = unmanaged_grips = (WidgetList) XtMalloc(alloc_size);
 
-   ForAllChildren(pw, childP) 
+   ForAllChildren(pw, childP)
        if (IsPane(*childP) && HasGrip(*childP))
-	   if ( XtIsManaged(*childP) ) 
+	   if ( XtIsManaged(*childP) )
 	       *managedP++ = PaneInfo(*childP)->grip;
 	   else
 	       *unmanagedP++ = PaneInfo(*childP)->grip;
-   
+
    if (managedP != managed_grips) {
        *unmanagedP++ = *--managedP;   /* Last grip is never managed */
        XtManageChildren( managed_grips, (Cardinal)(managedP - managed_grips) );
@@ -1189,7 +1189,7 @@ Widget child;
     Arg arglist[2];
     Cardinal num_args = 0;
     Cursor cursor;
-     
+
     XtSetArg(arglist[num_args], XtNtranslations, pw->paned.grip_translations);
     num_args++;
     if ( (cursor = pw->paned.grip_cursor) == None )
@@ -1202,8 +1202,8 @@ Widget child;
     num_args++;
     PaneInfo(child)->grip = XtCreateWidget("grip", gripWidgetClass, (Widget)pw,
 					   arglist, num_args);
-    
-    XtAddCallback(PaneInfo(child)->grip, XtNcallback, 
+
+    XtAddCallback(PaneInfo(child)->grip, XtNcallback,
 		  HandleGrip, (XtPointer) child);
 }
 
@@ -1222,18 +1222,18 @@ Widget w;
     XGCValues values;
 
 /*
- * Draw pane borders in internal border color. 
+ * Draw pane borders in internal border color.
  */
 
-    values.foreground = pw->paned.internal_bp;	
+    values.foreground = pw->paned.internal_bp;
     valuemask = GCForeground;
     pw->paned.normgc = XtGetGC(w, valuemask, &values);
 
 /*
- * Erase pane borders with background color. 
+ * Erase pane borders with background color.
  */
 
-    values.foreground = pw->core.background_pixel;	
+    values.foreground = pw->core.background_pixel;
     valuemask = GCForeground;
     pw->paned.invgc = XtGetGC(w, valuemask, &values);
 
@@ -1243,7 +1243,7 @@ Widget w;
 
     values.function = GXinvert;
     values.plane_mask = pw->paned.internal_bp ^ pw->core.background_pixel;
-    values.subwindow_mode = IncludeInferiors; 
+    values.subwindow_mode = IncludeInferiors;
     valuemask = GCPlaneMask | GCFunction | GCSubwindowMode;
     pw->paned.flipgc = XtGetGC(w, valuemask, &values);
 }
@@ -1268,7 +1268,7 @@ Dimension off_size;
 	     (PaneInfo(*childP)->size == 0)             ||
 	     (PaneInfo(*childP)->resize_to_pref) ) {
 
-	    if (PaneInfo(*childP)->preferred_size != PANED_ASK_CHILD) 
+	    if (PaneInfo(*childP)->preferred_size != PANED_ASK_CHILD)
 	        PaneInfo(*childP)->wp_size=PaneInfo(*childP)->preferred_size;
 	    else {
 	        if( vert ) {
@@ -1280,13 +1280,13 @@ Dimension off_size;
 		    request.height = off_size;
 		}
 
-		if ((XtQueryGeometry( *childP, &request, &reply ) 
+		if ((XtQueryGeometry( *childP, &request, &reply )
 	                                         == XtGeometryAlmost) &&
 		    (reply.request_mode = (vert ? CWHeight : CWWidth)))
 		    PaneInfo(*childP)->wp_size = GetRequestInfo(&reply, vert);
 		else
 		    PaneInfo(*childP)->wp_size = PaneSize(*childP, vert);
-	    } 
+	    }
 
 	    PaneInfo(*childP)->size = PaneInfo(*childP)->wp_size;
 	  }
@@ -1307,7 +1307,7 @@ PanedWidget pw;
     ForAllPanes(pw, childP) {
 	Arg arglist[1];
 	Cursor cursor;
-      
+
 	if ( (cursor = pw->paned.grip_cursor) == None )
 	    if ( IsVert(pw) )
 	        cursor = pw->paned.v_grip_cursor;
@@ -1320,7 +1320,7 @@ PanedWidget pw;
 	}
     }
 }
-      
+
 /************************************************************
  *
  * Stack Manipulation routines (Private).
@@ -1354,7 +1354,7 @@ Pane pane;
  *                 shrink - TRUE if we want to shrink this pane,
  *                          FALSE otherwise.
  * ** RETURNED **  pane - the pane that we are popping.
- * ** RETURNED **  start_size - the size that this pane started at. 
+ * ** RETURNED **  start_size - the size that this pane started at.
  *	Returns: none.
  */
 
@@ -1365,8 +1365,8 @@ Boolean shrink;
 Pane * pane;
 int * start_size;
 {
-  if (pw->paned.stack == NULL) { 
-    *pane = NULL; 
+  if (pw->paned.stack == NULL) {
+    *pane = NULL;
     return;
   }
 
@@ -1412,7 +1412,7 @@ PanedWidget pw;
 
 /************************************************************
  *
- * Semi-public routines. 
+ * Semi-public routines.
  *
  ************************************************************/
 
@@ -1422,7 +1422,7 @@ PanedWidget pw;
  *	Returns: none.
  */
 
-static void 
+static void
 ClassInitialize()
 {
     XawInitializeWidgetSet();
@@ -1431,8 +1431,8 @@ ClassInitialize()
 }
 
 /* The Geometry Manager only allows changes after Realize if
- * allow_resize is True in the constraints record.  
- * 
+ * allow_resize is True in the constraints record.
+ *
  * For vertically paned widgets:
  *
  * It only allows height changes, but offers the requested height
@@ -1487,18 +1487,18 @@ XtWidgetGeometry *request, *reply;
  * a different on_size;
  */
 
-    if (result != XtGeometryNo) 
-	if (vert) 
+    if (result != XtGeometryNo)
+	if (vert)
 	    pw->core.height = on_size;
-	else 
+	else
 	    pw->core.width = on_size;
-    
+
     RefigureLocations(pw, PaneIndex(w), AnyPane);
 
-/* 
+/*
  * Set up reply struct and reset core on_size.
  */
-    
+
     if (vert) {
         pw->core.height = old_paned_size;
         reply->height = pane->size;
@@ -1508,7 +1508,7 @@ XtWidgetGeometry *request, *reply;
         pw->core.width = old_paned_size;
         reply->height = off_size;
 	reply->width = pane->size;
-    }    
+    }
 
 /*
  * IF either of the following is true.
@@ -1516,14 +1516,14 @@ XtWidgetGeometry *request, *reply;
  * o There was a "off_size" request and the new "off_size" is different
  *   from that requested.
  * o There was no "off_size" request and the new "off_size" is different
- * 
+ *
  * o The "on_size" we will allow is different from that requested.
- * 
+ *
  * THEN: set almost
  */
 
     if ( !((vert ? CWWidth : CWHeight) & mask))
-        if (vert) 
+        if (vert)
 	    request->width = w->core.width;
 	else
 	    request->height = w->core.height;
@@ -1539,8 +1539,8 @@ XtWidgetGeometry *request, *reply;
 	if (almost) return XtGeometryAlmost;
     }
     else {
-        AdjustPanedSize(pw, PaneSize((Widget) pw, !vert), 
-			(XtGeometryResult *)NULL, 
+        AdjustPanedSize(pw, PaneSize((Widget) pw, !vert),
+			(XtGeometryResult *)NULL,
 			(Dimension *)NULL, (Dimension *)NULL);
 	CommitNewLocations( pw );	/* layout already refigured. */
     }
@@ -1563,7 +1563,7 @@ Cardinal *num_args;
     pw->paned.num_panes = 0;
 }
 
-static void 
+static void
 Realize(w, valueMask, attributes)
 Widget w;
 Mask *valueMask;
@@ -1592,7 +1592,7 @@ XSetWindowAttributes *attributes;
     pw->paned.resize_children_to_pref = FALSE;
 } /* Realize */
 
-static void 
+static void
 ReleaseGCs(w)
 Widget w;
 {
@@ -1601,7 +1601,7 @@ Widget w;
     XtReleaseGC( w, pw->paned.normgc );
     XtReleaseGC( w, pw->paned.invgc );
     XtReleaseGC( w, pw->paned.flipgc );
-} 
+}
 
 static void InsertChild(w)
 Widget w;
@@ -1618,7 +1618,7 @@ Widget w;
 
    if ( pane->show_grip == TRUE ) {
        CreateGrip(w);
-       if (pane->min == PANED_GRIP_SIZE) 
+       if (pane->min == PANED_GRIP_SIZE)
 	   pane->min = PaneSize(pane->grip, IsVert((PanedWidget) XtParent(w)));
    }
    else {
@@ -1636,7 +1636,7 @@ static void DeleteChild(w)
 Widget w;
 {
     /* remove the subwidget info and destroy the grip */
-   
+
     if ( IsPane(w) && HasGrip(w) ) XtDestroyWidget(PaneInfo(w)->grip);
 
     /* delete the child widget in the composite children list with the */
@@ -1668,10 +1668,10 @@ static void ChangeManaged(w)
 
    ManageAndUnmanageGrips(pw);
    pw->paned.recursively_called = False;
-   ResortChildren(pw);		
+   ResortChildren(pw);
 
    pw->paned.num_panes = 0;
-   ForAllChildren(pw, childP) 
+   ForAllChildren(pw, childP)
        if ( IsPane(*childP) )
 	   if ( XtIsManaged(*childP) ) {
 	       Pane pane = PaneInfo(*childP);
@@ -1686,15 +1686,15 @@ static void ChangeManaged(w)
    SetChildrenPrefSizes( (PanedWidget) w, size);
 
 /*
- * ForAllPanes can now be used. 
+ * ForAllPanes can now be used.
  */
 
-   if ( PaneSize((Widget) pw, vert) == 0 ) 
-       AdjustPanedSize(pw, size, (XtGeometryResult *)NULL, 
+   if ( PaneSize((Widget) pw, vert) == 0 )
+       AdjustPanedSize(pw, size, (XtGeometryResult *)NULL,
 			(Dimension *)NULL, (Dimension *)NULL);
 
-   if (XtIsRealized( (Widget) pw)) 
-       RefigureLocationsAndCommit( (Widget) pw); 
+   if (XtIsRealized( (Widget) pw))
+       RefigureLocationsAndCommit( (Widget) pw);
 
 } /* ChangeManaged */
 
@@ -1724,7 +1724,7 @@ Region region;			/* unused. */
 }
 
 /* ARGSUSED */
-static Boolean 
+static Boolean
 SetValues(old, request, new, args, num_args)
 Widget old, request, new;
 ArgList args;
@@ -1749,7 +1749,7 @@ Cardinal *num_args;
  	 (old_pw->paned.h_grip_cursor != new_pw->paned.h_grip_cursor) ) {
         ChangeAllGripCursors(new_pw);
     }
-	
+
     if ( IsVert(old_pw) != IsVert(new_pw)) {
 /*
  * We are fooling the paned widget into thinking that is needs to
@@ -1770,12 +1770,12 @@ Cardinal *num_args;
 
     if (old_pw->paned.internal_bw != new_pw->paned.internal_bw) {
         AdjustPanedSize( new_pw, PaneSize(new, !IsVert(old_pw)),
-			 (XtGeometryResult *)NULL, 
+			 (XtGeometryResult *)NULL,
 			 (Dimension *)NULL, (Dimension *)NULL);
         RefigureLocationsAndCommit(new);
 	return(TRUE);		/* We have done a full configuration, return.*/
     }
-    
+
     if ( (old_pw->paned.grip_indent != new_pw->paned.grip_indent) &&
 	 (XtIsRealized(new)) ) {
         CommitNewLocations(new_pw);
@@ -1787,7 +1787,7 @@ Cardinal *num_args;
 
 
 /* ARGSUSED */
-static Boolean 
+static Boolean
 PaneSetValues(old, request, new, args, num_args)
 Widget old, request, new;
 ArgList args;
@@ -1828,7 +1828,7 @@ Cardinal *num_args;
 
 /************************************************************
  *
- * Public routines. 
+ * Public routines.
  *
  ************************************************************/
 
@@ -1839,7 +1839,7 @@ Cardinal *num_args;
  *	Returns: none.
  */
 
-void 
+void
 #if NeedFunctionPrototypes
 XawPanedSetMinMax(Widget widget, int min, int max)
 #else
@@ -1862,7 +1862,7 @@ int min, max;
  *	Returns: none.
  */
 
-void 
+void
 #if NeedFunctionPrototypes
 XawPanedGetMinMax(Widget widget, int *min, int *max)
 #else
@@ -1878,14 +1878,14 @@ int    *min, *max;
 }
 
 /*	Function Name: XawPanedSetRefigureMode
- *	Description: Allows a flag to be set the will inhibit 
+ *	Description: Allows a flag to be set the will inhibit
  *                   the paned widgets relayout routine.
  *	Arguments: w - the paned widget.
  *                 mode - if FALSE then inhibit refigure.
  *	Returns: none.
  */
 
-void 
+void
 #if NeedFunctionPrototypes
 XawPanedSetRefigureMode(Widget w,
 #if NeedWidePrototypes
@@ -1909,7 +1909,7 @@ Boolean mode;
  *	Returns: the number of panes in the paned widget.
  */
 
-int 
+int
 #if NeedFunctionPrototypes
 XawPanedGetNumSub(Widget w)
 #else
@@ -1927,7 +1927,7 @@ Widget w;
  *	Returns: none.
  */
 
-void 
+void
 #if NeedFunctionPrototypes
 XawPanedAllowResize(Widget widget,
 #if NeedWidePrototypes

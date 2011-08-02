@@ -44,7 +44,7 @@ extern double atof(char *);
 
 
 #if XtVersion >= 11006
-static char defaultTranslations[] = 
+static char defaultTranslations[] =
   "<Btn1Down>:    start() \n\
    <Btn1Motion>:  move() \n\
    <Btn1Up>:      notify() stop() \n\
@@ -65,7 +65,7 @@ static char defaultTranslations[] =
    <Key>Home:     page(0,0) \n\
    :<Key>KP_Home:  page(0,0)";
 #else
-static char defaultTranslations[] = 
+static char defaultTranslations[] =
   "<Btn1Down>:    start() \n\
    <Btn1Motion>:  move() \n\
    <Btn1Up>:      notify() stop() \n\
@@ -111,7 +111,7 @@ static XtResource resources[] = {
 	poff(default_scale), XtRImmediate, (XtPointer) PANNER_DEFAULT_SCALE },
     { XtNrubberBand, XtCRubberBand, XtRBoolean, sizeof(Boolean),
 	poff(rubber_band), XtRImmediate, (XtPointer) FALSE },
-    { XtNforeground, XtCForeground, XtRPixel, sizeof(Pixel), 
+    { XtNforeground, XtCForeground, XtRPixel, sizeof(Pixel),
 	poff(foreground), XtRString, (XtPointer) XtDefaultBackground },
     { XtNinternalSpace, XtCInternalSpace, XtRDimension, sizeof(Dimension),
 	poff(internal_border), XtRImmediate, (XtPointer) 4 },
@@ -502,7 +502,7 @@ static int parse_page_string (s, pagesize, canvassize, relative)
   XmuLocatePixmapFile (pw->core.screen, pw->panner.stipple_name, \
 		       pw->panner.shadow_color, pw->core.background_pixel, \
 		       pw->core.depth, NULL, 0, NULL, NULL, NULL, NULL)
-    
+
 #define PIXMAP_OKAY(pm) ((pm) != None && (pm) != XtUnspecifiedPixmap)
 
 
@@ -604,9 +604,9 @@ static void Redisplay (gw, event, region)
     int kx = pw->panner.knob_x + pad, ky = pw->panner.knob_y + pad;
 
     pw->panner.tmp.showing = FALSE;
-    XClearArea (XtDisplay(pw), XtWindow(pw), 
-		(int) pw->panner.last_x - ((int) lw) + pad, 
-		(int) pw->panner.last_y - ((int) lw) + pad, 
+    XClearArea (XtDisplay(pw), XtWindow(pw),
+		(int) pw->panner.last_x - ((int) lw) + pad,
+		(int) pw->panner.last_y - ((int) lw) + pad,
 		(unsigned int) (pw->panner.knob_width + extra),
 		(unsigned int) (pw->panner.knob_height + extra),
 		False);
@@ -619,7 +619,7 @@ static void Redisplay (gw, event, region)
     if (lw)
     {
     	XDrawRectangle (dpy, w, pw->panner.shadow_gc, kx, ky,
-		    	(unsigned int) (pw->panner.knob_width - 1), 
+		    	(unsigned int) (pw->panner.knob_width - 1),
 		    	(unsigned int) (pw->panner.knob_height - 1));
     }
 
@@ -909,14 +909,14 @@ static void ActionNotify (gw, event, params, num_params)
 				      pw->panner.vaspect + 0.5);
     if (!pw->panner.allow_off) {
 	Position tmp;
-	
+
 	if (pw->panner.slider_x >
-	    (tmp = (((Position) pw->panner.canvas_width) - 
+	    (tmp = (((Position) pw->panner.canvas_width) -
 		    ((Position) pw->panner.slider_width))))
 	  pw->panner.slider_x = tmp;
 	if (pw->panner.slider_x < 0) pw->panner.slider_x = 0;
 	if (pw->panner.slider_y >
-	    (tmp = (((Position) pw->panner.canvas_height) - 
+	    (tmp = (((Position) pw->panner.canvas_height) -
 		    ((Position) pw->panner.slider_height))))
 	  pw->panner.slider_y = tmp;
 	if (pw->panner.slider_y < 0) pw->panner.slider_y = 0;

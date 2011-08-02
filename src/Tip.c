@@ -370,7 +370,7 @@ Region region;
 		XDrawString(XtDisplay(w), XtWindow(w), gc,
 			    tip->tip.internal_width, y,
 			    label, (int)(nl - label));
-	    y += tip->tip.font->max_bounds.ascent + 
+	    y += tip->tip.font->max_bounds.ascent +
 		 tip->tip.font->max_bounds.descent;
 	    label = nl + 1;
 	}

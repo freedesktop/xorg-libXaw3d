@@ -53,7 +53,7 @@ Screen	*scn;
     {
 	XColor exact;
 
-	(void)XAllocNamedColor(dpy, DefaultColormapOfScreen(scn), 
+	(void)XAllocNamedColor(dpy, DefaultColormapOfScreen(scn),
 			       "gray", &Gray, &exact);  /* Blindflug */
     }
 

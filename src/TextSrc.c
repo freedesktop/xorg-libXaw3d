@@ -59,7 +59,7 @@ in this Software without prior written authorization from the X Consortium.
 
 #define offset(field) XtOffsetOf(TextSrcRec, textSrc.field)
 static XtResource resources[] = {
-    {XtNeditType, XtCEditType, XtREditMode, sizeof(XawTextEditType), 
+    {XtNeditType, XtCEditType, XtREditMode, sizeof(XawTextEditType),
         offset(edit_mode), XtRString, "read"},
 };
 
@@ -72,7 +72,7 @@ static int Replace();
 #define SuperClass		(&objectClassRec)
 TextSrcClassRec textSrcClassRec = {
   {
-/* core_class fields */	
+/* core_class fields */
     /* superclass	  	*/	(WidgetClass) SuperClass,
     /* class_name	  	*/	"TextSrc",
     /* widget_size	  	*/	sizeof(TextSrcRec),
@@ -119,7 +119,7 @@ TextSrcClassRec textSrcClassRec = {
 
 WidgetClass textSrcObjectClass = (WidgetClass)&textSrcClassRec;
 
-static void 
+static void
 ClassInitialize ()
 {
     XawInitializeWidgetSet ();
@@ -136,26 +136,26 @@ WidgetClass wc;
   t_src = (TextSrcObjectClass) wc;
   superC = (TextSrcObjectClass) t_src->object_class.superclass;
 
-/* 
+/*
  * We don't need to check for null super since we'll get to TextSrc
  * eventually.
  */
-    if (t_src->textSrc_class.Read == XtInheritRead) 
+    if (t_src->textSrc_class.Read == XtInheritRead)
       t_src->textSrc_class.Read = superC->textSrc_class.Read;
 
-    if (t_src->textSrc_class.Replace == XtInheritReplace) 
+    if (t_src->textSrc_class.Replace == XtInheritReplace)
       t_src->textSrc_class.Replace = superC->textSrc_class.Replace;
 
-    if (t_src->textSrc_class.Scan == XtInheritScan) 
+    if (t_src->textSrc_class.Scan == XtInheritScan)
       t_src->textSrc_class.Scan = superC->textSrc_class.Scan;
 
-    if (t_src->textSrc_class.Search == XtInheritSearch) 
+    if (t_src->textSrc_class.Search == XtInheritSearch)
       t_src->textSrc_class.Search = superC->textSrc_class.Search;
 
-    if (t_src->textSrc_class.SetSelection == XtInheritSetSelection) 
+    if (t_src->textSrc_class.SetSelection == XtInheritSetSelection)
       t_src->textSrc_class.SetSelection = superC->textSrc_class.SetSelection;
 
-    if (t_src->textSrc_class.ConvertSelection == XtInheritConvertSelection) 
+    if (t_src->textSrc_class.ConvertSelection == XtInheritConvertSelection)
       t_src->textSrc_class.ConvertSelection =
 	                               superC->textSrc_class.ConvertSelection;
 }
@@ -180,10 +180,10 @@ static XawTextPosition
 Read(w, pos, text, length)
 Widget w;
 XawTextPosition pos;
-XawTextBlock *text;	
-int length;		
+XawTextBlock *text;
+int length;
 {
-  XtAppError(XtWidgetToApplicationContext(w), 
+  XtAppError(XtWidgetToApplicationContext(w),
 	     "TextSrc Object: No read function is defined.");
 
   return( (XawTextPosition) 0 ); /* for gcc -Wall and lint */
@@ -198,7 +198,7 @@ int length;
  */
 
 /*ARGSUSED*/
-static int 
+static int
 Replace (w, startPos, endPos, text)
 Widget w;
 XawTextPosition startPos, endPos;
@@ -216,14 +216,14 @@ XawTextBlock *text;
  *                 dir - direction to scan.
  *                 count - which occurance if this thing to search for.
  *                 include - whether or not to include the character found in
- *                           the position that is returned. 
+ *                           the position that is returned.
  *	Returns: EXITS WITH AN ERROR MESSAGE.
  *
  */
 
 /* ARGSUSED */
-static 
-XawTextPosition 
+static
+XawTextPosition
 Scan (w, position, type, dir, count, include)
 Widget                w;
 XawTextPosition       position;
@@ -232,7 +232,7 @@ XawTextScanDirection  dir;
 int     	      count;
 Boolean	              include;
 {
-  XtAppError(XtWidgetToApplicationContext(w), 
+  XtAppError(XtWidgetToApplicationContext(w),
 	     "TextSrc Object: No SCAN function is defined.");
 
   return( (XawTextPosition) 0 ); /* for gcc -Wall and lint */
@@ -248,7 +248,7 @@ Boolean	              include;
  */
 
 /* ARGSUSED */
-static XawTextPosition 
+static XawTextPosition
 Search(w, position, dir, text)
 Widget                w;
 XawTextPosition       position;
@@ -302,7 +302,7 @@ Atom selection;
 
 
 /* ARGSUSED */
-static void 
+static void
 CvtStringToEditMode(args, num_args, fromVal, toVal)
 XrmValuePtr args;		/* unused */
 Cardinal	*num_args;	/* unused */
@@ -314,7 +314,7 @@ XrmValuePtr	toVal;
   XrmQuark    q;
   char        lowerName[40];
   static Boolean inited = FALSE;
-    
+
   if ( !inited ) {
     QRead   = XrmPermStringToQuark(XtEtextRead);
     QAppend = XrmPermStringToQuark(XtEtextAppend);
@@ -367,7 +367,7 @@ XawTextSourceRead(Widget w, XawTextPosition pos, XawTextBlock *text,
 XawTextSourceRead(w, pos, text, length)
 Widget w;
 XawTextPosition pos;
-XawTextBlock *text;	
+XawTextBlock *text;
 int length;
 #endif
 {
@@ -392,7 +392,7 @@ int length;
 /*ARGSUSED*/
 int
 #if NeedFunctionPrototypes
-XawTextSourceReplace (Widget w, XawTextPosition startPos, 
+XawTextSourceReplace (Widget w, XawTextPosition startPos,
 		      XawTextPosition endPos, XawTextBlock *text)
 #else
 XawTextSourceReplace (w, startPos, endPos, text)
@@ -420,7 +420,7 @@ XawTextBlock *text;
  *                 dir - direction to scan.
  *                 count - which occurance if this thing to search for.
  *                 include - whether or not to include the character found in
- *                           the position that is returned. 
+ *                           the position that is returned.
  *	Returns: The position of the text.
  *
  */
@@ -469,7 +469,7 @@ Boolean	              include;
  *               XawTextSearchError.
  */
 
-XawTextPosition 
+XawTextPosition
 #if NeedFunctionPrototypes
 XawTextSourceSearch(Widget w, XawTextPosition position,
 #if NeedWidePrototypes
@@ -510,11 +510,11 @@ XawTextBlock *        text;
 
 Boolean
 #if NeedFunctionPrototypes
-XawTextSourceConvertSelection(Widget w, Atom *selection, Atom *target, 
+XawTextSourceConvertSelection(Widget w, Atom *selection, Atom *target,
 			      Atom *type, XtPointer *value,
 			      unsigned long *length, int *format)
 #else
-XawTextSourceConvertSelection(w, selection, 
+XawTextSourceConvertSelection(w, selection,
 			      target, type, value, length, format)
 Widget w;
 Atom * selection, * target, * type;
@@ -544,7 +544,7 @@ int * format;
 
 void
 #if NeedFunctionPrototypes
-XawTextSourceSetSelection(Widget w, XawTextPosition left, 
+XawTextSourceSetSelection(Widget w, XawTextPosition left,
 			  XawTextPosition right, Atom selection)
 #else
 XawTextSourceSetSelection(w, left, right, selection)
@@ -570,9 +570,9 @@ Atom selection;
  ********************************************************************/
 
 /*
- * TextFormat(): 
- *   returns the format of text: FMT8BIT or FMTWIDE. 
- *  
+ * TextFormat():
+ *   returns the format of text: FMT8BIT or FMTWIDE.
+ *
  */
 XrmQuark
 #if NeedFunctionPrototypes
@@ -594,7 +594,7 @@ _XawTextFormat(tw)
  * wstr       - source wchar string.
  * len_in_out - lengh of string.
  *              As In, length of source wchar string, measured in wchar.
- *              As Out, length of returned string. 
+ *              As Out, length of returned string.
  */
 
 
@@ -621,7 +621,7 @@ _XawTextWCToMB( d, wstr, len_in_out )
 /* _XawTextMBToWC():
  *   convert the string to internal processing codeset WC.
  *   The caller is responsible for freeing both the source and ret string.
- * 
+ *
  * str        - source string.
  * len_in_out - lengh of string.
  *              As In, it is length of source string.
