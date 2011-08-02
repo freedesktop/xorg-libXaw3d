@@ -986,7 +986,7 @@ int loc;
  * to go beyond the min or max size allowed.
  */
 
-    if ( (dir == ThisBorderOnly) ) {
+    if (dir == ThisBorderOnly) {
       int old_add_size = add_size, old_sub_size;
 
       AssignMax(add_size, (int) PaneInfo(pw->paned.whichadd)->min);

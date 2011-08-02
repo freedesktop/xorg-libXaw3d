@@ -556,7 +556,7 @@ XtPointer radio_data;
 
   if ( (group = GetRadioGroup(radio_group)) == NULL) {
     local_tog = (ToggleWidget) radio_group;
-    if ( (local_tog->toggle.radio_data == radio_data) )     
+    if (local_tog->toggle.radio_data == radio_data)
       if (!local_tog->command.set) {
 	ToggleSet((Widget) local_tog, (XEvent *)NULL, (String *)NULL, (Cardinal *)0);
 	Notify((Widget) local_tog, (XEvent *)NULL, (String *)NULL, (Cardinal *)0);
@@ -576,7 +576,7 @@ XtPointer radio_data;
 
   while ( group != NULL ) {
     local_tog = (ToggleWidget) group->widget;
-    if ( (local_tog->toggle.radio_data == radio_data) ) {
+    if (local_tog->toggle.radio_data == radio_data) {
       if (!local_tog->command.set) { /* if not already set. */
 	ToggleSet((Widget) local_tog, (XEvent *)NULL, (String *)NULL, (Cardinal *)0);
 	Notify((Widget) local_tog, (XEvent *)NULL, (String *)NULL, (Cardinal *)0);
