@@ -28,7 +28,7 @@ AC_CONFIG_COMMANDS([libtool_hack], [
 	test -z "$SED" && SED=sed
 	$SED '1,/^soname_spec/{
 /^soname_spec/i\
-# X.Org hack to match monolithic Xaw SONAME\
+# X.Org hack to match monolithic Xaw3d SONAME\
 xorglibxawname="libXaw3d"
 /^soname_spec/s/libname/xorglibxawname/
 }' libtool_ > libtool
@@ -54,6 +54,7 @@ AM_CONDITIONAL(PLATFORM_WIN32, test "x$platform_win32" = "xyes")
 AM_CONDITIONAL(PLATFORM_DARWIN, test "x$platform_darwin" = "xyes")
 
 # Checks for header files.
+PKG_CHECK_MODULES(X11, [x11, xt, xmu])
 AC_CHECK_HEADERS([wctype.h wchar.h widec.h])
 
 AC_CONFIG_FILES([Makefile
