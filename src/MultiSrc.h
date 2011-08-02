@@ -1,5 +1,3 @@
-/* $XConsortium: MultiSrc.h,v 1.2 94/04/17 20:12:26 kaleb Exp $ */
-
 /*
  * Copyright 1991 by OMRON Corporation
  *

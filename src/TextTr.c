@@ -1,5 +1,3 @@
-/* $XConsortium: TextTr.c,v 1.20 95/06/14 15:07:27 kaleb Exp $ */
-
 /*
 
 Copyright (c) 1991, 1994  X Consortium

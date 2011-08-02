@@ -1,6 +1,4 @@
 /*
- * $XConsortium: Panner.c,v 1.52 95/01/10 14:31:26 kaleb Exp $
- *
 Copyright (c) 1989, 1994  X Consortium
 
 Permission is hereby granted, free of charge, to any person obtaining a copy

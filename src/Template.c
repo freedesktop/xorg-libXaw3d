@@ -1,5 +1,3 @@
-/* $XConsortium: Template.c,v 1.5 94/04/17 20:12:58 converse Exp $ */
-
 /*
 
 Copyright (c) 1987  X Consortium

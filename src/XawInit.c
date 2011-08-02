@@ -1,6 +1,4 @@
 /*
- * $XConsortium: XawInit.c,v 1.3 94/04/17 20:13:32 jim Exp $
- *
 Copyright (c) 1989  X Consortium
 
 Permission is hereby granted, free of charge, to any person obtaining a copy

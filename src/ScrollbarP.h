@@ -3,10 +3,6 @@
 /* Rights, permissions, and disclaimer of warranty are as in the  */
 /* DEC and MIT notice below.  See usage warning in .c file.       */
 
-/*
- * $XConsortium: ScrollbarP.h,v 1.2 90/04/11 17:33:53 jim Exp $
- */
-
 /***********************************************************
 
 Copyright (c) 1987, 1988  X Consortium

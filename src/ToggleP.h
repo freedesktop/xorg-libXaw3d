@@ -1,5 +1,3 @@
-/* $XConsortium: ToggleP.h,v 1.9 94/04/17 20:13:19 converse Exp $ */
-
 /*
 
 Copyright (c) 1989  X Consortium

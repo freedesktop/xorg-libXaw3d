@@ -1,5 +1,3 @@
-/* $XConsortium: AllWidgets.c,v 1.8 94/04/17 20:11:39 kaleb Exp $ */
-
 /*
 
 Copyright (c) 1991, 1994  X Consortium

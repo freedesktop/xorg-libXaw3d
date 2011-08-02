@@ -1,5 +1,3 @@
-/* $XConsortium: MultiSink.c,v 1.6 95/01/23 18:34:46 kaleb Exp $ */
-
 /*
  * Copyright 1991 by OMRON Corporation
  *

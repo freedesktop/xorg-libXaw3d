@@ -1,5 +1,4 @@
 /*
- * $XConsortium: ViewportP.h,v 1.14 94/04/17 20:13:28 jim Exp $
  * Private declarations for ViewportWidgetClass
  */
 

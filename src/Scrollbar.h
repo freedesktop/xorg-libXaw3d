@@ -1,5 +1,3 @@
-/* $XConsortium: Scrollbar.h,v 1.7 91/07/26 21:59:31 converse Exp $ */
-
 /***********************************************************
 
 Copyright (c) 1987, 1988  X Consortium

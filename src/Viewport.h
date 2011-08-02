@@ -1,5 +1,3 @@
-/* $XConsortium: Viewport.h,v 1.23 94/04/17 20:13:27 kaleb Exp $ */
-
 /************************************************************
 
 Copyright (c) 1987, 1994  X Consortium

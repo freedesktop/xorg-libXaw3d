@@ -1,6 +1,4 @@
 /*
- * $XConsortium: TreeP.h,v 1.14 94/04/17 20:13:24 jim Exp $
- *
 
 Copyright (c) 1990  X Consortium
 

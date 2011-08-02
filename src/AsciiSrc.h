@@ -1,5 +1,3 @@
-/* $XConsortium: AsciiSrc.h,v 1.15 94/04/17 20:11:46 kaleb Exp $ */
-
 /*
 
 Copyright (c) 1989, 1994  X Consortium

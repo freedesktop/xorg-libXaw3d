@@ -1,6 +1,4 @@
 /*
- * $XConsortium: PannerP.h,v 1.19 94/04/17 20:12:33 jim Exp $
- *
 Copyright (c) 1989  X Consortium
 
 Permission is hereby granted, free of charge, to any person obtaining a copy

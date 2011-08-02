@@ -1,7 +1,3 @@
-/*
-* $KK: ThreeDP.h,v 0.3 92/11/04 xx:xx:xx keithley Exp $
-*/
-
 /***********************************************************
 Copyright 1987, 1988 by Digital Equipment Corporation, Maynard, Massachusetts,
 and the Massachusetts Institute of Technology, Cambridge, Massachusetts.

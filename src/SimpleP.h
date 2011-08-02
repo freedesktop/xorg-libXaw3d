@@ -1,8 +1,5 @@
 /***********************************************************
 
- $XConsortium: SimpleP.h,v 1.12 94/04/17 20:12:47 kaleb Exp $ 
-
-
 Copyright (c) 1987, 1988, 1994  X Consortium
 
 Permission is hereby granted, free of charge, to any person obtaining a copy

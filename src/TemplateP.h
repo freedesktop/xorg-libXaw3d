@@ -1,5 +1,3 @@
-/* $XConsortium: TemplateP.h,v 1.7 94/04/17 20:13:00 rws Exp $ */
-
 /*
 
 Copyright (c) 1987  X Consortium

@@ -1,8 +1,3 @@
-/*
-* $XConsortium: StripCharP.h,v 1.5 94/04/17 20:12:55 converse Exp $
-*/
-
-
 /***********************************************************
 
 Copyright (c) 1987, 1988  X Consortium

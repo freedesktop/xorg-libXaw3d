@@ -1,6 +1,4 @@
 /*
- * $XConsortium: Repeater.h,v 1.4 94/04/17 20:12:38 jim Exp $
- *
 Copyright (c) 1989  X Consortium
 
 Permission is hereby granted, free of charge, to any person obtaining a copy

@@ -1,6 +1,4 @@
 /*
- * $XConsortium: Layout.h,v 1.2 92/01/22 18:03:05 keith Exp $
- *
  * Copyright 1991 Massachusetts Institute of Technology
  *
  * Permission to use, copy, modify, distribute, and sell this software and its

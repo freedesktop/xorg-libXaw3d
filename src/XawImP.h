@@ -1,5 +1,3 @@
-/* $XConsortium: XawImP.h,v 1.4 95/06/06 20:50:30 kaleb Exp $ */
-
 /*
  * Copyright 1991 by OMRON Corporation
  *

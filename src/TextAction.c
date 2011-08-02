@@ -1,5 +1,3 @@
-/* $XConsortium: TextAction.c,v 1.53 95/06/14 15:07:27 kaleb Exp $ */
-
 /*
 
 Copyright (c) 1989, 1994  X Consortium

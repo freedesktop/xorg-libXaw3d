@@ -32,8 +32,6 @@
  * Rights, permissions, and disclaimer per the above XFree86 license.
  */
 
-/* $XFree86: xc/lib/Xaw/Tip.c,v 1.5 2000/05/18 16:29:53 dawes Exp $ */
-
 #include "Xaw3dP.h"
 #include <X11/IntrinsicP.h>
 #include <X11/StringDefs.h>

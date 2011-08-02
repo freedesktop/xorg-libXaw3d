@@ -3,7 +3,6 @@
 /* Modifications Copyright 1992 by Mitch Trachtenberg             */
 /* Rights, permissions, and disclaimer of warranty are as in the  */
 /* DEC and MIT notice below.                                      */
-/* $XConsortium: Scrollbar.c,v 1.70 91/10/16 21:39:40 eswu Exp $ */
 
 /***********************************************************
 

@@ -1,5 +1,3 @@
-/* $XConsortium: Toggle.c,v 1.28 94/04/17 20:13:17 kaleb Exp $ */
-
 /*
 
 Copyright (c) 1989, 1994  X Consortium

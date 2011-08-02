@@ -1,5 +1,3 @@
-/* $XConsortium: AsciiText.c,v 1.47 95/06/06 20:50:30 kaleb Exp $ */
-
 /*
 
 Copyright (c) 1987, 1988, 1994  X Consortium

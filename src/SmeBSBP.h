@@ -1,6 +1,4 @@
 /*
- * $XConsortium: SmeBSBP.h,v 1.8 94/04/17 21:44:11 rws Exp $
- *
 Copyright (c) 1989, 1994  X Consortium
 
 Permission is hereby granted, free of charge, to any person obtaining a copy

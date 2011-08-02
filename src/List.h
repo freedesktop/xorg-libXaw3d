@@ -1,5 +1,3 @@
-/* $XConsortium: List.h,v 1.22 94/04/17 20:12:17 kaleb Exp $ */
-
 /*
 Copyright (c) 1989, 1994  X Consortium
 

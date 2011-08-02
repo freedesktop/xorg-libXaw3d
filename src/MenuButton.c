@@ -1,5 +1,3 @@
-/* $XConsortium: MenuButton.c,v 1.21 95/06/26 20:35:12 kaleb Exp $ */
-
 /*
 Copyright (c) 1989, 1994  X Consortium
 

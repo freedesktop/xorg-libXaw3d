@@ -1,6 +1,4 @@
 /*
- * $XConsortium: SmeP.h,v 1.6 94/04/17 20:12:54 kaleb Exp $
- *
 Copyright (c) 1989, 1994  X Consortium
 
 Permission is hereby granted, free of charge, to any person obtaining a copy

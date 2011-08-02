@@ -1,6 +1,4 @@
 /*
- * $XConsortium: AllWidgets.h,v 1.3 94/04/17 20:11:40 jim Exp $
- *
 Copyright (c) 1990  X Consortium
 
 Permission is hereby granted, free of charge, to any person obtaining a copy

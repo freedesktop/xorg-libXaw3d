@@ -1,5 +1,3 @@
-/* $XConsortium: StripChart.c,v 1.25 94/04/17 20:12:56 kaleb Exp $ */
-
 /***********************************************************
 
 Copyright (c) 1987, 1988, 1994  X Consortium

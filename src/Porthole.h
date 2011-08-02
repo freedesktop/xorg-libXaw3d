@@ -1,6 +1,4 @@
 /*
- * $XConsortium: Porthole.h,v 1.2 94/04/17 20:12:35 jim Exp $
- *
 Copyright (c) 1990  X Consortium
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
