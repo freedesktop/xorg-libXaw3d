@@ -534,8 +534,8 @@ Cardinal *num_args;		/* unused */
 
   ctx->text.lt.lines = 0;
   ctx->text.lt.info = NULL;
-  (void) bzero((char *) &(ctx->text.origSel), sizeof(XawTextSelection));
-  (void) bzero((char *) &(ctx->text.s), sizeof(XawTextSelection)); 
+  memset(&(ctx->text.origSel), 0, sizeof(XawTextSelection));
+  memset(&(ctx->text.s), 0, sizeof(XawTextSelection)); 
   ctx->text.s.type = XawselectPosition;
   ctx->text.salt = NULL;
   ctx->text.hbar = ctx->text.vbar = (Widget) NULL;
@@ -967,7 +967,7 @@ _XawTextBuildLineTable (ctx, position, force_rebuild)
   }
 
   if ( force_rebuild || (position != ctx->text.lt.top) ) {
-    (void) bzero((char *) ctx->text.lt.info, size);
+    memset(ctx->text.lt.info, 0, size);
     (void) _BuildLineTable(ctx, ctx->text.lt.top = position, zeroPosition, 0);
   }
 }
@@ -1047,7 +1047,7 @@ int line;
     }
 
   if (line < ctx->text.lt.lines) /* Clear out rest of table. */
-    (void) bzero( (char *) (lt + 1), 
+    memset((lt + 1), 0,
 	  (ctx->text.lt.lines - line) * sizeof(XawTextLineTableEntry) );
 
   ctx->text.lt.info[ctx->text.lt.lines].position = lt->position;
