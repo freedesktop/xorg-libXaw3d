@@ -95,6 +95,9 @@ extern WidgetClass simpleMenuWidgetClass;
 #define XtNpopupOnEntry "popupOnEntry"
 #define XtNrowHeight "rowHeight"
 #define XtNtopMargin "topMargin"
+#define XtNjumpScroll "jumpScroll"
+#define XtNleftWhitespace "leftWhitespace"
+#define XtNrightWhitespace "rightWhitespace"
 
 #define XtCColumnWidth "ColumnWidth"
 #define XtCLabelClass "LabelClass"
@@ -102,6 +105,10 @@ extern WidgetClass simpleMenuWidgetClass;
 #define XtCPopupOnEntry "PopupOnEntry"
 #define XtCRowHeight "RowHeight"
 #define XtCVerticalMargins "VerticalMargins"
+#define XtCJumpScroll "JumpScroll"
+#define XtCLeftWhitespace "LeftWhitespace"
+#define XtCRightWhitespace "RightWhitespace"
+#define XtCHorizontalWhitespace "HorizontalWhitespace"
 
 /************************************************************
  *

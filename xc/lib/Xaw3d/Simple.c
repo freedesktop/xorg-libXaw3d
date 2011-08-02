@@ -48,6 +48,7 @@ SOFTWARE.
 
 ******************************************************************/
 
+#include "Xaw3dP.h"
 #include <stdio.h>
 #include <X11/IntrinsicP.h>
 #include <X11/StringDefs.h>
@@ -68,8 +69,10 @@ static XtResource resources[] = {
      offset(pointer_bg), XtRString, XtDefaultBackground},
   {XtNcursorName, XtCCursor, XtRString, sizeof(String),
      offset(cursor_name), XtRString, NULL},
+#ifdef XAW_INTERNATIONALIZATION
   {XtNinternational, XtCInternational, XtRBoolean, sizeof(Boolean),
      offset(international), XtRImmediate, (XtPointer) FALSE},
+#endif
 #undef offset
 };
 
@@ -239,7 +242,9 @@ static Boolean SetValues(current, request, new, args, num_args)
     Boolean new_cursor = FALSE;
 
     /* this disables user changes after creation*/
+#ifdef XAW_INTERNATIONALIZATION
     s_new->simple.international = s_old->simple.international;
+#endif
 
     if ( XtIsSensitive(current) != XtIsSensitive(new) )
 	(*((SimpleWidgetClass)XtClass(new))->

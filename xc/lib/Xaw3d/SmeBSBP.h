@@ -41,6 +41,7 @@ in this Software without prior written authorization from the X Consortium.
  *
  ***********************************************************************/
 
+#include "Xaw3dP.h"
 #include <X11/Xaw3d/SmeThreeDP.h>
 #include <X11/Xaw3d/SmeBSB.h>
 
@@ -70,26 +71,30 @@ typedef struct {
     String label;		/* The entry label. */
     int vert_space;		/* extra vert space to leave, as a percentage
 				   of the font height of the label. */
-    Pixmap left_bitmap, right_bitmap; /* bitmaps to show. */
+    Pixmap left_bitmap, right_bitmap; /* pixmaps to show. */
     Dimension left_margin, right_margin; /* left and right margins. */
     Pixel foreground;		/* foreground color. */
     XFontStruct * font;		/* The font to show label in. */
+#ifdef XAW_INTERNATIONALIZATION
     XFontSet fontset;		/* or fontset */
+#endif
     XtJustify justify;		/* Justification for the label. */
+    int underline;		/* index of letter to underline in label. */
 
-/* private resources. */
-
+    /* private resources. */
     Boolean set_values_area_cleared; /* Remember if we need to unhighlight. */
     GC norm_gc;			/* noral color gc. */
     GC rev_gc;			/* reverse color gc. */
     GC norm_gray_gc;		/* Normal color (grayed out) gc. */
     GC invert_gc;		/* gc for flipping colors. */
-
-    Dimension left_bitmap_width; /* size of each bitmap. */
+    Pixmap left_stippled, right_stippled; /* insensitive pixmaps */
+    Dimension left_bitmap_width; /* size and depth of each pixmap. */
     Dimension left_bitmap_height;
     Dimension right_bitmap_width;
     Dimension right_bitmap_height;
-
+    unsigned int left_depth;
+    unsigned int right_depth;
+    String menu_name;		/* name of nested sub-menu or NULL */
 } SmeBSBPart;
 
 /****************************************************************

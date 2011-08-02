@@ -53,6 +53,7 @@ SOFTWARE.
  *
  */
 
+#include "Xaw3dP.h"
 #include <X11/IntrinsicP.h>
 #include <X11/StringDefs.h>
 #include <X11/Xos.h>
@@ -92,8 +93,10 @@ static XtResource resources[] = {
 	offset(label.foreground), XtRString, XtDefaultForeground},
     {XtNfont,  XtCFont, XtRFontStruct, sizeof(XFontStruct *),
 	offset(label.font),XtRString, XtDefaultFont},
+#ifdef XAW_INTERNATIONALIZATION
     {XtNfontSet,  XtCFontSet, XtRFontSet, sizeof(XFontSet ),
         offset(label.fontset),XtRString, XtDefaultFontSet},
+#endif
     {XtNlabel,  XtCLabel, XtRString, sizeof(String),
 	offset(label.label), XtRString, NULL},
     {XtNencoding, XtCEncoding, XtRUnsignedChar, sizeof(unsigned char),
@@ -110,8 +113,6 @@ static XtResource resources[] = {
 	offset(label.pixmap), XtRImmediate, (XtPointer)None},
     {XtNresize, XtCResize, XtRBoolean, sizeof(Boolean),
 	offset(label.resize), XtRImmediate, (XtPointer)True},
-    {XtNshadowWidth, XtCShadowWidth, XtRDimension, sizeof(Dimension),
-	offset(threeD.shadow_width), XtRImmediate, (XtPointer) 0},
     {XtNborderWidth, XtCBorderWidth, XtRDimension, sizeof(Dimension),
          XtOffsetOf(RectObjRec,rectangle.border_width), XtRImmediate,
          (XtPointer)1}
@@ -175,7 +176,9 @@ LabelClassRec labelClassRec = {
     /* ignore 			*/	0
   }
 };
+
 WidgetClass labelWidgetClass = (WidgetClass)&labelClassRec;
+
 /****************************************************************
  *
  * Private Procedures
@@ -261,16 +264,17 @@ static void SetTextWidthAndHeight(lw)
 	Window root;
 	int x, y;
 	unsigned int width, height, bw, depth;
+
 	if (XGetGeometry(XtDisplay(lw), lw->label.pixmap, &root, &x, &y,
 			 &width, &height, &bw, &depth)) {
 	    lw->label.label_height = height;
 	    lw->label.label_width = width;
-	    lw->label.label_len = depth;
+	    lw->label.depth = depth;
 	    return;
 	}
     }
+#ifdef XAW_INTERNATIONALIZATION
     if ( lw->simple.international == True ) {
-
       XFontSet	fset = lw->label.fontset;
       XFontSetExtents *ext = XExtentsOfFontSet(fset);
 
@@ -305,8 +309,9 @@ static void SetTextWidthAndHeight(lw)
 	      XmbTextEscapement(fset, lw->label.label, (int) lw->label.label_len);
       }
 
-    } else {
-
+    } else
+#endif
+    {
         lw->label.label_height = fs->max_bounds.ascent + fs->max_bounds.descent;
         if (lw->label.label == NULL) {
             lw->label.label_len = 0;
@@ -364,6 +369,7 @@ static void GetnormalGC(lw)
     values.font		= lw->label.font->fid;
     values.graphics_exposures = False;
 
+#ifdef XAW_INTERNATIONALIZATION
     if ( lw->simple.international == True )
         /* Since Xmb/wcDrawString eats the font, I must use XtAllocateGC. */
         lw->label.normal_GC = XtAllocateGC(
@@ -371,6 +377,7 @@ static void GetnormalGC(lw)
 	(unsigned) GCForeground | GCBackground | GCGraphicsExposures,
 	&values, GCFont, 0 );
     else
+#endif
         lw->label.normal_GC = XtGetGC(
 	(Widget)lw,
 	(unsigned) GCForeground | GCBackground | GCFont | GCGraphicsExposures,
@@ -393,6 +400,7 @@ static void GetgrayGC(lw)
     values.graphics_exposures = False;
 
     lw->label.stipple = values.tile;
+#ifdef XAW_INTERNATIONALIZATION
     if ( lw->simple.international == True )
         /* Since Xmb/wcDrawString eats the font, I must use XtAllocateGC. */
         lw->label.gray_GC = XtAllocateGC((Widget)lw,  0,
@@ -401,6 +409,7 @@ static void GetgrayGC(lw)
 					   GCGraphicsExposures,
 				&values, GCFont, 0);
     else
+#endif
         lw->label.gray_GC = XtGetGC((Widget)lw, 
 				(unsigned) GCForeground | GCBackground |
 					   GCFont | GCTile | GCFillStyle |
@@ -411,38 +420,27 @@ static void GetgrayGC(lw)
 static void compute_bitmap_offsets (lw)
     LabelWidget lw;
 {
-    /*
-     * bitmap will be eventually be displayed at 
-     * (internal_width, internal_height + lbm_y)
-     */
-    if (lw->label.lbm_height != 0) {
-	lw->label.lbm_y = (lw->core.height -
-			  (lw->threeD.shadow_width * 2 + 
-			   lw->label.internal_height * 2 +
-			   lw->label.lbm_height)) / 2;
-    } else {
+    if (lw->label.lbm_height != 0)
+	lw->label.lbm_y = (lw->core.height - lw->label.lbm_height) / 2;
+    else
 	lw->label.lbm_y = 0;
-    }
 }
-
 
 static void set_bitmap_info (lw)
     LabelWidget lw;
 {
     Window root;
     int x, y;
-    unsigned int bw, depth;
+    unsigned int bw;
 
-    if (!(lw->label.left_bitmap &&
+    if (lw->label.pixmap || !(lw->label.left_bitmap &&
 	  XGetGeometry (XtDisplay(lw), lw->label.left_bitmap, &root, &x, &y,
 			&lw->label.lbm_width, &lw->label.lbm_height,
-			&bw, &depth))) {
+			&bw, &lw->label.depth))) {
 	lw->label.lbm_width = lw->label.lbm_height = 0;
     }
     compute_bitmap_offsets (lw);
 }
-
-
 
 /* ARGSUSED */
 static void Initialize(request, new, args, num_args)
@@ -450,35 +448,42 @@ static void Initialize(request, new, args, num_args)
     ArgList args;
     Cardinal *num_args;
 {
+    extern WidgetClass commandWidgetClass;
     LabelWidget lw = (LabelWidget) new;
+
+    /* disable shadows if we're not a subclass of Command */
+    if (!XtIsSubclass(new, commandWidgetClass))
+	lw->threeD.shadow_width = 0;
 
     if (lw->label.label == NULL) 
         lw->label.label = XtNewString(lw->core.name);
-    else {
+    else
         lw->label.label = XtNewString(lw->label.label);
-    }
 
     GetnormalGC(lw);
     GetgrayGC(lw);
 
-    SetTextWidthAndHeight(lw);
+    SetTextWidthAndHeight(lw);  /* label.label or label.pixmap */
 
     if (lw->core.height == 0)
-        lw->core.height = lw->label.label_height +
-			    2 * lw->label.internal_height +
-			    2 * lw->threeD.shadow_width;
+	lw->core.height = lw->label.label_height +
+				2 * lw->label.internal_height;
 
-    set_bitmap_info (lw);		/* need core.height */
+    set_bitmap_info(lw);  /* req's core.height, sets label.lbm_* */
 
-    if (lw->core.width == 0)		/* need label.lbm_width */
-        lw->core.width = (lw->label.label_width +
-			    2 * lw->label.internal_width +
-			    2 * lw->threeD.shadow_width +
-			    LEFT_OFFSET(lw));
+    if (lw->label.lbm_height > lw->label.label_height)
+	lw->core.height = lw->label.lbm_height +
+				2 * lw->label.internal_height;
+
+    if (lw->core.width == 0)
+        lw->core.width = lw->label.label_width +
+				2 * lw->label.internal_width +
+				LEFT_OFFSET(lw);  /* req's label.lbm_width */
 
     lw->label.label_x = lw->label.label_y = 0;
     (*XtClass(new)->core_class.resize) ((Widget)lw);
 
+    lw->label.stippled = lw->label.left_stippled = None;
 } /* Initialize */
 
 /*
@@ -494,16 +499,18 @@ static void Redisplay(gw, event, region)
     extern WidgetClass commandWidgetClass;
     LabelWidget w = (LabelWidget) gw;
     LabelWidgetClass lwclass = (LabelWidgetClass) XtClass (gw);
+    Pixmap pm;
     GC gc;
 
     /* 
-     * Don't draw shadows if command is going to redraw them.
+     * Don't draw shadows if Command is going to redraw them.
      * The shadow draw method is region aware, but since 99% of
      * all labels don't have shadows, we'll check for a shadow
      * before we incur the function call overhead.
      */
     if (!XtIsSubclass (gw, commandWidgetClass) && w->threeD.shadow_width > 0)
-	(*lwclass->threeD_class.shadowdraw) (gw, event, region, True);
+	(*lwclass->threeD_class.shadowdraw) (gw, event, region,
+					     w->threeD.relief, True);
 
     /*
      * now we'll see if we need to draw the rest of the label
@@ -535,16 +542,32 @@ static void Redisplay(gw, event, region)
 
 	/* display left bitmap */
 	if (w->label.left_bitmap && w->label.lbm_width != 0) {
-	    XCopyPlane (XtDisplay(gw), w->label.left_bitmap, XtWindow(gw), gc,
-		       0, 0, w->label.lbm_width, w->label.lbm_height,
-		       (int) w->label.internal_width
-			+ w->threeD.shadow_width,
-		       (int) w->label.internal_height 
-			+ w->threeD.shadow_width
-			+ w->label.lbm_y, 
-		       (unsigned long) 1L);
+	    pm = w->label.left_bitmap;
+#ifdef XAW_MULTIPLANE_PIXMAPS
+	    if (!XtIsSensitive(gw)) {
+		if (w->label.left_stippled == None)
+		    w->label.left_stippled = stipplePixmap(gw,
+				w->label.left_bitmap, w->core.colormap,
+				w->core.background_pixel, w->label.depth);
+		if (w->label.left_stippled != None)
+		    pm = w->label.left_stippled;
+	    }
+#endif
+
+	    if (w->label.depth == 1)
+		XCopyPlane(XtDisplay(gw), pm, XtWindow(gw), gc, 0, 0,
+			   w->label.lbm_width, w->label.lbm_height,
+			   (int) w->label.internal_width,
+			   (int) w->label.lbm_y,
+			   (unsigned long) 1L);
+	    else
+		XCopyArea(XtDisplay(gw), pm, XtWindow(gw), gc, 0, 0,
+			  w->label.lbm_width, w->label.lbm_height,
+			  (int) w->label.internal_width,
+			  (int) w->label.lbm_y);
 	}
 
+#ifdef XAW_INTERNATIONALIZATION
         if ( w->simple.international == True ) {
 
 	    XFontSetExtents *ext = XExtentsOfFontSet(w->label.fontset);
@@ -565,7 +588,9 @@ static void Redisplay(gw, event, region)
 	        XmbDrawString(XtDisplay(w), XtWindow(w), w->label.fontset, gc,
 			      w->label.label_x, ksy, label, len);
 
-        } else { /*international false, so use R5 routine */
+        } else
+#endif
+        { /* international false, so use R5 routine */
 
 	    if (len == MULTI_LINE_LABEL) {
 	        char *nl;
@@ -592,16 +617,30 @@ static void Redisplay(gw, event, region)
 			   w->label.label_x, y, label, len);
 	    }
 
-        } /*endif international*/
+        } /* endif international */
 
-    } else if (w->label.label_len == 1) { /* depth */
-	XCopyPlane(XtDisplay(gw), w->label.pixmap, XtWindow(gw), gc,
-				0, 0, w->label.label_width, w->label.label_height,
-				w->label.label_x, w->label.label_y, 1L);
     } else {
-	XCopyArea(XtDisplay(gw), w->label.pixmap, XtWindow(gw), gc,
-				0, 0, w->label.label_width, w->label.label_height,
-				w->label.label_x, w->label.label_y);
+	pm = w->label.pixmap;
+#ifdef XAW_MULTIPLANE_PIXMAPS
+	if (!XtIsSensitive(gw)) {
+	    if (w->label.stippled == None)
+		w->label.stippled = stipplePixmap(gw,
+				w->label.pixmap, w->core.colormap,
+				w->core.background_pixel, w->label.depth);
+	    if (w->label.stippled != None)
+		pm = w->label.stippled;
+	}
+#endif
+
+	if (w->label.depth == 1)
+	    XCopyPlane(XtDisplay(gw), pm, XtWindow(gw), gc, 0, 0,
+		       w->label.label_width, w->label.label_height,
+		       w->label.label_x, w->label.label_y,
+		       1L);
+	else
+	    XCopyArea(XtDisplay(gw), pm, XtWindow(gw), gc, 0, 0,
+		      w->label.label_width, w->label.label_height,
+		      w->label.label_x, w->label.label_y);
     }
 
 #ifdef notdef
@@ -616,34 +655,32 @@ static void _Reposition(lw, width, height, dx, dy)
     Position *dx, *dy;
 {
     Position newPos;
-    Position leftedge = lw->label.internal_width + LEFT_OFFSET(lw) +
-			lw->threeD.shadow_width;
+    Position leftedge = lw->label.internal_width + LEFT_OFFSET(lw);
 
     switch (lw->label.justify) {
-
-	case XtJustifyLeft   :
+	case XtJustifyLeft:
 	    newPos = leftedge;
 	    break;
-
-	case XtJustifyRight  :
-	    newPos = width -
-		(lw->label.label_width 
-			+ lw->label.internal_width 
-			+ lw->threeD.shadow_width);
+	case XtJustifyRight:
+	    newPos = width - lw->label.label_width - lw->label.internal_width;
 	    break;
-
-	case XtJustifyCenter :
+	case XtJustifyCenter:
 	default:
 	    newPos = (int)(width - lw->label.label_width) / 2;
 	    break;
     }
+
     if (newPos < (Position)leftedge)
 	newPos = leftedge;
     *dx = newPos - lw->label.label_x;
     lw->label.label_x = newPos;
+
     *dy = (newPos = (int)(height - lw->label.label_height) / 2)
 	  - lw->label.label_y;
     lw->label.label_y = newPos;
+
+    lw->label.lbm_y = (height - lw->label.lbm_height) / 2;
+
     return;
 }
 
@@ -661,10 +698,10 @@ static void Resize(w)
  * Set specified arguments into widget
  */
 
-#define PIXMAP 0
-#define WIDTH 1
-#define HEIGHT 2
-#define NUM_CHECKS 3
+#define PIXMAP		0
+#define WIDTH		1
+#define HEIGHT		2
+#define NUM_CHECKS	3
 
 static Boolean SetValues(current, request, new, args, num_args)
     Widget current, request, new;
@@ -679,7 +716,6 @@ static Boolean SetValues(current, request, new, args, num_args)
 
     for (i = 0; i < NUM_CHECKS; i++)
 	checks[i] = FALSE;
-
     for (i = 0; i < *num_args; i++) {
 	if (streq(XtNbitmap, args[i].name))
 	    checks[PIXMAP] = TRUE;
@@ -689,63 +725,74 @@ static Boolean SetValues(current, request, new, args, num_args)
 	    checks[HEIGHT] = TRUE;
     }
 
-    if (newlw->label.label == NULL) {
+    if (newlw->label.label == NULL)
 	newlw->label.label = newlw->core.name;
-    }
-
-    /*
-     * resize on bitmap change
-     */
-    if (curlw->label.left_bitmap != newlw->label.left_bitmap) {
-	was_resized = True;
-    }
-
-    if (curlw->label.encoding != newlw->label.encoding)
-	was_resized = True;
-
-    if ( (curlw->label.fontset != newlw->label.fontset) &&
-					 curlw->simple.international ){
-	was_resized = True;
-    }
     if (curlw->label.label != newlw->label.label) {
         if (curlw->label.label != curlw->core.name)
-	    XtFree( (char *)curlw->label.label );
-
-	if (newlw->label.label != newlw->core.name) {
-	    newlw->label.label = XtNewString( newlw->label.label );
-	}
+	    XtFree((char *)curlw->label.label);
+	if (newlw->label.label != newlw->core.name)
+	    newlw->label.label = XtNewString(newlw->label.label);
 	was_resized = True;
     }
 
-    if (was_resized || (curlw->label.font != newlw->label.font) ||
-	(curlw->label.justify != newlw->label.justify) || checks[PIXMAP]) {
-
-	SetTextWidthAndHeight(newlw);
+    if (was_resized || checks[PIXMAP] ||
+		curlw->label.font != newlw->label.font ||
+#ifdef XAW_INTERNATIONALIZATION
+		(curlw->simple.international &&
+			curlw->label.fontset != newlw->label.fontset) ||
+#endif
+		curlw->label.encoding != newlw->label.encoding ||
+		curlw->label.justify != newlw->label.justify) {
+	SetTextWidthAndHeight(newlw);   /* label.label or label.pixmap */
 	was_resized = True;
     }
+
+    if (curlw->label.left_bitmap != newlw->label.left_bitmap ||
+		curlw->label.internal_width != newlw->label.internal_width ||
+		curlw->label.internal_height != newlw->label.internal_height)
+	was_resized = True;
 
     /* recalculate the window size if something has changed. */
     if (newlw->label.resize && was_resized) {
-	if ((curlw->core.height == reqlw->core.height) && !checks[HEIGHT])
-	    newlw->core.height = (newlw->label.label_height +
-				    2 * newlw->label.internal_height +
-				    2 * newlw->threeD.shadow_width);
+	if (curlw->core.height == reqlw->core.height && !checks[HEIGHT])
+	    newlw->core.height = newlw->label.label_height +
+				2 * newlw->label.internal_height;
 
-	set_bitmap_info (newlw);
+	set_bitmap_info (newlw);  /* req's core.height, sets label.lbm_* */
 
-	if ((curlw->core.width == reqlw->core.width) && !checks[WIDTH])
-	    newlw->core.width = (newlw->label.label_width +
-				    LEFT_OFFSET(newlw) +
-				    2 * newlw->label.internal_width +
-				    2 * newlw->threeD.shadow_width);
+	if (newlw->label.lbm_height > newlw->label.label_height)
+	    newlw->core.height = newlw->label.lbm_height +
+					2 * newlw->label.internal_height;
+
+	if (curlw->core.width == reqlw->core.width && !checks[WIDTH])
+	    newlw->core.width = newlw->label.label_width +
+				2 * newlw->label.internal_width +
+				LEFT_OFFSET(newlw);  /* req's label.lbm_width */
     }
 
-    if (curlw->label.foreground		!= newlw->label.foreground
-	|| curlw->core.background_pixel != newlw->core.background_pixel
-	|| curlw->label.font->fid	!= newlw->label.font->fid	  ) {
+    /* enforce minimum dimensions */
+    if (newlw->label.resize) {
+	if (checks[HEIGHT]) {
+	    if (newlw->label.label_height > newlw->label.lbm_height)
+		i = newlw->label.label_height +
+			2 * newlw->label.internal_height;
+	    else
+		i = newlw->label.lbm_height + 2 * newlw->label.internal_height;
+	    if (i > newlw->core.height)
+		newlw->core.height = i;
+	}
+	if (checks[WIDTH]) {
+	    i = newlw->label.label_width + 2 * newlw->label.internal_width +
+			LEFT_OFFSET(newlw);  /* req's label.lbm_width */
+	    if (i > newlw->core.width)
+		newlw->core.width = i;
+	}
+    }
 
-        /* The Fontset is not in the GC - don't make a new GC if FS changes! */
-
+    if (curlw->core.background_pixel != newlw->core.background_pixel ||
+		curlw->label.foreground != newlw->label.foreground ||
+		curlw->label.font->fid != newlw->label.font->fid) {
+        /* the fontset is not in the GC - no new GC if fontset changes */
 	XtReleaseGC(new, curlw->label.normal_GC);
 	XtReleaseGC(new, curlw->label.gray_GC);
 	XmuReleaseStippledPixmap( XtScreen(current), curlw->label.stipple );
@@ -754,11 +801,25 @@ static Boolean SetValues(current, request, new, args, num_args)
 	redisplay = True;
     }
 
-    if ((curlw->label.internal_width != newlw->label.internal_width)
-        || (curlw->label.internal_height != newlw->label.internal_height)
-	|| was_resized) {
-	/* Resize() will be called if geometry changes succeed */
+#ifdef XAW_MULTIPLANE_PIXMAPS
+    if (curlw->label.pixmap != newlw->label.pixmap)
+    {
+	newlw->label.stippled = None;
+	if (curlw->label.stippled != None)
+	    XFreePixmap(XtDisplay(current), curlw->label.stippled);
+    }
+    if (curlw->label.left_bitmap != newlw->label.left_bitmap)
+    {
+	newlw->label.left_stippled = None;
+	if (curlw->label.left_stippled != None)
+	    XFreePixmap(XtDisplay(current), curlw->label.left_stippled);
+    }
+#endif
+
+    if (was_resized) {
 	Position dx, dy;
+
+	/* Resize() will be called if geometry changes succeed */
 	_Reposition(newlw, curlw->core.width, curlw->core.height, &dx, &dy);
     }
 
@@ -775,6 +836,12 @@ static void Destroy(w)
 	XtFree( lw->label.label );
     XtReleaseGC( w, lw->label.normal_GC );
     XtReleaseGC( w, lw->label.gray_GC);
+#ifdef XAW_MULTIPLANE_PIXMAPS
+    if (lw->label.stippled != None)
+	XFreePixmap(XtDisplay(w), lw->label.stippled);
+    if (lw->label.left_stippled != None)
+	XFreePixmap(XtDisplay(w), lw->label.left_stippled);
+#endif
     XmuReleaseStippledPixmap( XtScreen(w), lw->label.stipple );
 }
 
@@ -788,11 +855,9 @@ static XtGeometryResult QueryGeometry(w, intended, preferred)
     preferred->request_mode = CWWidth | CWHeight;
     preferred->width = (lw->label.label_width + 
 			    2 * lw->label.internal_width +
-			    2 * lw->threeD.shadow_width +
 			    LEFT_OFFSET(lw));
     preferred->height = lw->label.label_height + 
-			    2 * lw->label.internal_height +
-			    2 * lw->threeD.shadow_width;
+			    2 * lw->label.internal_height;
     if (  ((intended->request_mode & (CWWidth | CWHeight))
 	   	== (CWWidth | CWHeight)) &&
 	  intended->width == preferred->width &&

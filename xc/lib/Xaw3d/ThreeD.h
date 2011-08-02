@@ -49,6 +49,7 @@ SOFTWARE.
  bottomShadowContrast BottomShadowContrast Int           40
  userData             UserData             XtPointer     NULL
  beNiceToColormap     BeNiceToColormap     Boolean       False
+ relief               Relief               XtRelief      XtReliefRaised
 
 */
 
@@ -68,6 +69,16 @@ SOFTWARE.
 #define XtCBeNiceToColourmap "BeNiceToColormap"
 #define XtNuserData "userData"
 #define XtCUserData "UserData"
+#define XtNrelief "relief"
+#define XtCRelief "Relief"
+
+typedef enum {
+    XtReliefNone,
+    XtReliefRaised,
+    XtReliefSunken,
+    XtReliefRidge, 
+    XtReliefGroove 
+} XtRelief;
 
 typedef struct _ThreeDRec *ThreeDWidget;
 typedef struct _ThreeDClassRec *ThreeDWidgetClass;
@@ -87,6 +98,19 @@ extern void Xaw3dComputeBottomShadowRGB (
 #if NeedFunctionPrototypes
     Widget		/* new */,
     XColor*		/* xcol_out */
+#endif
+);
+
+extern void _ShadowSurroundedBox (
+#if NeedFunctionPrototypes
+    Widget,
+    ThreeDWidget,
+    Position,
+    Position,
+    Position,
+    Position,
+    XtRelief,
+    Boolean
 #endif
 );
 

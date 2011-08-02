@@ -60,21 +60,21 @@ SOFTWARE.
  *          kit@expo.lcs.mit.edu
  */
 
+#include "Xaw3dP.h"
 #include <X11/IntrinsicP.h>
 #include <X11/cursorfont.h>
 #include <X11/StringDefs.h>
-
 #include <X11/Xmu/Misc.h>
 #include <X11/Xmu/Converters.h>
-
 #include <X11/Xaw3d/XawInit.h>
 #include <X11/Xaw3d/Grip.h>
 #include <X11/Xaw3d/PanedP.h>
+#include <ctype.h>
 
 /* I don't know why Paned.c calls _XawImCallVendorShellExtResize, but... */
+#ifdef XAW_INTERNATIONALIZATION
 #include <X11/Xaw3d/XawImP.h> 
-
-#include <ctype.h>
+#endif
 
 typedef enum {UpLeftPane = 'U', LowRightPane = 'L', 
 	      ThisBorderOnly = 'T', AnyPane = 'A' } Direction;
@@ -316,7 +316,9 @@ Dimension * on_size_ret, * off_size_ret;
       request.request_mode |= XtCWQueryOnly;
 
       *result_ret = XtMakeGeometryRequest( (Widget) pw, &request, &reply );
+#ifdef XAW_INTERNATIONALIZATION
       _XawImCallVendorShellExtResize( (Widget) pw );
+#endif
 
       if ( (newsize == old_size) || (*result_ret == XtGeometryNo) ) {
 	  *on_size_ret = old_size;

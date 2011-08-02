@@ -27,10 +27,13 @@ SOFTWARE.
 
 ******************************************************************/
 
+#include "Xaw3dP.h"
 #include <X11/Xlib.h>
 #include <X11/StringDefs.h>
 #include <X11/IntrinsicP.h>
 #include <X11/Xaw3d/XawInit.h>
+#include <X11/Xaw3d/ThreeDP.h>
+#include <X11/Xaw3d/SimpleMenP.h>
 #include <X11/Xaw3d/SmeThreeDP.h>
 #include <X11/Xosdefs.h>
 
@@ -223,21 +226,25 @@ static void AllocTopShadowPixmap (new)
     } else if (tdo->sme_threeD.be_nice_to_cmap) {
 	if (parent->core.background_pixel == WhitePixelOfScreen (scn)) {
 	    top_fg_pixel = WhitePixelOfScreen (scn);
-	    top_bg_pixel = BlackPixelOfScreen (scn);
+	    top_bg_pixel = grayPixel( BlackPixelOfScreen (scn), dpy, scn);
 	} else if (parent->core.background_pixel == BlackPixelOfScreen (scn)) {
-	    top_fg_pixel = BlackPixelOfScreen (scn);
+	    top_fg_pixel = grayPixel( BlackPixelOfScreen (scn), dpy, scn);
 	    top_bg_pixel = WhitePixelOfScreen (scn);
 	} else {
 	    top_fg_pixel = parent->core.background_pixel;
 	    top_bg_pixel = WhitePixelOfScreen (scn);
 	}
+#ifndef XAW_GRAY_BLKWHT_STIPPLES
 	if (parent->core.background_pixel == WhitePixelOfScreen (scn) ||
-	    parent->core.background_pixel == BlackPixelOfScreen (scn))
+	    parent->core.background_pixel == BlackPixelOfScreen (scn)) {
 	    pm_data = mtshadowpm_bits;
-	else
+       } else 
+#endif
 	    pm_data = shadowpm_bits;
+
 	create_pixmap = TRUE;
     }
+
     if (create_pixmap)
 	tdo->sme_threeD.top_shadow_pxmap = XCreatePixmapFromBitmapData (dpy,
 			RootWindowOfScreen (scn),
@@ -268,22 +275,26 @@ static void AllocBotShadowPixmap (new)
 	create_pixmap = TRUE;
     } else if (tdo->sme_threeD.be_nice_to_cmap) {
 	if (parent->core.background_pixel == WhitePixelOfScreen (scn)) {
-	    bot_fg_pixel = WhitePixelOfScreen (scn);
+	    bot_fg_pixel = grayPixel( WhitePixelOfScreen (scn), dpy, scn);
 	    bot_bg_pixel = BlackPixelOfScreen (scn);
 	} else if (parent->core.background_pixel == BlackPixelOfScreen (scn)) {
 	    bot_fg_pixel = BlackPixelOfScreen (scn);
-	    bot_bg_pixel = WhitePixelOfScreen (scn);
+	    bot_bg_pixel = grayPixel( BlackPixelOfScreen (scn), dpy, scn);
 	} else {
 	    bot_fg_pixel = parent->core.background_pixel;
 	    bot_bg_pixel = BlackPixelOfScreen (scn);
 	}
+#ifndef XAW_GRAY_BLKWHT_STIPPLES
 	if (parent->core.background_pixel == WhitePixelOfScreen (scn) ||
-	    parent->core.background_pixel == BlackPixelOfScreen (scn))
+	    parent->core.background_pixel == BlackPixelOfScreen (scn)) {
 	    pm_data = mbshadowpm_bits;
-	else
+	} else
+#endif
 	    pm_data = shadowpm_bits;
+
 	create_pixmap = TRUE;
     }
+
     if (create_pixmap)
 	tdo->sme_threeD.bot_shadow_pxmap = XCreatePixmapFromBitmapData (dpy,
 			RootWindowOfScreen (scn),
@@ -307,7 +318,7 @@ void XawSme3dComputeTopShadowRGB (new, xcol_out)
 	double contrast;
 	Display *dpy = XtDisplayOfObject (new);
 	Screen *scn = XtScreenOfObject (new);
-	Colormap cmap = DefaultColormapOfScreen (scn);
+	Colormap cmap = w->core.colormap;
 
 	get_c.pixel = w->core.background_pixel;
 	if (get_c.pixel == WhitePixelOfScreen (scn) ||
@@ -335,9 +346,9 @@ static void AllocTopShadowPixel (new)
 {
     XColor set_c;
     SmeThreeDObject tdo = (SmeThreeDObject) new;
+    Widget w = XtParent (new);
     Display *dpy = XtDisplayOfObject (new);
-    Screen *scn = XtScreenOfObject (new);
-    Colormap cmap = DefaultColormapOfScreen (scn);
+    Colormap cmap = w->core.colormap;
 
     XawSme3dComputeTopShadowRGB (new, &set_c);
     (void) XAllocColor (dpy, cmap, &set_c);
@@ -357,7 +368,7 @@ void XawSme3dComputeBottomShadowRGB (new, xcol_out)
 	double contrast;
 	Display *dpy = XtDisplayOfObject (new);
 	Screen *scn = XtScreenOfObject (new);
-	Colormap cmap = DefaultColormapOfScreen (scn);
+	Colormap cmap = w->core.colormap;
 
 	get_c.pixel = w->core.background_pixel;
 	if (get_c.pixel == WhitePixelOfScreen (scn) ||
@@ -383,9 +394,9 @@ static void AllocBotShadowPixel (new)
 {
     XColor set_c;
     SmeThreeDObject tdo = (SmeThreeDObject) new;
+    Widget w = XtParent (new);
     Display *dpy = XtDisplayOfObject (new);
-    Screen *scn = XtScreenOfObject (new);
-    Colormap cmap = DefaultColormapOfScreen (scn);
+    Colormap cmap = w->core.colormap;
 
     XawSme3dComputeBottomShadowRGB (new, &set_c);
     (void) XAllocColor (dpy, cmap, &set_c);
@@ -528,33 +539,39 @@ static Boolean SetValues (gcurrent, grequest, gnew, args, num_args)
 
 /* ARGSUSED */
 static void 
-_XawSme3dDrawShadows (gw)
+_XawSme3dDrawShadows(gw)
     Widget gw;
 {
-    XPoint	pt[6];
     SmeThreeDObject tdo = (SmeThreeDObject) gw;
-    Dimension	s = tdo->sme_threeD.shadow_width;
+    SimpleMenuWidget smw = (SimpleMenuWidget) XtParent(gw);
+    ThreeDWidget tdw = (ThreeDWidget) smw->simple_menu.threeD;
+    Dimension s = tdo->sme_threeD.shadow_width;
+    Dimension ps = tdw->threeD.shadow_width;
+    XPoint pt[6];
+
     /* 
      * draw the shadows using the core part width and height, 
      * and the threeD part shadow_width.
      *
-     *	no point to do anything if the shadow_width is 0 or the
-     *	widget has not been realized.
+     * no point to do anything if the shadow_width is 0 or the
+     * widget has not been realized.
      */ 
-    if((s > 0) && XtIsRealized (gw)){
-
+    if (s > 0 && XtIsRealized(gw))
+    {
 	Dimension	h = tdo->rectangle.height;
-	Dimension	w = tdo->rectangle.width;
-	Dimension	x = tdo->rectangle.x;
+	Dimension	w = tdo->rectangle.width - ps;
+	Dimension	x = tdo->rectangle.x + ps;
 	Dimension	y = tdo->rectangle.y;
-	Display		*dpy = XtDisplayOfObject (gw);
-	Window		win = XtWindowOfObject (gw);
+	Display		*dpy = XtDisplayOfObject(gw);
+	Window		win = XtWindowOfObject(gw);
 	GC		top, bot;
 
-	if (tdo->sme_threeD.shadowed) {
+	if (tdo->sme_threeD.shadowed)
+	{
 	    top = tdo->sme_threeD.top_shadow_GC;
 	    bot = tdo->sme_threeD.bot_shadow_GC;
-	} else
+	}
+	else
 	    top = bot = tdo->sme_threeD.erase_GC;
 
 	/* top-left shadow */
@@ -562,18 +579,18 @@ _XawSme3dDrawShadows (gw)
 	pt[1].x = x;		pt[1].y = y;
 	pt[2].x = w;		pt[2].y = y;
 	pt[3].x = w - s;	pt[3].y = y + s;
-	pt[4].x = s;		pt[4].y = y + s;
-	pt[5].x = s;		pt[5].y = y + h - s;
-	XFillPolygon (dpy, win, top, pt, 6,Complex,CoordModeOrigin);
+	pt[4].x = ps + s;       pt[4].y = y + s;
+	pt[5].x = ps + s;       pt[5].y = y + h - s;
+	XFillPolygon(dpy, win, top, pt, 6, Complex, CoordModeOrigin);
 
 	/* bottom-right shadow */
-     /* pt[0].x = x;		pt[0].y = y + h;	*/
+/*	pt[0].x = x;		pt[0].y = y + h;	*/
 	pt[1].x = w;		pt[1].y = y + h;
-     /* pt[2].x = w;		pt[2].y = y;		*/
-     /* pt[3].x = w - s;	pt[3].y = y + s;	*/
+/*	pt[2].x = w;		pt[2].y = y;		*/
+/*	pt[3].x = w - s;	pt[3].y = y + s;	*/
 	pt[4].x = w - s;	pt[4].y = y + h - s;
-     /* pt[5].x = s;		pt[5].y = y + h - s;	*/
-	XFillPolygon (dpy, win, bot, pt,6, Complex,CoordModeOrigin);
+/*	pt[5].x = ps + s;	pt[5].y = y + h - s;	*/
+	XFillPolygon(dpy, win, bot, pt, 6, Complex, CoordModeOrigin);
     }
 }
 

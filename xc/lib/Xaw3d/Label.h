@@ -57,6 +57,7 @@ SOFTWARE.
  *
  ***********************************************************************/
 
+#include "Xaw3dP.h"
 #include <X11/Xaw3d/Simple.h>
 
 /* Resources:
@@ -99,12 +100,13 @@ SOFTWARE.
 #define XtNencoding "encoding"
 #define XtCEncoding "Encoding"
 
+#ifdef XAW_INTERNATIONALIZATION
 #ifndef XtNfontSet
 #define XtNfontSet "fontSet"
 #endif
-
 #ifndef XtCFontSet
 #define XtCFontSet "FontSet"
+#endif
 #endif
 
 #ifndef _XtStringDefs_h_

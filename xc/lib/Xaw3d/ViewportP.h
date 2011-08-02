@@ -56,6 +56,7 @@ SOFTWARE.
 
 #include <X11/Xaw3d/Viewport.h>
 #include <X11/Xaw3d/FormP.h>
+#include <X11/Xaw3d/ThreeDP.h>
 
 typedef struct {int empty;} ViewportClassPart;
 
@@ -81,6 +82,7 @@ typedef struct _ViewportPart {
     /* private state */
     Widget clip, child;		/* The clipping and (scrolled) child widgets */
     Widget  horiz_bar, vert_bar;/* What scrollbars we currently have. */
+    ThreeDWidget threeD;
 } ViewportPart;
 
 typedef struct _ViewportRec {

@@ -27,6 +27,12 @@ SOFTWARE.
 
 ******************************************************************/
 
+/*
+ * Portions Copyright (c) 2003 David J. Hawkey Jr.
+ * Rights, permissions, and disclaimer per the above DEC/MIT license.
+ */
+
+#include "Xaw3dP.h"
 #include <X11/Xlib.h>
 #include <X11/StringDefs.h>
 #include <X11/IntrinsicP.h>
@@ -40,6 +46,8 @@ SOFTWARE.
 #define XtCTopShadowPixmap "TopShadowPixmap"
 #define XtNbottomShadowPixmap "bottomShadowPixmap"
 #define XtCBottomShadowPixmap "BottomShadowPixmap"
+
+static char defRelief[] = "Raised";
 
 #define offset(field) XtOffsetOf(ThreeDRec, field)
 
@@ -64,12 +72,14 @@ static XtResource resources[] = {
 	offset(threeD.be_nice_to_cmap), XtRImmediate, (XtPointer) True},
     {XtNborderWidth, XtCBorderWidth, XtRDimension, sizeof(Dimension),
 	XtOffsetOf(RectObjRec,rectangle.border_width), XtRImmediate,
-	(XtPointer)0}
+	(XtPointer)0},
+    {XtNrelief, XtCRelief, XtRRelief, sizeof(XtRelief),
+	offset(threeD.relief), XtRString, (XtPointer) defRelief}
 };
 
 #undef offset
 
-static void ClassPartInitialize(), Initialize(), Destroy();
+static void ClassInitialize(), ClassPartInitialize(), Initialize(), Destroy();
 static void Redisplay(), Realize(), _Xaw3dDrawShadows();
 static Boolean SetValues();
 
@@ -78,7 +88,7 @@ ThreeDClassRec threeDClassRec = {
     /* superclass		*/	(WidgetClass) &simpleClassRec,
     /* class_name		*/	"ThreeD",
     /* widget_size		*/	sizeof(ThreeDRec),
-    /* class_initialize		*/	NULL,
+    /* class_initialize		*/	ClassInitialize,
     /* class_part_initialize	*/	ClassPartInitialize,
     /* class_inited		*/	FALSE,
     /* initialize		*/	Initialize,
@@ -132,33 +142,6 @@ static char mtshadowpm_bits[] = {0x02, 0x04, 0x01};
 
 #define shadowpm_size 2
 static char shadowpm_bits[] = {0x02, 0x01};
-
-#ifdef USEGRAY
-#include <stdio.h>
-unsigned long grayPixel(dpy, scn)
-Display *dpy;
-Screen	*scn;
-    {
-    static XColor Gray = 
-    {
-	/* pixel */            0, 
-	/* red, green, blue */ 0,0,0, 
-        /* flags */            0,
-        /* pad */              0
-    };
-    if (!Gray.pixel)
-	{
-	XColor exact;
-	(void) XAllocNamedColor(dpy, DefaultColormapOfScreen (scn), 
-				"gray", &Gray,&exact);  /* Blindflug */
-	}
-    return Gray.pixel;
-    }
-#define setPixel(p,dpy,scn) grayPixel(dpy,scn)
-#else
-#define setPixel(p,dpy,scn) (p)
-#endif
-
 
 /* ARGSUSED */
 static void AllocTopShadowGC (w)
@@ -226,16 +209,16 @@ static void AllocTopShadowPixmap (new)
 	create_pixmap = TRUE;
     } else if (tdw->threeD.be_nice_to_cmap) {
 	if (tdw->core.background_pixel == WhitePixelOfScreen (scn)) {
-	    top_fg_pixel = setPixel( WhitePixelOfScreen (scn), dpy, scn);
-	    top_bg_pixel = BlackPixelOfScreen (scn);
+	    top_fg_pixel = WhitePixelOfScreen (scn);
+	    top_bg_pixel = grayPixel( BlackPixelOfScreen (scn), dpy, scn);
 	} else if (tdw->core.background_pixel == BlackPixelOfScreen (scn)) {
-	    top_fg_pixel = BlackPixelOfScreen (scn);
-	    top_bg_pixel = setPixel( WhitePixelOfScreen (scn), dpy, scn);
+	    top_fg_pixel = grayPixel( BlackPixelOfScreen (scn), dpy, scn);
+	    top_bg_pixel = WhitePixelOfScreen (scn);
 	} else {
 	    top_fg_pixel = tdw->core.background_pixel;
 	    top_bg_pixel = WhitePixelOfScreen (scn);
 	}
-#ifndef USEGRAY
+#ifndef XAW_GRAY_BLKWHT_STIPPLES
 	if (tdw->core.background_pixel == WhitePixelOfScreen (scn) ||
 	    tdw->core.background_pixel == BlackPixelOfScreen (scn)) {
 	    pm_data = mtshadowpm_bits;
@@ -283,16 +266,16 @@ static void AllocBotShadowPixmap (new)
 	create_pixmap = TRUE;
     } else if (tdw->threeD.be_nice_to_cmap) {
 	if (tdw->core.background_pixel == WhitePixelOfScreen (scn)) {
-	    bot_fg_pixel = WhitePixelOfScreen (scn);
-	    bot_bg_pixel = setPixel( BlackPixelOfScreen (scn), dpy, scn);
-	} else if (tdw->core.background_pixel == BlackPixelOfScreen (scn)) {
-	    bot_fg_pixel = setPixel( BlackPixelOfScreen (scn), dpy, scn);
+	    bot_fg_pixel = grayPixel( WhitePixelOfScreen (scn), dpy, scn);
 	    bot_bg_pixel = BlackPixelOfScreen (scn);
+	} else if (tdw->core.background_pixel == BlackPixelOfScreen (scn)) {
+	    bot_fg_pixel = BlackPixelOfScreen (scn);
+	    bot_bg_pixel = grayPixel( BlackPixelOfScreen (scn), dpy, scn);
 	} else {
 	    bot_fg_pixel = tdw->core.background_pixel;
 	    bot_bg_pixel = BlackPixelOfScreen (scn);
 	}
-#ifndef USEGRAY
+#ifndef XAW_GRAY_BLKWHT_STIPPLES
 	if (tdw->core.background_pixel == WhitePixelOfScreen (scn) ||
 	    tdw->core.background_pixel == BlackPixelOfScreen (scn)) {
 	    pm_data = mbshadowpm_bits;
@@ -330,7 +313,7 @@ void Xaw3dComputeTopShadowRGB (new, xcol_out)
 	double contrast;
 	Display *dpy = XtDisplay (new);
 	Screen *scn = XtScreen (new);
-	Colormap cmap = DefaultColormapOfScreen (scn);
+	Colormap cmap = new->core.colormap;
 
 	get_c.pixel = tdw->core.background_pixel;
 	if (get_c.pixel == WhitePixelOfScreen (scn) ||
@@ -360,7 +343,7 @@ static void AllocTopShadowPixel (new)
     ThreeDWidget tdw = (ThreeDWidget) new;
     Display *dpy = XtDisplay (new);
     Screen *scn = XtScreen (new);
-    Colormap cmap = DefaultColormapOfScreen (scn);
+    Colormap cmap = new->core.colormap;
 
     Xaw3dComputeTopShadowRGB (new, &set_c);
     (void) XAllocColor (dpy, cmap, &set_c);
@@ -378,7 +361,7 @@ void Xaw3dComputeBottomShadowRGB (new, xcol_out)
 	double contrast;
 	Display *dpy = XtDisplay (new);
 	Screen *scn = XtScreen (new);
-	Colormap cmap = DefaultColormapOfScreen (scn);
+	Colormap cmap = new->core.colormap;
 
 	get_c.pixel = tdw->core.background_pixel;
 	if (get_c.pixel == WhitePixelOfScreen (scn) ||
@@ -406,11 +389,72 @@ static void AllocBotShadowPixel (new)
     ThreeDWidget tdw = (ThreeDWidget) new;
     Display *dpy = XtDisplay (new);
     Screen *scn = XtScreen (new);
-    Colormap cmap = DefaultColormapOfScreen (scn);
+    Colormap cmap = new->core.colormap;
 
     Xaw3dComputeBottomShadowRGB (new, &set_c);
     (void) XAllocColor (dpy, cmap, &set_c);
     tdw->threeD.bot_shadow_pixel = set_c.pixel;
+}
+
+
+static XrmQuark	XtQReliefNone, XtQReliefRaised, XtQReliefSunken,
+		XtQReliefRidge, XtQReliefGroove;
+
+#define	done(address, type) { \
+	  toVal->size = sizeof(type); \
+	  toVal->addr = (XPointer) address; \
+	  return; \
+	}
+
+/* ARGSUSED */
+static void _CvtStringToRelief(args, num_args, fromVal, toVal)
+    XrmValuePtr args;          /* unused */
+    Cardinal    *num_args;      /* unused */
+    XrmValuePtr fromVal;
+    XrmValuePtr toVal;
+{
+    static XtRelief relief;
+    XrmQuark q;
+    char lowerName[1000];
+
+    XmuCopyISOLatin1Lowered (lowerName, (char*)fromVal->addr);
+    q = XrmStringToQuark(lowerName);
+    if (q == XtQReliefNone) {
+       relief = XtReliefNone;
+       done(&relief, XtRelief);
+    }
+    if (q == XtQReliefRaised) {
+       relief = XtReliefRaised;
+       done(&relief, XtRelief);
+    }
+    if (q == XtQReliefSunken) {
+       relief = XtReliefSunken;
+       done(&relief, XtRelief);
+    }    
+    if (q == XtQReliefRidge) {
+       relief = XtReliefRidge;
+       done(&relief, XtRelief);
+    }
+    if (q == XtQReliefGroove) {
+       relief = XtReliefGroove;
+       done(&relief, XtRelief);
+    }
+    XtStringConversionWarning(fromVal->addr, "relief");
+    toVal->addr = NULL;
+    toVal->size = 0;
+}
+
+static void ClassInitialize()
+{
+    XawInitializeWidgetSet();
+    XtQReliefNone   = XrmPermStringToQuark("none");
+    XtQReliefRaised = XrmPermStringToQuark("raised");
+    XtQReliefSunken = XrmPermStringToQuark("sunken");
+    XtQReliefRidge  = XrmPermStringToQuark("ridge");
+    XtQReliefGroove = XrmPermStringToQuark("groove");
+
+    XtAddConverter( XtRString, XtRRelief, _CvtStringToRelief, 
+                   (XtConvertArgList)NULL, 0 );
 }
 
 
@@ -488,7 +532,9 @@ static void Redisplay (w, event, region)
     XEvent *event;		/* unused */
     Region region;		/* unused */
 {
-    _Xaw3dDrawShadows (w, event, region, True);
+    ThreeDWidget tdw = (ThreeDWidget) w;
+
+    _Xaw3dDrawShadows (w, event, region, tdw->threeD.relief, True);
 }
 
 /* ARGSUSED */
@@ -507,6 +553,8 @@ static Boolean SetValues (gcurrent, grequest, gnew, args, num_args)
 
     (*threeDWidgetClass->core_class.superclass->core_class.set_values) 
 	(gcurrent, grequest, gnew, NULL, 0);
+    if (new->threeD.relief != current->threeD.relief)
+	redisplay = TRUE;
     if (new->threeD.shadow_width != current->threeD.shadow_width)
 	redisplay = TRUE;
     if (new->threeD.be_nice_to_cmap != current->threeD.be_nice_to_cmap) {
@@ -575,30 +623,32 @@ static Boolean SetValues (gcurrent, grequest, gnew, args, num_args)
 
 /* ARGSUSED */
 static void
-_Xaw3dDrawShadows (gw, event, region, out)
+_Xaw3dDrawShadows (gw, event, region, relief, out)
     Widget gw;
     XEvent *event;
     Region region;
+    XtRelief relief;
     Boolean out;
 {
     XPoint	pt[6];
     ThreeDWidget tdw = (ThreeDWidget) gw;
     Dimension	s = tdw->threeD.shadow_width;
-    /* 
-     * draw the shadows using the core part width and height, 
-     * and the threeD part shadow_width.
-     *
-     *	no point to do anything if the shadow_width is 0 or the
-     *	widget has not been realized.
-     */ 
-    if((s > 0) && XtIsRealized (gw)){
 
+    /* 
+     * Draw the shadows using the core part width and height, 
+     * and the threeD part relief and shadow_width.
+     * No point to do anything if the shadow_width is 0 or the
+     * widget has not been realized.
+     */ 
+    if ((s > 0) && XtIsRealized (gw)) {
 	Dimension	h = tdw->core.height;
 	Dimension	w = tdw->core.width;
-	Dimension	wms = w - s;
 	Dimension	hms = h - s;
+	Dimension	wms = w - s;
 	Display		*dpy = XtDisplay (gw);
 	Window		win = XtWindow (gw);
+	GC		realtop = tdw->threeD.top_shadow_GC;
+	GC		realbot = tdw->threeD.bot_shadow_GC;
 	GC		top, bot;
 
 	if (out) {
@@ -609,32 +659,180 @@ _Xaw3dDrawShadows (gw, event, region, out)
 	    bot = tdw->threeD.top_shadow_GC;
 	}
 
-	/* top-left shadow */
-	if ((region == NULL) ||
-	    (XRectInRegion (region, 0, 0, w, s) != RectangleOut) ||
-	    (XRectInRegion (region, 0, 0, s, h) != RectangleOut)) {
+	if (relief == XtReliefRaised || relief == XtReliefSunken) {
+	    /* top-left shadow */
+	    if ((region == NULL) ||
+		    (XRectInRegion (region, 0, 0, w, s) != RectangleOut) ||
+		    (XRectInRegion (region, 0, 0, s, h) != RectangleOut)) {
+		pt[0].x = 0;	pt[0].y = h;
+		pt[1].x =	pt[1].y = 0;
+		pt[2].x = w;	pt[2].y = 0;
+		pt[3].x = wms;	pt[3].y = s;
+		pt[4].x =	pt[4].y = s;
+		pt[5].x = s;	pt[5].y = hms;
+		XFillPolygon (dpy, win,
+			(relief == XtReliefRaised) ? top : bot,
+			pt, 6, Complex, CoordModeOrigin);
+	    }
 
-	    pt[0].x = 0;	pt[0].y = h;
-	    pt[1].x =		pt[1].y = 0;
-	    pt[2].x = w;	pt[2].y = 0;
-	    pt[3].x = wms;	pt[3].y = s;
-	    pt[4].x =		pt[4].y = s;
-	    pt[5].x = s;	pt[5].y = hms;
-	    XFillPolygon (dpy, win, top, pt, 6,Complex,CoordModeOrigin);
+	    /* bottom-right shadow */
+	    if ((region == NULL) ||
+		    (XRectInRegion (region, 0, hms, w, s) != RectangleOut) ||
+		    (XRectInRegion (region, wms, 0, s, h) != RectangleOut)) {
+		pt[0].x = 0;	pt[0].y = h;
+		pt[1].x = w;	pt[1].y = h;
+		pt[2].x = w;	pt[2].y = 0; 
+		pt[3].x = wms;	pt[3].y = s;
+		pt[4].x = wms;	pt[4].y = hms;
+		pt[5].x = s;	pt[5].y = hms; 
+		XFillPolygon (dpy, win,
+			(relief == XtReliefRaised) ? bot : top,
+			pt, 6, Complex, CoordModeOrigin);
+	    }
+	} else if (relief == XtReliefRidge || relief == XtReliefGroove) {
+	    /* split the shadow width */
+	    s /= 2;	hms = h - s;	wms = w - s;
+
+	    /* outer top-left shadow */
+	    if ((region == NULL) ||
+		    (XRectInRegion (region, 0, 0, w, s) != RectangleOut) ||
+		    (XRectInRegion (region, 0, 0, s, h) != RectangleOut)) {
+		pt[0].x = 0;	pt[0].y = h;
+		pt[1].x =	pt[1].y = 0;
+		pt[2].x = w;	pt[2].y = 0;
+		pt[3].x = wms;	pt[3].y = s;
+		pt[4].x =	pt[4].y = s;
+		pt[5].x = s;	pt[5].y = hms;
+		XFillPolygon (dpy, win,
+			(relief == XtReliefRidge) ? realtop : realbot,
+			pt, 6, Complex, CoordModeOrigin);
+	    }
+
+	    /* outer bottom-right shadow */
+	    if ((region == NULL) ||
+		    (XRectInRegion (region, 0, hms, w, s) != RectangleOut) ||
+		    (XRectInRegion (region, wms, 0, s, h) != RectangleOut)) {
+		pt[0].x = 0;	pt[0].y = h;
+		pt[1].x = w;	pt[1].y = h;
+		pt[2].x = w;	pt[2].y = 0; 
+		pt[3].x = wms;	pt[3].y = s;
+		pt[4].x = wms;	pt[4].y = hms;
+		pt[5].x = s;	pt[5].y = hms; 
+		XFillPolygon (dpy, win,
+			(relief == XtReliefRidge) ? realbot : realtop,
+			pt, 6, Complex, CoordModeOrigin);
+	    }
+
+	    /* inner top-left shadow */
+	    if ((region == NULL) ||
+		    (XRectInRegion (region, 0, 0, w, s) != RectangleOut) ||
+		    (XRectInRegion (region, 0, 0, s, h) != RectangleOut)) {
+		pt[0].x = s;		pt[0].y = h;
+		pt[1].x =		pt[1].y = s;
+		pt[2].x = w;		pt[2].y = s;
+		pt[3].x = wms;		pt[3].y = s * 2;
+		pt[4].x =		pt[4].y = s * 2;
+		pt[5].x = s * 2;	pt[5].y = hms;
+		XFillPolygon (dpy, win,
+			(relief == XtReliefRidge) ? bot: top,
+			pt, 6, Complex, CoordModeOrigin);
+	    }
+
+	    /* inner bottom-right shadow */
+	    if ((region == NULL) ||
+		    (XRectInRegion (region, 0, hms, w, s) != RectangleOut) ||
+		    (XRectInRegion (region, wms, 0, s, h) != RectangleOut)) {
+		pt[0].x = s;		pt[0].y = hms;
+		pt[1].x = wms;		pt[1].y = hms;
+		pt[2].x = wms;		pt[2].y = s; 
+		pt[3].x = wms - s;	pt[3].y = s * 2;
+		pt[4].x = wms - s;	pt[4].y = hms - s;
+		pt[5].x = s * 2;	pt[5].y = hms - s; 
+		XFillPolygon (dpy, win,
+			(relief == XtReliefRidge) ? top : bot,
+			pt, 6, Complex, CoordModeOrigin);
+	    }
+	}
+    }
+}
+
+/*
+ * _ShadowSurroundedBox() is somewhat redundant with _Xaw3dDrawShadows(),
+ * but has a more explicit interface, and ignores threeD part relief.
+ */
+
+/* ARGSUSED */
+void
+_ShadowSurroundedBox(gw, tdw, x0, y0, x1, y1, relief, out)
+Widget gw;
+ThreeDWidget tdw;
+Position x0, y0, x1, y1;
+XtRelief relief;	/* unused */
+Boolean out;
+{
+    XPoint pt[6];
+    Dimension s = tdw->threeD.shadow_width;
+
+    /*
+     * Draw the shadows using the core part width and height,
+     * and the threeD part shadow_width.
+     * No point to do anything if the shadow_width is 0 or the
+     * widget has not been realized.
+     */
+    if ((s > 0) && XtIsRealized(gw))
+    {
+	Dimension h = y1 - y0;
+	Dimension w = x1 - x0;
+	Dimension wms = w - s;
+	Dimension hms = h - s;
+	Dimension sm = (s > 1 ? s / 2 : 1);
+	Dimension wmsm = w - sm;
+	Dimension hmsm = h - sm;
+	Display *dpy = XtDisplay(gw);
+	Window win = XtWindow(gw);
+	GC top, bot;
+
+	if (out)
+	{
+	    top = tdw->threeD.top_shadow_GC;
+	    bot = tdw->threeD.bot_shadow_GC;
+	}
+	else
+	{
+	    top = tdw->threeD.bot_shadow_GC;
+	    bot = tdw->threeD.top_shadow_GC;
+	}
+
+	/* top-left shadow */
+	pt[0].x = x0;		pt[0].y = y0 + h;
+	pt[1].x = x0;		pt[1].y = y0;
+	pt[2].x = x0 + w;	pt[2].y = y0;
+	pt[3].x = x0 + wmsm;	pt[3].y = y0 + sm - 1;
+	pt[4].x = x0 + sm;	pt[4].y = y0 + sm;
+	pt[5].x = x0 + sm - 1;	pt[5].y = y0 + hmsm;
+	XFillPolygon(dpy, win, top, pt, 6, Complex, CoordModeOrigin);
+	if (s > 1)
+	{
+	    pt[0].x = x0 + s - 1;	pt[0].y = y0 + hms;
+	    pt[1].x = x0 + s;		pt[1].y = y0 + s;
+	    pt[2].x = x0 + wms;		pt[2].y = y0 + s - 1;
+	    XFillPolygon(dpy, win, top, pt, 6, Complex, CoordModeOrigin);
 	}
 
 	/* bottom-right shadow */
-	if ((region == NULL) ||
-	    (XRectInRegion (region, 0, hms, w, s) != RectangleOut) ||
-	    (XRectInRegion (region, wms, 0, s, h) != RectangleOut)) {
-
-	    pt[0].x = 0;	pt[0].y = h;
-	    pt[1].x = w;	pt[1].y = h;
-	    pt[2].x = w;	pt[2].y = 0; 
-	    pt[3].x = wms;	pt[3].y = s;
-	    pt[4].x = wms;	pt[4].y = hms;
-	    pt[5].x = s;	pt[5].y = hms; 
-	    XFillPolygon (dpy, win, bot, pt,6, Complex,CoordModeOrigin);
+	pt[0].x = x0;		pt[0].y = y0 + h;
+	pt[1].x = x0 + w;	pt[1].y = y0 + h;
+	pt[2].x = x0 + w;	pt[2].y = y0;
+	pt[3].x = x0 + wmsm;	pt[3].y = y0 + sm - 1;
+	pt[4].x = x0 + wmsm;	pt[4].y = y0 + hmsm;
+	pt[5].x = x0 + sm - 1;	pt[5].y = y0 + hmsm;
+	XFillPolygon(dpy, win, bot, pt, 6, Complex, CoordModeOrigin);
+	if (s > 1)
+	{
+	    pt[0].x = x0 + s - 1;	pt[0].y = y0 + hms;
+	    pt[1].x = x0 + wms;		pt[1].y = y0 + hms;
+	    pt[2].x = x0 + wms;		pt[2].y = y0 + s - 1;
+	    XFillPolygon(dpy, win, bot, pt, 6, Complex, CoordModeOrigin);
 	}
     }
 }

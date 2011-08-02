@@ -42,6 +42,8 @@ in this Software without prior written authorization from the X Consortium.
 #include <X11/StringDefs.h>
 
 #include <X11/Xaw3d/XawInit.h>
+#include <X11/Xaw3d/ThreeDP.h>
+#include <X11/Xaw3d/SimpleMenP.h>
 #include <X11/Xaw3d/SmeLineP.h>
 #include <X11/Xaw3d/Cardinals.h>
 
@@ -213,6 +215,9 @@ XEvent * event;
 Region region;
 {
     SmeLineObject entry = (SmeLineObject) w;
+    SimpleMenuWidget smw = (SimpleMenuWidget) XtParent (w);
+    ThreeDWidget tdw = (ThreeDWidget) smw->simple_menu.threeD;
+    Dimension s = tdw->threeD.shadow_width;
     int y = entry->rectangle.y + 
 	    (int)(entry->rectangle.height - entry->sme_line.line_width) / 2;
 
@@ -221,7 +226,7 @@ Region region;
 
     XFillRectangle(XtDisplayOfObject(w), XtWindowOfObject(w),
 		   entry->sme_line.gc, 
-		   0, y, (unsigned int) entry->rectangle.width, 
+		   s, y, (unsigned int) entry->rectangle.width - 2 * s,
 		   (unsigned int) entry->sme_line.line_width );
 }
 

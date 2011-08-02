@@ -44,6 +44,7 @@ in this Software without prior written authorization from the X Consortium.
 
 #include <X11/Xmu/Converters.h>
 
+#include "Xaw3dP.h"
 #include <X11/Xaw3d/Sme.h>
 
 /****************************************************************
@@ -64,9 +65,11 @@ in this Software without prior written authorization from the X Consortium.
  label               Label              String          Name of entry
  leftBitmap          LeftBitmap         Pixmap          None
  leftMargin          HorizontalMargins  Dimension       4
+ menuName            MenuName           String          NULL
  rightBitmap         RightBitmap        Pixmap          None
  rightMargin         HorizontalMargins  Dimension       4
  sensitive	     Sensitive		Boolean		True
+ underline           Underline          int             -1
  vertSpace           VertSpace          int             25
  width		     Width		Dimension	0
  x		     Position		Position	0n
@@ -81,21 +84,28 @@ extern WidgetClass smeBSBObjectClass;
 
 #define XtNleftBitmap "leftBitmap"
 #define XtNleftMargin "leftMargin"
+#define XtNleftWhitespace "leftWhitespace"
 #define XtNrightBitmap "rightBitmap"
 #define XtNrightMargin "rightMargin"
-#define XtNvertSpace   "vertSpace"
+#define XtNrightWhitespace "rightWhitespace"
+#define XtNvertSpace "vertSpace"
+#define XtNmenuName "menuName"
+#define XtNunderline "underline"
 
+#ifdef XAW_INTERNATIONALIZATION
 #ifndef XtNfontSet
 #define XtNfontSet		"fontSet"
 #endif
-
 #ifndef XtCFontSet
 #define XtCFontSet		"FontSet"
 #endif
+#endif
 
 #define XtCLeftBitmap "LeftBitmap"
-#define XtCHorizontalMargins "HorizontalMargins"
 #define XtCRightBitmap "RightBitmap"
-#define XtCVertSpace   "VertSpace"
+#define XtCHorizontalMargins "HorizontalMargins"
+#define XtCVertSpace "VertSpace"
+#define XtCMenuName "MenuName"
+#define XtCUnderline "Underline"
 
 #endif /* _SmeBSB_h */

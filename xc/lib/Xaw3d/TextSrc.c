@@ -36,6 +36,7 @@ in this Software without prior written authorization from the X Consortium.
  *
  */
 
+#include "Xaw3dP.h"
 #include <X11/IntrinsicP.h>
 #include <X11/StringDefs.h>
 #include <X11/Xutil.h>
@@ -43,7 +44,9 @@ in this Software without prior written authorization from the X Consortium.
 #include <X11/Xaw3d/TextSrcP.h>
 #include <X11/Xmu/Atoms.h>
 #include <X11/Xmu/CharSet.h>
+#ifdef XAW_INTERNATIONALIZATION
 #include "XawI18n.h"
+#endif
 #include <stdio.h>
 #include <ctype.h>
 
@@ -584,6 +587,7 @@ _XawTextFormat(tw)
 }
 
 
+#ifdef XAW_INTERNATIONALIZATION
 /* _XawTextWCToMB():
  *   convert the wchar string to external encoding.
  *   The caller is responsible for freeing both the source and ret string.
@@ -668,4 +672,5 @@ int		*len_in_out;
     return(wstr);
   }
 }
+#endif
 

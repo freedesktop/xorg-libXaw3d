@@ -52,6 +52,7 @@ SOFTWARE.
  * Command.c - Command button widget
  */
 
+#include "Xaw3dP.h"
 #include <stdio.h>
 #include <X11/IntrinsicP.h>
 #include <X11/StringDefs.h>
@@ -87,14 +88,12 @@ static XtResource resources[] = {
       (XtPointer) DEFAULT_SHAPE_HIGHLIGHT},
    {XtNshapeStyle, XtCShapeStyle, XtRShapeStyle, sizeof(int),
       offset(command.shape_style), XtRImmediate, (XtPointer)XawShapeRectangle},
-   {XtNcornerRoundPercent, XtCCornerRoundPercent, 
-	XtRDimension, sizeof(Dimension),
-	offset(command.corner_round), XtRImmediate, (XtPointer) 25},
-   {XtNshadowWidth, XtCShadowWidth, XtRDimension, sizeof(Dimension),
-      offset(threeD.shadow_width), XtRImmediate, (XtPointer) 2},
+   {XtNcornerRoundPercent, XtCCornerRoundPercent, XtRDimension,
+        sizeof(Dimension), offset(command.corner_round), XtRImmediate,
+	(XtPointer) 25},
    {XtNborderWidth, XtCBorderWidth, XtRDimension, sizeof(Dimension),
       XtOffsetOf(RectObjRec,rectangle.border_width), XtRImmediate,
-      (XtPointer)0}
+      (XtPointer) 0}
 };
 #undef offset
 
@@ -191,11 +190,13 @@ Pixel fg, bg;
   else 
     values.line_width   = 0;
   
+#ifdef XAW_INTERNATIONALIZATION
   if ( cbw->simple.international == True )
       return XtAllocateGC((Widget)cbw, 0, 
 		 (GCForeground|GCBackground|GCLineWidth|GCCapStyle),
 		 &values, GCFont, 0 );
   else
+#endif
       return XtGetGC((Widget)cbw,
 		 (GCForeground|GCBackground|GCFont|GCLineWidth|GCCapStyle),
 		 &values);
@@ -222,10 +223,12 @@ Cardinal *num_args;		/* unused */
       else
 	  cbw->command.highlight_thickness = DEFAULT_HIGHLIGHT_THICKNESS;
   }
+
   if (cbw->command.shape_style != XawShapeRectangle) {
     cbw->threeD.shadow_width = 0;
     cbw->core.border_width = 1;
   }
+  cbw->command.shadow_width = cbw->threeD.shadow_width;
 
   cbw->command.normal_GC = Get_GC(cbw, cbw->label.foreground, 
 				  cbw->core.background_pixel);
@@ -450,7 +453,7 @@ Boolean change;
   if (cbw->command.highlight_thickness <= 0)
   {
     (*SuperClass->core_class.expose) (w, event, region);
-    (*cwclass->threeD_class.shadowdraw) (w, event, region, !cbw->command.set);
+    (*cwclass->threeD_class.shadowdraw) (w, event, region, cbw->threeD.relief, !cbw->command.set);
     return;
   }
 
@@ -484,7 +487,7 @@ Boolean change;
     }
   }
   (*SuperClass->core_class.expose) (w, event, region);
-  (*cwclass->threeD_class.shadowdraw) (w, event, region, !cbw->command.set);
+  (*cwclass->threeD_class.shadowdraw) (w, event, region, cbw->threeD.relief, !cbw->command.set);
 }
 
 static void 
@@ -546,11 +549,29 @@ Cardinal *num_args;
     redisplay = True;
   }
 
+  if (cbw->threeD.shadow_width != oldcbw->threeD.shadow_width) {
+      cbw->command.shadow_width = cbw->threeD.shadow_width;
+      redisplay = True;
+  }
+  if (cbw->core.border_width != oldcbw->core.border_width)
+      redisplay = True;
+
   if ( XtIsRealized(new)
        && oldcbw->command.shape_style != cbw->command.shape_style
        && !ShapeButton(cbw, TRUE))
   {
       cbw->command.shape_style = oldcbw->command.shape_style;
+  }
+
+  if (cbw->command.shape_style != XawShapeRectangle) {
+      cbw->threeD.shadow_width = 0;
+      ShapeButton(cbw, FALSE);
+      redisplay = True;
+  }
+  if (cbw->command.shape_style == XawShapeRectangle) {
+      cbw->threeD.shadow_width =
+		(cbw->command.shadow_width) ? cbw->command.shadow_width : 2;
+      redisplay = True;
   }
 
   return (redisplay);

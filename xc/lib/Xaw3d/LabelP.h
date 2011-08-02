@@ -65,6 +65,7 @@ SOFTWARE.
  *
  ***********************************************************************/
 
+#include "Xaw3dP.h"
 #include <X11/Xaw3d/Label.h>
 #include <X11/Xaw3d/ThreeDP.h>
 
@@ -87,7 +88,9 @@ typedef struct {
     /* resources */
     Pixel	foreground;
     XFontStruct	*font;
+#ifdef XAW_INTERNATIONALIZATION
     XFontSet	fontset;
+#endif
     char	*label;
     XtJustify	justify;
     Dimension	internal_width;
@@ -101,13 +104,16 @@ typedef struct {
     GC		normal_GC;
     GC          gray_GC;
     Pixmap	stipple;
+    Pixmap	stippled;		/* insensitive pixmap */
+    Pixmap	left_stippled;		/* ditto */
     Position	label_x;
     Position	label_y;
     Dimension	label_width;
     Dimension	label_height;
     Dimension	label_len;
     int		lbm_y;			/* where in label */
-    unsigned int lbm_width, lbm_height;	 /* size of pixmap */
+    unsigned int lbm_width, lbm_height;	/* size of pixmap */
+    unsigned int depth;			/* depth of pixmaps */
 } LabelPart;
 
 
@@ -124,7 +130,7 @@ typedef struct _LabelRec {
     LabelPart	label;
 } LabelRec;
 
-#define LEFT_OFFSET(lw) ((lw)->label.left_bitmap \
+#define LEFT_OFFSET(lw) ((lw)->label.left_bitmap && (lw)->label.pixmap == None \
 			 ? (lw)->label.lbm_width + (lw)->label.internal_width \
 			 : 0)
 

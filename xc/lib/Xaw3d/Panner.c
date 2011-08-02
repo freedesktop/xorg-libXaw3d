@@ -44,6 +44,8 @@ extern Bool XmuDistinguishablePixels(); /* not defined in any Xmu headers */
 extern double atof(char *);
 #endif
 
+
+#if XtVersion >= 11006
 static char defaultTranslations[] = 
   "<Btn1Down>:    start() \n\
    <Btn1Motion>:  move() \n\
@@ -64,6 +66,22 @@ static char defaultTranslations[] =
    :<Key>KP_Down:  page(+0,+.5p) \n\
    <Key>Home:     page(0,0) \n\
    :<Key>KP_Home:  page(0,0)";
+#else
+static char defaultTranslations[] = 
+  "<Btn1Down>:    start() \n\
+   <Btn1Motion>:  move() \n\
+   <Btn1Up>:      notify() stop() \n\
+   <Btn2Down>:    abort() \n\
+   <Key>KP_Enter: set(rubberband,toggle) \n\
+   <Key>space:    page(+1p,+1p) \n\
+   <Key>Delete:   page(-1p,-1p) \n\
+   <Key>BackSpace: page(-1p,-1p) \n\
+   <Key>Left:     page(-.5p,+0) \n\
+   <Key>Right:    page(+.5p,+0) \n\
+   <Key>Up:       page(+0,-.5p) \n\
+   <Key>Down:     page(+0,+.5p) \n\
+   <Key>Home:     page(0,0)";
+#endif
 
 
 static void ActionStart(), ActionStop(), ActionAbort(), ActionMove();

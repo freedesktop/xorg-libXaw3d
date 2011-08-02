@@ -68,6 +68,8 @@ typedef struct _SimpleMenuPart {
 
   Dimension    top_margin;	/* Top and bottom margins. */
   Dimension    bottom_margin;
+  Dimension    left_whitespace;	/* Space between BSB elements */
+  Dimension    right_whitespace;
   Dimension    row_height;	/* height of each row (menu entry) */
 
   Cursor       cursor;		/* The menu's cursor. */
@@ -86,6 +88,18 @@ typedef struct _SimpleMenuPart {
 
   SmeObject entry_set;		/* The entry that is currently set or
 				   highlighted. */
+
+  Widget threeD;                /* 3d drawing stuff */
+
+  SmeObject *first_entry;       /* the first entry */
+  SmeObject *current_first;     /* the first entry displayed */    
+  Dimension last_y; 
+  int first_y;                  /* Dimension doesn't do negatives! */
+  int jump_val;                 /* number of entries to scroll by */
+  Boolean too_tall;             /* menu doesn't fit on screen */
+  Boolean didnt_fit;            /* if some entry didn't fit in the menu */
+  Widget sub_menu;              /* submenu of active SmeBSB object */
+  unsigned char state;
 } SimpleMenuPart;
 
 typedef struct _SimpleMenuRec {

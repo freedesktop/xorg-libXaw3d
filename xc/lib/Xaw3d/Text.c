@@ -48,27 +48,30 @@ SOFTWARE.
 
 ******************************************************************/
 
+#include "Xaw3dP.h"
 #include <X11/IntrinsicP.h>
 #include <X11/StringDefs.h>
 #include <X11/Shell.h>
 #include <X11/Xatom.h>
 #include <X11/Xutil.h>
+#ifdef XAW_INTERNATIONALIZATION
 #include "XawI18n.h"
+#endif
 #include <stdio.h>
-
 #include <X11/Xmu/Atoms.h>
 #include <X11/Xmu/CharSet.h>
 #include <X11/Xmu/Converters.h>
 #include <X11/Xmu/StdSel.h>
 #include <X11/Xmu/Misc.h>
-
 #include <X11/Xaw3d/XawInit.h>
 #include <X11/Xaw3d/Cardinals.h>
 #include <X11/Xaw3d/Scrollbar.h>
 #include <X11/Xaw3d/TextP.h>
+#ifdef XAW_INTERNATIONALIZATION
 #include <X11/Xaw3d/MultiSinkP.h>
 #include <X11/Xaw3d/XawImP.h>
-
+#endif
+#include <X11/Xaw3d/ThreeDP.h>
 #include <X11/Xfuncs.h>
 #include <ctype.h>		/* for isprint() */
 
@@ -78,7 +81,9 @@ SOFTWARE.
 
 unsigned long FMT8BIT = 0L;
 unsigned long XawFmt8Bit = 0L;
+#ifdef XAW_INTERNATIONALIZATION
 unsigned long XawFmtWide = 0L;
+#endif
 
 #define SinkClearToBG          XawTextSinkClearToBackground
 
@@ -314,8 +319,10 @@ ClassInitialize()
 
   if (!XawFmt8Bit)
     FMT8BIT = XawFmt8Bit = XrmPermStringToQuark("FMT8BIT");
+#ifdef XAW_INTERNATIONALIZATION
   if (!XawFmtWide)
     XawFmtWide = XrmPermStringToQuark("FMTWIDE");
+#endif
 
   XawInitializeWidgetSet();
 
@@ -351,18 +358,23 @@ TextWidget ctx;
 {
   Widget vbar = ctx->text.vbar, hbar = ctx->text.hbar;
   Position top, left = 0;
+  int s = ((ThreeDWidget)ctx->text.threeD)->threeD.shadow_width;
 
   if (ctx->text.hbar == NULL) return;
 
   if (vbar != NULL)
     left += (Position) (vbar->core.width + vbar->core.border_width);
 
-  XtResizeWidget( hbar, ctx->core.width - left, hbar->core.height,
+  XtResizeWidget( hbar, ctx->core.width - left - s, hbar->core.height,
 		 hbar->core.border_width );
 
-  left -= (Position) hbar->core.border_width;
-  
-  top = ctx->core.height - ( hbar->core.height + hbar->core.border_width);
+  left = s / 2 - (Position) hbar->core.border_width;
+  if (left < 0) left = 0;
+  if (vbar != NULL)
+    left += (Position) (vbar->core.width + vbar->core.border_width);
+
+  top = ctx->core.height - (hbar->core.height + hbar->core.border_width + s / 2);
+
   XtMoveWidget( hbar, left, top); 
 }
 
@@ -377,13 +389,18 @@ PositionVScrollBar(ctx)
 TextWidget ctx;
 {
   Widget vbar = ctx->text.vbar;
+  Position pos;
   Dimension bw;
+  int s = ((ThreeDWidget)ctx->text.threeD)->threeD.shadow_width;
 
   if (vbar == NULL) return;
   bw = vbar->core.border_width;
 
-  XtResizeWidget( vbar, vbar->core.width, ctx->core.height, bw);
-  XtMoveWidget( vbar, -(Position)bw, -(Position)bw );
+  XtResizeWidget( vbar, vbar->core.width, ctx->core.height - s, bw);
+  pos = s / 2 - (Position)bw;
+  if (pos < 0) pos = 0;
+
+  XtMoveWidget( vbar, pos, pos);
 }
 
 static void 
@@ -457,6 +474,10 @@ TextWidget ctx;
       XtAddCallback((Widget) ctx, XtNunrealizeCallback, UnrealizeScrollbars,
 		    (XtPointer) NULL);
 
+/**/
+  ctx->text.r_margin.bottom += hbar->core.height + hbar->core.border_width;
+  ctx->text.margin.bottom = ctx->text.r_margin.bottom;
+/**/
   PositionHScrollBar(ctx);
   if (XtIsRealized((Widget)ctx)) {
     XtRealizeWidget(hbar);
@@ -478,10 +499,10 @@ TextWidget ctx;
 
   if (hbar == NULL) return;
 
-/*
+/**/
   ctx->text.r_margin.bottom -= hbar->core.height + hbar->core.border_width;
   ctx->text.margin.bottom = ctx->text.r_margin.bottom;
-*/
+/**/
   if (ctx->text.vbar == NULL)
       XtRemoveCallback((Widget) ctx, XtNunrealizeCallback, UnrealizeScrollbars,
 		       (XtPointer) NULL);
@@ -498,6 +519,19 @@ Cardinal *num_args;		/* unused */
 {
   TextWidget ctx = (TextWidget) new;
   char error_buf[BUFSIZ];
+  int s;
+
+  ctx->text.threeD = XtVaCreateWidget("threeD", threeDWidgetClass, new,
+                                 XtNx, 0, XtNy, 0,
+                                 XtNwidth, 10, XtNheight, 10, /* dummy */
+                                 NULL);
+
+  s = ((ThreeDWidget)ctx->text.threeD)->threeD.shadow_width;
+
+  ctx->text.r_margin.left += s;
+  ctx->text.r_margin.right += s;
+  ctx->text.r_margin.top += s;
+  ctx->text.r_margin.bottom += s - 1;
 
   ctx->text.lt.lines = 0;
   ctx->text.lt.info = NULL;
@@ -671,12 +705,14 @@ XawTextInsertState state;
 
   /* Keep Input Method up to speed  */
 
+#ifdef XAW_INTERNATIONALIZATION
   if ( ctx->simple.international ) {
     Arg list[1];
 
     XtSetArg (list[0], XtNinsertPosition, ctx->text.insertPos);
     _XawImSetValues (w, list, 1);
   }
+#endif
 }
 
 /*
@@ -730,8 +766,10 @@ XawTextPosition left, right;
 
   if (_XawTextFormat(ctx) == XawFmt8Bit)
       bytes = sizeof(unsigned char);
+#ifdef XAW_INTERNATIONALIZATION
   else if (_XawTextFormat(ctx) == XawFmtWide) 
       bytes = sizeof(wchar_t);
+#endif
   else /* if there is another fomat, add here */
       bytes = 1;
 
@@ -767,6 +805,7 @@ XawTextPosition left, right;
   wchar_t *ws, wc;
 
   /* allow ESC in accordance with ICCCM */
+#ifdef XAW_INTERNATIONALIZATION
   if (_XawTextFormat(ctx) == XawFmtWide) {
      MultiSinkObject sink = (MultiSinkObject) ctx->text.sink;
      ws = (wchar_t *)_XawTextGetText(ctx, left, right);
@@ -779,7 +818,9 @@ XawTextPosition left, right;
      }
      ws[i] = (wchar_t)0;
      return (char *)ws;
-  } else {
+  } else
+#endif
+  {
      s = (unsigned char *)_XawTextGetText(ctx, left, right);
      /* only HT and NL control chars are allowed, strip out others */
      n = strlen((char *)s);
@@ -1000,7 +1041,8 @@ int line;
 
   for ( count = 0; count < 2 ; count++) 
     if (line++ < ctx->text.lt.lines) { /* make sure not to run of the end. */
-      (++lt)->y = (count == 0) ? y : ctx->core.height;
+      (++lt)->y = (count == 0) ? y : ctx->core.height
+	  - 2 * ((ThreeDWidget)ctx->text.threeD)->threeD.shadow_width;
       lt->textWidth = 0;
       lt->position = ctx->text.lastPos + 100;
     }
@@ -1103,6 +1145,7 @@ TextWidget ctx;
   float first, last, widest;
   Boolean temp = (ctx->text.hbar == NULL);
   Boolean vtemp = (ctx->text.vbar == NULL);
+  int s = ((ThreeDWidget)ctx->text.threeD)->threeD.shadow_width;
   
   CheckVBarScrolling(ctx);
 
@@ -1110,9 +1153,9 @@ TextWidget ctx;
 
   if (ctx->text.vbar != NULL) 
     widest = (int)(ctx->core.width - ctx->text.vbar->core.width -
-		   ctx->text.vbar->core.border_width);
+		   2 * s - ctx->text.vbar->core.border_width);
   else
-    widest = ctx->core.width;
+    widest = ctx->core.width - 2 * s;
   widest /= (last = GetWidestLine(ctx));
   if (ctx->text.scroll_horiz == XawtextScrollWhenNeeded) 
     if (widest < 1.0)
@@ -1157,6 +1200,7 @@ int n;
   int y;
   Arg list[1];
   XawTextLineTable * lt = &(ctx->text.lt);
+  int s = ((ThreeDWidget)ctx->text.threeD)->threeD.shadow_width;
 
   if (abs(n) > ctx->text.lt.lines) 
     n = (n > 0) ? ctx->text.lt.lines : -ctx->text.lt.lines;
@@ -1169,20 +1213,21 @@ int n;
     else
       top = ctx->text.lastPos;
 
-    y = IsValidLine(ctx, n) ? lt->info[n].y : ctx->core.height;
+    y = IsValidLine(ctx, n) ? lt->info[n].y : ctx->core.height - 2 * s;
     _XawTextBuildLineTable(ctx, top, FALSE);
     if (top >= ctx->text.lastPos)
       DisplayTextWindow( (Widget) ctx);
     else {
       XCopyArea(XtDisplay(ctx), XtWindow(ctx), XtWindow(ctx), ctx->text.gc,
-		0, y, (int)ctx->core.width, (int)ctx->core.height - y,
-		0, ctx->text.margin.top);
+		s, y, (int)ctx->core.width - 2 * s, (int)ctx->core.height - y - s,
+		s, ctx->text.margin.top);
 
       PushCopyQueue(ctx, 0, (int) -y);
       SinkClearToBG(ctx->text.sink, 
-		    (Position) 0,
-		    (Position) (ctx->text.margin.top + ctx->core.height - y),
-		   (Dimension) ctx->core.width, (Dimension) ctx->core.height);
+		    (Position) s,
+		    (Position) (ctx->text.margin.top + ctx->core.height - y - s),
+		   (Dimension) ctx->core.width - 2 * s,
+		   (Dimension) ctx->core.height - 2 * s);
 
       if (n < lt->lines) n++; /* update descenders at bottom */
       _XawTextNeedsUpdating(ctx, lt->info[lt->lines - n].position, 
@@ -1200,7 +1245,7 @@ int n;
 		  XawsdLeft, n+1, FALSE);
 
     _XawTextBuildLineTable(ctx, top, FALSE);
-    y = IsValidLine(ctx, n) ? lt->info[n].y : ctx->core.height;
+    y = IsValidLine(ctx, n) ? lt->info[n].y : ctx->core.height - 2 * s;
     updateTo = IsValidLine(ctx, n) ? lt->info[n].position : ctx->text.lastPos;
     if (IsValidLine(ctx, lt->lines - n))
       height = lt->info[lt->lines-n].y - ctx->text.margin.top;
@@ -1215,10 +1260,11 @@ int n;
 
     if ( updateTo == target ) {
       XCopyArea(XtDisplay(ctx), XtWindow(ctx), XtWindow(ctx), ctx->text.gc, 
-		0, ctx->text.margin.top, (int) ctx->core.width, height, 0, y);
+		s, ctx->text.margin.top, (int) ctx->core.width - 2 * s,
+		height, s, y);
       PushCopyQueue(ctx, 0, (int) y);
-      SinkClearToBG(ctx->text.sink, (Position) 0, ctx->text.margin.top,
-		   (Dimension) ctx->core.width, (Dimension) clear_height);
+      SinkClearToBG(ctx->text.sink, (Position) s, ctx->text.margin.top,
+		   (Dimension) ctx->core.width - 2 * s, (Dimension) clear_height);
       
       _XawTextNeedsUpdating(ctx, lt->info[0].position, updateTo);
       _XawTextSetScrollBars(ctx);
@@ -1227,7 +1273,13 @@ int n;
       DisplayTextWindow((Widget)ctx);
   }
   XtSetArg (list[0], XtNinsertPosition, ctx->text.lt.top+ctx->text.lt.lines);
+#ifdef XAW_INTERNATIONALIZATION
   _XawImSetValues ((Widget) ctx, list, 1);
+#endif
+
+  _ShadowSurroundedBox((Widget)ctx, (ThreeDWidget)ctx->text.threeD,
+		0, 0, ctx->core.width, ctx->core.height,
+		((ThreeDWidget)ctx->text.threeD)->threeD.relief, False);
 }
 
 /*ARGSUSED*/
@@ -1241,7 +1293,8 @@ XtPointer callData;		/* #pixels */
   Widget tw = (Widget) ctx;
   Position old_left, pixels = (Position)(int) callData;
   XRectangle rect, t_rect;
-  
+  int s = ((ThreeDWidget)ctx->text.threeD)->threeD.shadow_width;
+
   _XawTextPrepareToUpdate(ctx);
 
   old_left = ctx->text.margin.left;
@@ -1255,17 +1308,17 @@ XtPointer callData;		/* #pixels */
     rect.width = (unsigned short) pixels + ctx->text.margin.right;
     rect.x = (short) ctx->core.width - (short) rect.width;
     rect.y = (short) ctx->text.margin.top;
-    rect.height = (unsigned short) ctx->core.height - rect.y;
+    rect.height = (unsigned short) ctx->core.height - rect.y - 2 * s;
 
     XCopyArea(XtDisplay(tw), XtWindow(tw), XtWindow(tw), ctx->text.gc,
-	      pixels, (int) rect.y,
-	      (unsigned int) rect.x, (unsigned int) ctx->core.height,
-	      0, (int) rect.y);
+	      pixels + s, (int) rect.y,
+	      (unsigned int) rect.x, (unsigned int) ctx->core.height - 2 * s,
+	      s, (int) rect.y);
 
     PushCopyQueue(ctx, (int) -pixels, 0);
   }
   else if (pixels < 0) {
-    rect.x = 0;
+    rect.x = s;
 
     if (ctx->text.vbar != NULL)
       rect.x += (short) (ctx->text.vbar->core.width +
@@ -1273,11 +1326,11 @@ XtPointer callData;		/* #pixels */
 
     rect.width = (Position) - pixels;
     rect.y = ctx->text.margin.top;
-    rect.height = ctx->core.height - rect.y;
+    rect.height = ctx->core.height - rect.y - 2 * s;
 
     XCopyArea(XtDisplay(tw), XtWindow(tw), XtWindow(tw), ctx->text.gc,
 	      (int) rect.x, (int) rect.y,
-	      (unsigned int) ctx->core.width - rect.width,
+	      (unsigned int) ctx->core.width - rect.width - 2 * s,
 	      (unsigned int) rect.height,
 	      (int) rect.x + rect.width, (int) rect.y);
 
@@ -1287,10 +1340,10 @@ XtPointer callData;		/* #pixels */
  * Redraw the line overflow marks.
  */
 
-    t_rect.x = ctx->core.width - ctx->text.margin.right;
+    t_rect.x = ctx->core.width - ctx->text.margin.right - s;
     t_rect.width = ctx->text.margin.right;
     t_rect.y = rect.y;
-    t_rect.height = rect.height;
+    t_rect.height = rect.height - 2 * s;
       
     SinkClearToBG(ctx->text.sink, (Position) t_rect.x, (Position) t_rect.y,
 		  (Dimension) t_rect.width, (Dimension) t_rect.height);
@@ -1409,7 +1462,7 @@ XtPointer callData;		/* #pixels */
   if (height < 1)
     height = 1;
   nlines = (int) (lines * (int) ctx->text.lt.lines) / height;
-#ifdef ARROW_SCROLLBAR
+#ifdef XAW_ARROW_SCROLLBARS
   if (nlines == 0 && lines != 0) 
     nlines = lines > 0 ? 1 : -1;
 #endif
@@ -1557,9 +1610,11 @@ int *format;
       *target == XA_TEXT(d) ||
       *target == XA_COMPOUND_TEXT(d)) {
 	if (*target == XA_TEXT(d)) {
+#ifdef XAW_INTERNATIONALIZATION
 	    if (_XawTextFormat(ctx) == XawFmtWide)
 		*type = XA_COMPOUND_TEXT(d);
 	    else
+#endif
 		*type = XA_STRING;
 	} else {
 	    *type = *target;
@@ -1573,6 +1628,7 @@ int *format;
 	 */
 	if (!salt) {
 	    *value = _XawTextGetSTRING(ctx, s->left, s->right);
+#ifdef XAW_INTERNATIONALIZATION
 	    if (_XawTextFormat(ctx) == XawFmtWide) {
 		XTextProperty textprop;
 		if (XwcTextListToTextProperty(d, (wchar_t **)value, 1,
@@ -1584,7 +1640,9 @@ int *format;
 		XtFree(*value);
 		*value = (XtPointer)textprop.value;
 		*length = textprop.nitems;
-	    } else {
+	    } else
+#endif
+	    {
 		*length = strlen(*value);
 	    }
 	} else {
@@ -1592,6 +1650,7 @@ int *format;
 	    strcpy (*value, salt->contents);
 	    *length = salt->length;
 	}
+#ifdef XAW_INTERNATIONALIZATION
 	if (_XawTextFormat(ctx) == XawFmtWide && *type == XA_STRING) {
 	    XTextProperty textprop;
 	    wchar_t **wlist;
@@ -1615,6 +1674,7 @@ int *format;
 	    *length = textprop.nitems;
 	    XwcFreeStringList( (wchar_t**) wlist );
 	}
+#endif
 	*format = 8;
 	return True;
   }
@@ -1804,6 +1864,7 @@ int	num_atoms;
     salt->s.right = ctx->text.s.right;
     salt->s.type = ctx->text.s.type;
     salt->contents = _XawTextGetSTRING(ctx, ctx->text.s.left, ctx->text.s.right);
+#ifdef XAW_INTERNATIONALIZATION
     if (_XawTextFormat(ctx) == XawFmtWide) {
 	XTextProperty textprop;
 	if (XwcTextListToTextProperty(XtDisplay((Widget)ctx),
@@ -1817,6 +1878,7 @@ int	num_atoms;
 	salt->contents = (char *)textprop.value;
 	salt->length = textprop.nitems;
     } else
+#endif
        salt->length = strlen (salt->contents);
     salt->next = ctx->text.salt;
     ctx->text.salt = salt;
@@ -1880,6 +1942,7 @@ Cardinal count;
 
 	tptr= ptr= (unsigned char *) _XawTextGetSTRING(ctx, ctx->text.s.left, 
 						       ctx->text.s.right);
+#ifdef XAW_INTERNATIONALIZATION
 	if (_XawTextFormat(ctx) == XawFmtWide) {
 	   /*
 	    * Only XA_STRING(Latin 1) is allowed in CUT_BUFFER,
@@ -1894,6 +1957,7 @@ Cardinal count;
 	    XtFree((char *)ptr);
 	    tptr = ptr = textprop.value;
         } 
+#endif
 	if (buffer == 0) {
 	  _CreateCutBuffers(XtDisplay(w));
 	  XRotateBuffers(XtDisplay(w), 1);
@@ -2041,6 +2105,7 @@ XawTextPosition pos1, pos2;
   int height, line, i, lastPos = ctx->text.lastPos;
   XawTextPosition startPos, endPos;
   Boolean clear_eol, done_painting;
+  Dimension s = ((ThreeDWidget)ctx->text.threeD)->threeD.shadow_width;
 
   pos1 = (pos1 < ctx->text.lt.top) ? ctx->text.lt.top : pos1;
   pos2 = FindGoodPosition(ctx, pos2);
@@ -2060,13 +2125,22 @@ XawTextPosition pos1, pos2;
       done_painting = FALSE;
     }
 
-    height = ctx->text.lt.info[i + 1].y - ctx->text.lt.info[i].y;
+    height = ctx->text.lt.info[i + 1].y - ctx->text.lt.info[i].y - s + 1;
 
     if ( (endPos > startPos) ) {
+
+      /* note to self: _ShadowSurroundedBox() hacks are in here */
+
       if ( (x == (Position) ctx->text.margin.left) && (x > 0) )
+      {
 	 SinkClearToBG (ctx->text.sink,
-			(Position) 0, y, 
-			(Dimension) ctx->text.margin.left, (Dimension)height); 
+			(Position) s, y, 
+			(Dimension) ctx->text.margin.left, (Dimension)height);
+	 _ShadowSurroundedBox((Widget)ctx, (ThreeDWidget)ctx->text.threeD,
+			      0, 0, ctx->core.width, ctx->core.height,
+			      ((ThreeDWidget)ctx->text.threeD)->threeD.relief,
+			      False);
+      }
 
       if ( (startPos >= ctx->text.s.right) || (endPos <= ctx->text.s.left) ) 
 	XawTextSinkDisplayText(ctx->text.sink, x, y, startPos, endPos, FALSE);
@@ -2081,10 +2155,16 @@ XawTextPosition pos1, pos2;
     }
     startPos = endPos;
     if (clear_eol) {
+	Position myx = ctx->text.lt.info[i].textWidth + ctx->text.margin.left;
+
 	SinkClearToBG(ctx->text.sink, 
-		      (Position) (ctx->text.lt.info[i].textWidth +
-				  ctx->text.margin.left),
-		      (Position) y, w->core.width, (Dimension) height);
+		      (Position) myx,
+		      (Position) y, w->core.width - myx/* - 2 * s*/,
+		      (Dimension) height);
+	_ShadowSurroundedBox((Widget)ctx, (ThreeDWidget)ctx->text.threeD,
+			     0, 0, ctx->core.width, ctx->core.height,
+			     ((ThreeDWidget)ctx->text.threeD)->threeD.relief,
+			     False);
 
 	/*
 	 * We only get here if single character is true, and we need
@@ -2101,7 +2181,12 @@ XawTextPosition pos1, pos2;
 	    y += height;
 	    SinkClearToBG(ctx->text.sink, 
 			  (Position) ctx->text.margin.left, (Position) y, 
-			  w->core.width, (Dimension) height);
+			  w->core.width - ctx->text.margin.left/* - 2 * s*/,
+			  (Dimension) Min(height, ctx->core.height - 2 * s - y));
+	    _ShadowSurroundedBox((Widget)ctx, (ThreeDWidget)ctx->text.threeD,
+				 0, 0, ctx->core.width, ctx->core.height,
+				 ((ThreeDWidget)ctx->text.threeD)->threeD.relief,
+				 False);
 
 	    break;		/* set single_char to FALSE and return. */
 	}
@@ -2339,11 +2424,15 @@ ClearWindow (w)
 Widget w;
 {
   TextWidget ctx = (TextWidget) w;
+  int s = ((ThreeDWidget)ctx->text.threeD)->threeD.shadow_width;
 
   if (XtIsRealized(w))
+  {
     SinkClearToBG(ctx->text.sink, 
-		  (Position) 0, (Position) 0, 
-		  w->core.width, w->core.height);
+		  (Position) s, (Position) s, 
+		  w->core.width - 2 * s, w->core.height - 2 * s);
+    /* note to self: _ShadowSurroundedBox() hack might be needed here */
+  }
 }
 
 /*	Function Name: _XawTextClearAndCenterDisplay
@@ -2641,6 +2730,10 @@ Region region;			/* Unused. */
 	UpdateTextInRectangle(ctx, &cursor);
     }
     _XawTextExecuteUpdate(ctx);
+
+    _ShadowSurroundedBox((Widget)ctx, (ThreeDWidget)ctx->text.threeD,
+		  0, 0, ctx->core.width, ctx->core.height,
+		  ((ThreeDWidget)ctx->text.threeD)->threeD.relief, False);
 }
 
 /*

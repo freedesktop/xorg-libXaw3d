@@ -1,0 +1,33 @@
+XCOMM make rules for X11R5 -------------------------------
+
+#if DoSharedLib
+#if DoNormalLib
+SharedLibraryTarget(Xaw3d,$(SOXAWREV),$(OBJS),shared,..)
+#else
+SharedLibraryTarget(Xaw3d,$(SOXAWREV),$(OBJS),.,.)
+#endif
+SharedLibraryDataTarget(Xaw3d,$(SOXAWREV),$(UNSHAREDOBJS))
+InstallSharedLibrary(Xaw3d,$(SOXAWREV),$(USRLIBDIR))
+InstallSharedLibraryData(Xaw3d,$(SOXAWREV),$(USRLIBDIR))
+#endif
+#if DoNormalLib
+NormalLibraryTarget(Xaw3d,$(OBJS))
+InstallLibrary(Xaw3d,$(USRLIBDIR))
+#endif
+#if DoProfileLib
+ProfiledLibraryTarget(Xaw3d,$(OBJS))
+InstallLibrary(Xaw3d_p,$(USRLIBDIR))
+#endif
+#if DoDebugLib
+DebuggedLibraryTarget(Xaw3d,$(OBJS))
+InstallLibrary(Xaw3d_d,$(USRLIBDIR))
+#endif
+
+LintLibraryTarget(Xaw3d,$(SRCS))
+InstallLintLibrary(Xaw3d,$(LINTLIBDIR))
+
+BuildIncludes($(HEADERS),Xaw3d,..)
+
+InstallMultiple($(HEADERS),$(INCDIR)/Xaw3d)
+
+XCOMM end make rules for X11R5 ---------------------------

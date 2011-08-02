@@ -216,6 +216,7 @@ typedef struct _TextPart {
     XawTextPosition  old_insert;    /* Last insertPos for batched updates */
     short           mult;	    /* Multiplier. */
     struct text_move * copy_area_offsets; /* Text offset area (linked list) */
+    Widget          threeD;	    /* shadow drawing */
 
     /* private state, shared w/Source and Sink */
     Boolean	    redisplay_needed; /* in SetValues */

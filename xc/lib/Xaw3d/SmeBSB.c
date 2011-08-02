@@ -26,6 +26,11 @@ in this Software without prior written authorization from the X Consortium.
  */
 
 /*
+ * Portions Copyright (c) 2003 Brian V. Smith
+ * Rights, permissions, and disclaimer per the above X Consortium license.
+ */
+
+/*
  * SmeBSB.c - Source code file for BSB Menu Entry object.
  *
  * Date:    September 26, 1989
@@ -35,27 +40,24 @@ in this Software without prior written authorization from the X Consortium.
  *          kit@expo.lcs.mit.edu
  */
 
+#include "Xaw3dP.h"
 #include <X11/IntrinsicP.h>
 #include <X11/StringDefs.h>
 #include <X11/Xos.h>
-
-/* needed for abs() */
-#ifdef X_NOT_STDC_ENV
-extern int abs();
-#else
-#include <stdlib.h>
-#endif
-
 #include <X11/Xmu/Drawing.h>
-
 #include <X11/Xaw3d/XawInit.h>
-#include <X11/Xaw3d/SimpleMenu.h>
+#include <X11/Xaw3d/ThreeDP.h>
+#include <X11/Xaw3d/SimpleMenP.h>
 #include <X11/Xaw3d/SmeBSBP.h>
 #include <X11/Xaw3d/Cardinals.h>
-
 #include <stdio.h>
 
-#define ONE_HUNDRED 100
+/* needed for abs() */
+#ifndef X_NOT_STDC_ENV
+#include <stdlib.h>
+#else
+extern int abs();
+#endif
 
 #define offset(field) XtOffsetOf(SmeBSBRec, sme_bsb.field)
 
@@ -78,8 +80,14 @@ static XtResource resources[] = {
      offset(foreground), XtRString, XtDefaultForeground},
   {XtNfont,  XtCFont, XtRFontStruct, sizeof(XFontStruct *),
      offset(font), XtRString, XtDefaultFont},
+#ifdef XAW_INTERNATIONALIZATION
   {XtNfontSet,  XtCFontSet, XtRFontSet, sizeof(XFontSet ),
      offset(fontset),XtRString, XtDefaultFontSet},
+#endif
+  {XtNmenuName, XtCMenuName, XtRString, sizeof(String),
+     offset(menu_name), XtRImmediate, (XtPointer) NULL},
+  {XtNunderline,  XtCIndex, XtRInt, sizeof(int),
+     offset(underline), XtRImmediate, (XtPointer) -1},
 };   
 #undef offset
 
@@ -87,7 +95,8 @@ static XtResource resources[] = {
  * Semi Public function definitions. 
  */
 
-static void Redisplay(), Destroy(), Initialize(), FlipColors();
+static void Redisplay(), Destroy(), Initialize();
+static void Highlight(), Unhighlight();
 static void ClassInitialize();
 static Boolean SetValues();
 static XtGeometryResult QueryGeometry();
@@ -97,7 +106,7 @@ static XtGeometryResult QueryGeometry();
  */
 
 static void GetDefaultSize(), DrawBitmaps(), GetBitmapInfo();
-static void CreateGCs(), DestroyGCs();
+static void CreateGCs(), DestroyGCs(), FlipColors();
     
 #define superclass (&smeThreeDClassRec)
 SmeBSBClassRec smeBSBClassRec = {
@@ -136,8 +145,8 @@ SmeBSBClassRec smeBSBClassRec = {
     /* extension	  */    NULL
   },{
     /* SimpleMenuClass Fields */
-    /* highlight          */	FlipColors,
-    /* unhighlight        */	FlipColors,
+    /* highlight          */	Highlight,
+    /* unhighlight        */	Unhighlight,
     /* notify             */	XtInheritNotify,		
     /* extension	  */	NULL
   }, {
@@ -193,14 +202,14 @@ Cardinal *num_args;
     else
 	entry->sme_bsb.label = XtNewString( entry->sme_bsb.label );
 
-    GetDefaultSize(new, &(entry->rectangle.width), &(entry->rectangle.height));
     CreateGCs(new);
-
-    entry->sme_bsb.left_bitmap_width = entry->sme_bsb.left_bitmap_height = 0;
-    entry->sme_bsb.right_bitmap_width = entry->sme_bsb.right_bitmap_height = 0;
 
     GetBitmapInfo(new, TRUE);	/* Left Bitmap Info */
     GetBitmapInfo(new, FALSE);	/* Right Bitmap Info */
+
+    entry->sme_bsb.left_stippled = entry->sme_bsb.right_stippled = None;
+
+    GetDefaultSize(new, &(entry->rectangle.width), &(entry->rectangle.height));
 }
 
 /*      Function Name: Destroy
@@ -216,6 +225,12 @@ Widget w;
     SmeBSBObject entry = (SmeBSBObject) w;
 
     DestroyGCs(w);
+#ifdef XAW_MULTIPLANE_PIXMAPS
+    if (entry->sme_bsb.left_stippled != None)
+	XFreePixmap(XtDisplayOfObject(w), entry->sme_bsb.left_stippled);
+    if (entry->sme_bsb.right_stippled != None)
+	XFreePixmap(XtDisplayOfObject(w), entry->sme_bsb.right_stippled);
+#endif
     if (entry->sme_bsb.label != XtName(w))
 	XtFree(entry->sme_bsb.label);
 }
@@ -239,21 +254,24 @@ Region region;
     SmeBSBObject entry = (SmeBSBObject) w;
     Dimension s = entry->sme_threeD.shadow_width;
     int	font_ascent = 0, font_descent = 0, y_loc;
-
+#ifdef XAW_INTERNATIONALIZATION
     int	fontset_ascent = 0, fontset_descent = 0;
     XFontSetExtents *ext = XExtentsOfFontSet(entry->sme_bsb.fontset);
+#endif
 
     entry->sme_bsb.set_values_area_cleared = FALSE;    
+#ifdef XAW_INTERNATIONALIZATION
     if ( entry->sme.international == True ) {
         fontset_ascent = abs(ext->max_ink_extent.y);
         fontset_descent = ext->max_ink_extent.height - fontset_ascent;
     }
-    else { /*else, compute size from font like R5*/
+    else
+#endif
+    { /*else, compute size from font like R5*/
         font_ascent = entry->sme_bsb.font->max_bounds.ascent;
         font_descent = entry->sme_bsb.font->max_bounds.descent;
     }
     y_loc = entry->rectangle.y;
-
 
     if (XtIsSensitive(w) && XtIsSensitive( XtParent(w) ) ) {
 	if ( w == XawSimpleMenuGetActiveEntry(XtParent(w)) ) {
@@ -272,44 +290,42 @@ Region region;
     if (entry->sme_bsb.label != NULL) {
 	int x_loc = entry->sme_bsb.left_margin;
 	int len = strlen(entry->sme_bsb.label);
+	int width, t_width;
 	char * label = entry->sme_bsb.label;
 
 	switch(entry->sme_bsb.justify) {
-	    int width, t_width;
+	    case XtJustifyCenter:
+#ifdef XAW_INTERNATIONALIZATION
+		if ( entry->sme.international == True )
+		    t_width = XmbTextEscapement(entry->sme_bsb.fontset,label,len);
+		else
+#endif
+		    t_width = XTextWidth(entry->sme_bsb.font, label, len);
 
-	case XtJustifyCenter:
-            if ( entry->sme.international == True ) {
-	        t_width = XmbTextEscapement(entry->sme_bsb.fontset,label,len);
-                width = entry->rectangle.width - (entry->sme_bsb.left_margin +
-					      entry->sme_bsb.right_margin);
-            }
-            else {
-	        t_width = XTextWidth(entry->sme_bsb.font, label, len);
-	        width = entry->rectangle.width - (entry->sme_bsb.left_margin +
-					      entry->sme_bsb.right_margin);
-            }
-	    x_loc += (width - t_width)/2;
-	    break;
-	case XtJustifyRight:
-            if ( entry->sme.international == True ) {
-                t_width = XmbTextEscapement(entry->sme_bsb.fontset,label,len);
-                x_loc = entry->rectangle.width - ( entry->sme_bsb.right_margin
-						 + t_width );
-            }
-            else {
-	        t_width = XTextWidth(entry->sme_bsb.font, label, len);
-	        x_loc = entry->rectangle.width - ( entry->sme_bsb.right_margin
-						 + t_width );
-            }
-	    break;
-	case XtJustifyLeft:
-	default:
-	    break;
+		width = entry->rectangle.width -
+				(entry->sme_bsb.left_margin +
+				entry->sme_bsb.right_margin);
+		x_loc += (width - t_width)/2;
+		break;
+	    case XtJustifyRight:
+#ifdef XAW_INTERNATIONALIZATION
+		if ( entry->sme.international == True )
+		    t_width = XmbTextEscapement(entry->sme_bsb.fontset,label,len);
+		else
+#endif
+		    t_width = XTextWidth(entry->sme_bsb.font, label, len);
+
+		x_loc = entry->rectangle.width -
+				(entry->sme_bsb.right_margin + t_width);
+		break;
+	    case XtJustifyLeft:
+	    default:
+		break;
 	}
-
 
 	/* this will center the text in the gadget top-to-bottom */
 
+#ifdef XAW_INTERNATIONALIZATION
         if ( entry->sme.international==True ) {
             y_loc += ((int)entry->rectangle.height - 
 		  (fontset_ascent + fontset_descent)) / 2 + fontset_ascent;
@@ -317,13 +333,27 @@ Region region;
             XmbDrawString(XtDisplayOfObject(w), XtWindowOfObject(w),
                 entry->sme_bsb.fontset, gc, x_loc + s, y_loc, label, len);
         }
-        else {
+        else
+#endif
+        {
             y_loc += ((int)entry->rectangle.height - 
 		  (font_ascent + font_descent)) / 2 + font_ascent;
 	
             XDrawString(XtDisplayOfObject(w), XtWindowOfObject(w), gc,
 		    x_loc + s, y_loc, label, len);
         }
+
+	if (entry->sme_bsb.underline >= 0 && entry->sme_bsb.underline < len) {
+	    int ul = entry->sme_bsb.underline;
+	    int ul_x1_loc = x_loc + s;
+	    int ul_wid;
+
+	    if (ul != 0)
+		ul_x1_loc += XTextWidth(entry->sme_bsb.font, label, ul);
+	    ul_wid = XTextWidth(entry->sme_bsb.font, &label[ul], 1) - 2;
+	    XDrawLine(XtDisplayOfObject(w), XtWindowOfObject(w), gc,
+		      ul_x1_loc, y_loc + 1, ul_x1_loc + ul_wid, y_loc + 1);
+	}
     }
 
     DrawBitmaps(w, gc);
@@ -345,6 +375,7 @@ Widget current, request, new;
 ArgList args;
 Cardinal *num_args;
 {
+    Widget parent = XtParent(new);
     SmeBSBObject entry = (SmeBSBObject) new;
     SmeBSBObject old_entry = (SmeBSBObject) current;
     Boolean ret_val = FALSE;
@@ -356,40 +387,78 @@ Cardinal *num_args;
 	if (entry->sme_bsb.label != XtName(new) ) 
 	    entry->sme_bsb.label = XtNewString( entry->sme_bsb.label );
 
-	ret_val = True;
-    }
-
-    if (entry->rectangle.sensitive != old_entry->rectangle.sensitive )
-	ret_val = TRUE;
-
-    if (entry->sme_bsb.left_bitmap != old_entry->sme_bsb.left_bitmap) {
-	GetBitmapInfo(new, TRUE);
 	ret_val = TRUE;
     }
 
-    if (entry->sme_bsb.right_bitmap != old_entry->sme_bsb.right_bitmap) {
-	GetBitmapInfo(new, FALSE);
+    if (entry->sme_bsb.underline != old_entry->sme_bsb.underline)
 	ret_val = TRUE;
-    }
 
+    if (entry->rectangle.sensitive != old_entry->rectangle.sensitive)
+	ret_val = TRUE;
+
+#ifdef XAW_INTERNATIONALIZATION
     if (  (	(old_entry->sme_bsb.font != entry->sme_bsb.font) &&
 	(old_entry->sme.international == False )	          ) ||
 	(old_entry->sme_bsb.foreground != entry->sme_bsb.foreground) ) {
+#else
+    if (  (old_entry->sme_bsb.font != entry->sme_bsb.font) ||
+	(old_entry->sme_bsb.foreground != entry->sme_bsb.foreground) ) {
+#endif
 	DestroyGCs(current);
 	CreateGCs(new);
+
 	ret_val = TRUE;
     }
 
+    if (entry->sme_bsb.left_bitmap != old_entry->sme_bsb.left_bitmap)
+    {
+	GetBitmapInfo(new, TRUE);
+
+#ifdef XAW_MULTIPLANE_PIXMAPS
+	entry->sme_bsb.left_stippled = None;
+	if (old_entry->sme_bsb.left_stippled != None)
+	    XFreePixmap(XtDisplayOfObject(current),
+			old_entry->sme_bsb.left_stippled);
+#endif
+
+	ret_val = TRUE;
+    }
+
+    if (entry->sme_bsb.left_margin != old_entry->sme_bsb.left_margin)
+	ret_val = TRUE;
+
+    if (entry->sme_bsb.right_bitmap != old_entry->sme_bsb.right_bitmap)
+    {
+	GetBitmapInfo(new, FALSE);
+
+#ifdef XAW_MULTIPLANE_PIXMAPS
+	entry->sme_bsb.right_stippled = None;
+	if (old_entry->sme_bsb.right_stippled != None)
+	    XFreePixmap(XtDisplayOfObject(current),
+			old_entry->sme_bsb.right_stippled);
+#endif
+
+	ret_val = TRUE;
+    }
+
+    if (entry->sme_bsb.right_margin != old_entry->sme_bsb.right_margin)
+	ret_val = TRUE;
+
+#ifdef XAW_INTERNATIONALIZATION
     if ( ( old_entry->sme_bsb.fontset != entry->sme_bsb.fontset) &&
 				(old_entry->sme.international == True ) )
-        /* DONT changes the GCs, because the fontset is not in them. */
+        /* don't change the GCs - the fontset is not in them */
         ret_val = TRUE;
+#endif
 
     if (ret_val) {
 	GetDefaultSize(new, 
 		       &(entry->rectangle.width), &(entry->rectangle.height));
 	entry->sme_bsb.set_values_area_cleared = TRUE;
+
+	(parent->core.widget_class->core_class.resize)(new);
     }
+
     return(ret_val);
 }
 
@@ -410,11 +479,11 @@ Widget w;
 XtWidgetGeometry *intended, *return_val;
 {
     SmeBSBObject entry = (SmeBSBObject) w;
-    Dimension width, height;
+    Dimension width, height, h;
     XtGeometryResult ret_val = XtGeometryYes;
     XtGeometryMask mode = intended->request_mode;
 
-    GetDefaultSize(w, &width, &height );    
+    GetDefaultSize(w, &width, &height );
 
     if ( ((mode & CWWidth) && (intended->width != width)) ||
 	 !(mode & CWWidth) ) {
@@ -438,36 +507,35 @@ XtWidgetGeometry *intended, *return_val;
 	    return(XtGeometryNo);
     }
 
+    entry->rectangle.width = width;
+    entry->rectangle.height = height;
+
     return(ret_val);
 }
     
-/*      Function Name: FlipColors
- *      Description: Invert the colors of the current entry.
- *      Arguments: w - the bsb menu entry widget.
- *      Returns: none.
+/*
+ * FlipColors() used to be called directly, but it's blind
+ * state toggling caused re-unhighlighting problems.
  */
 
-static void 
-FlipColors(w)
+static void
+Highlight(w)
 Widget w;
 {
     SmeBSBObject entry = (SmeBSBObject) w;
-    SmeBSBObjectClass oclass = (SmeBSBObjectClass) XtClass (w);
 
-    if (entry->sme_bsb.set_values_area_cleared) {
-	entry->sme_threeD.shadowed = False;
-	return;
-    }
+    entry->sme_threeD.shadowed = True;
+    FlipColors(w);
+}
 
-    if (entry->sme_threeD.shadow_width > 0) {
-	entry->sme_threeD.shadowed ^= True;
-	(*oclass->sme_threeD_class.shadowdraw) (w);
-    } else
-    	XFillRectangle(XtDisplayOfObject(w), XtWindowOfObject(w),
-		   entry->sme_bsb.invert_gc, 
-		   0, (int) entry->rectangle.y,
-		   (unsigned int) entry->rectangle.width, 
-		   (unsigned int) entry->rectangle.height);
+static void
+Unhighlight(w)
+Widget w;
+{
+    SmeBSBObject entry = (SmeBSBObject) w;
+
+    entry->sme_threeD.shadowed = False;
+    FlipColors(w);
 }
 
 /************************************************************
@@ -490,38 +558,41 @@ Widget w;
 Dimension * width, * height;
 {
     SmeBSBObject entry = (SmeBSBObject) w;
+    Dimension h;
 
+#ifdef XAW_INTERNATIONALIZATION
     if ( entry->sme.international == True ) {
         XFontSetExtents *ext = XExtentsOfFontSet(entry->sme_bsb.fontset);
+
         if (entry->sme_bsb.label == NULL) 
 	    *width = 0;
         else
 	    *width = XmbTextEscapement(entry->sme_bsb.fontset, entry->sme_bsb.label,
 			    strlen(entry->sme_bsb.label));
-        *width += entry->sme_bsb.left_margin + entry->sme_bsb.right_margin;
-        *width += (2 * entry->sme_threeD.shadow_width);
+
         *height = ext->max_ink_extent.height;
-        *height = ((int)*height * ( ONE_HUNDRED + 
-			        entry->sme_bsb.vert_space )) / ONE_HUNDRED;
-        *height += (2 * entry->sme_threeD.shadow_width);
     }
-    else {
+    else
+#endif
+    {
         if (entry->sme_bsb.label == NULL) 
 	    *width = 0;
         else
 	    *width = XTextWidth(entry->sme_bsb.font, entry->sme_bsb.label,
 			    strlen(entry->sme_bsb.label));
 
-        *width += entry->sme_bsb.left_margin + entry->sme_bsb.right_margin;
-        *width += (2 * entry->sme_threeD.shadow_width);
-    
         *height = (entry->sme_bsb.font->max_bounds.ascent +
 	       entry->sme_bsb.font->max_bounds.descent);
-
-        *height = ((int)*height * ( ONE_HUNDRED + 
-			        entry->sme_bsb.vert_space )) / ONE_HUNDRED;
-        *height += (2 * entry->sme_threeD.shadow_width);
     }
+
+    *width += entry->sme_bsb.left_margin + entry->sme_bsb.right_margin;
+    *width += (2 * entry->sme_threeD.shadow_width);
+
+    h = (entry->sme_bsb.left_bitmap_height > entry->sme_bsb.right_bitmap_height)
+	    ? entry->sme_bsb.left_bitmap_height : entry->sme_bsb.right_bitmap_height;
+    if (h > *height) *height = h;
+    *height = ((int)*height * (100 + entry->sme_bsb.vert_space)) / 100;
+    *height += (2 * entry->sme_threeD.shadow_width);
 }
 
 /*      Function Name: DrawBitmaps
@@ -536,8 +607,12 @@ DrawBitmaps(w, gc)
 Widget w;
 GC gc;
 {
+#ifdef XAW_MULTIPLANE_PIXMAPS
+    Widget parent = XtParent(w);
+#endif
     int x_loc, y_loc;
     SmeBSBObject entry = (SmeBSBObject) w;
+    Pixmap pm;
     
     if ( (entry->sme_bsb.left_bitmap == None) && 
 	 (entry->sme_bsb.right_bitmap == None) ) return;
@@ -549,36 +624,73 @@ GC gc;
   if (entry->sme_bsb.left_bitmap != None) {
     x_loc = entry->sme_threeD.shadow_width +
 		(int)(entry->sme_bsb.left_margin -
-		      entry->sme_bsb.left_bitmap_width) / 2;
+		entry->sme_bsb.left_bitmap_width) / 2;
 
-    y_loc = entry->rectangle.y +
-		(int)(entry->rectangle.height -
+    y_loc = entry->rectangle.y + (int)(entry->rectangle.height -
 		      entry->sme_bsb.left_bitmap_height) / 2;
 
-    XCopyPlane(XtDisplayOfObject(w), entry->sme_bsb.left_bitmap,
-	       XtWindowOfObject(w), gc, 0, 0, 
-	       entry->sme_bsb.left_bitmap_width,
-	       entry->sme_bsb.left_bitmap_height, x_loc, y_loc, 1);
+    pm = entry->sme_bsb.left_bitmap;
+#ifdef XAW_MULTIPLANE_PIXMAPS
+    if (!XtIsSensitive(w)) {
+	if (entry->sme_bsb.left_stippled == None)
+	    entry->sme_bsb.left_stippled = stipplePixmap(w,
+			entry->sme_bsb.left_bitmap,
+			parent->core.colormap,
+			parent->core.background_pixel,
+			entry->sme_bsb.left_depth);
+	if (entry->sme_bsb.left_stippled != None)
+	    pm = entry->sme_bsb.left_stippled;
+    }
+#endif
+
+    if (entry->sme_bsb.left_depth == 1)
+	XCopyPlane(XtDisplayOfObject(w), pm,
+		XtWindowOfObject(w), gc, 0, 0, 
+		entry->sme_bsb.left_bitmap_width,
+		entry->sme_bsb.left_bitmap_height, x_loc, y_loc, 1);
+    else
+	XCopyArea (XtDisplayOfObject(w), pm,
+		XtWindowOfObject(w), gc, 0, 0, 
+		entry->sme_bsb.left_bitmap_width,
+		entry->sme_bsb.left_bitmap_height, x_loc, y_loc);
   }
 
 /*
  * Draw Right Bitmap.
  */
 
-
   if (entry->sme_bsb.right_bitmap != None) {
     x_loc = entry->rectangle.width - entry->sme_threeD.shadow_width -
 		(int)(entry->sme_bsb.right_margin +
-		      entry->sme_bsb.right_bitmap_width) / 2;
+		entry->sme_bsb.right_bitmap_width) / 2;
 
-    y_loc = entry->rectangle.y +
-		(int)(entry->rectangle.height -
+    y_loc = entry->rectangle.y + (int)(entry->rectangle.height -
 		      entry->sme_bsb.right_bitmap_height) / 2;
 
-    XCopyPlane(XtDisplayOfObject(w), entry->sme_bsb.right_bitmap,
-	       XtWindowOfObject(w), gc, 0, 0, 
-	       entry->sme_bsb.right_bitmap_width,
-	       entry->sme_bsb.right_bitmap_height, x_loc, y_loc, 1);
+     pm = entry->sme_bsb.right_bitmap;
+#ifdef XAW_MULTIPLANE_PIXMAPS
+    if (!XtIsSensitive(w)) {
+	if (entry->sme_bsb.right_stippled == None)
+	    entry->sme_bsb.right_stippled = stipplePixmap(w,
+			entry->sme_bsb.right_bitmap,
+			parent->core.colormap,
+			parent->core.background_pixel,
+			entry->sme_bsb.right_depth);
+	if (entry->sme_bsb.right_stippled != None)
+	    pm = entry->sme_bsb.right_stippled;
+    }
+#endif
+
+    if (entry->sme_bsb.right_depth == 1)
+	XCopyPlane(XtDisplayOfObject(w), pm,
+		XtWindowOfObject(w), gc, 0, 0, 
+		entry->sme_bsb.right_bitmap_width,
+		entry->sme_bsb.right_bitmap_height, x_loc, y_loc, 1);
+    else
+	XCopyArea (XtDisplayOfObject(w), pm,
+		XtWindowOfObject(w), gc, 0, 0, 
+		entry->sme_bsb.right_bitmap_width,
+		entry->sme_bsb.right_bitmap_height, x_loc, y_loc);
   }
 }
 
@@ -596,47 +708,59 @@ Widget w;
 Boolean is_left;
 {
     SmeBSBObject entry = (SmeBSBObject) w;    
-    unsigned int depth, bw;
     Window root;
     int x, y;
-    unsigned int width, height;
+    unsigned int width, height, bw;
     char buf[BUFSIZ];
     
     if (is_left) {
+	width = height = 0;
+
 	if (entry->sme_bsb.left_bitmap != None) {
 	    if (!XGetGeometry(XtDisplayOfObject(w), 
-			      entry->sme_bsb.left_bitmap, &root, 
-			      &x, &y, &width, &height, &bw, &depth)) {
-		(void) sprintf(buf, "Xaw SmeBSB Object: %s %s \"%s\".", "Could not",
-			"get Left Bitmap geometry information for menu entry ",
+			    entry->sme_bsb.left_bitmap, &root, &x, &y,
+			    &width, &height, &bw, &entry->sme_bsb.left_depth)) {
+		(void) sprintf(buf, "Xaw SmeBSB Object: %s %s \"%s\".",
+			"Could not get Left Bitmap",
+			"geometry information for menu entry",
 			XtName(w));
 		XtAppError(XtWidgetToApplicationContext(w), buf);
 	    }
-	    if (depth != 1) {
-		(void) sprintf(buf, "Xaw SmeBSB Object: %s \"%s\"%s.", 
-			"Left Bitmap of entry ", 
-			XtName(w), " is not one bit deep.");
+#ifdef NEVER
+	    if (entry->sme_bsb.left_depth != 1) {
+		(void) sprintf(buf, "Xaw SmeBSB Object: %s \"%s\" %s.", 
+			"Left Bitmap of entry",  XtName(w),
+			"is not one bit deep");
 		XtAppError(XtWidgetToApplicationContext(w), buf);
 	    }
-	    entry->sme_bsb.left_bitmap_width = (Dimension) width; 
-	    entry->sme_bsb.left_bitmap_height = (Dimension) height;
+#endif
 	}
-    }
-    else if (entry->sme_bsb.right_bitmap != None) {
-	if (!XGetGeometry(XtDisplayOfObject(w),
-			  entry->sme_bsb.right_bitmap, &root,
-			  &x, &y, &width, &height, &bw, &depth)) {
-	    (void) sprintf(buf, "Xaw SmeBSB Object: %s %s \"%s\".", "Could not",
-		    "get Right Bitmap geometry information for menu entry ",
-		    XtName(w));
-	    XtAppError(XtWidgetToApplicationContext(w), buf);
+
+	entry->sme_bsb.left_bitmap_width = (Dimension) width; 
+	entry->sme_bsb.left_bitmap_height = (Dimension) height;
+    } else {
+	width = height = 0;
+
+	if (entry->sme_bsb.right_bitmap != None) {
+	    if (!XGetGeometry(XtDisplayOfObject(w),
+			    entry->sme_bsb.right_bitmap, &root, &x, &y,
+			    &width, &height, &bw, &entry->sme_bsb.right_depth)) {
+		(void) sprintf(buf, "Xaw SmeBSB Object: %s %s \"%s\".",
+			"Could not get Right Bitmap",
+			"geometry information for menu entry",
+			XtName(w));
+		XtAppError(XtWidgetToApplicationContext(w), buf);
+	    }
+#ifdef NEVER
+	    if (entry->sme_bsb.right_depth != 1) {
+		(void) sprintf(buf, "Xaw SmeBSB Object: %s \"%s\" %s.", 
+			"Right Bitmap of entry", XtName(w),
+			"is not one bit deep");
+		XtAppError(XtWidgetToApplicationContext(w), buf);
+	    }
+#endif
 	}
-	if (depth != 1) {
-	    (void) sprintf(buf, "Xaw SmeBSB Object: %s \"%s\"%s.", 
-		    "Right Bitmap of entry ", XtName(w),
-		    " is not one bit deep.");
-	    XtAppError(XtWidgetToApplicationContext(w), buf);
-	}
+
 	entry->sme_bsb.right_bitmap_width = (Dimension) width; 
 	entry->sme_bsb.right_bitmap_height = (Dimension) height;
     }
@@ -654,24 +778,31 @@ Widget w;
 {
     SmeBSBObject entry = (SmeBSBObject) w;    
     XGCValues values;
-    XtGCMask mask, mask_i18n;
+    XtGCMask mask;
+#ifdef XAW_INTERNATIONALIZATION
+    XtGCMask mask_i18n;
+#endif
     
     values.foreground = XtParent(w)->core.background_pixel;
     values.background = entry->sme_bsb.foreground;
     values.font = entry->sme_bsb.font->fid;
     values.graphics_exposures = FALSE;
     mask      = GCForeground | GCBackground | GCGraphicsExposures | GCFont;
+#ifdef XAW_INTERNATIONALIZATION
     mask_i18n = GCForeground | GCBackground | GCGraphicsExposures;
     if ( entry->sme.international == True )
         entry->sme_bsb.rev_gc = XtAllocateGC(w, 0, mask_i18n, &values, GCFont, 0 );
     else
+#endif
         entry->sme_bsb.rev_gc = XtGetGC(w, mask, &values);
     
     values.foreground = entry->sme_bsb.foreground;
     values.background = XtParent(w)->core.background_pixel;
+#ifdef XAW_INTERNATIONALIZATION
     if ( entry->sme.international == True )
         entry->sme_bsb.norm_gc = XtAllocateGC(w, 0, mask_i18n, &values, GCFont, 0 );
     else
+#endif
         entry->sme_bsb.norm_gc = XtGetGC(w, mask, &values);
 
     values.fill_style = FillTiled;
@@ -681,9 +812,11 @@ Widget w;
 					    XtParent(w)->core.depth);
     values.graphics_exposures = FALSE;
     mask |= GCTile | GCFillStyle;
+#ifdef XAW_INTERNATIONALIZATION
     if ( entry->sme.international == True )
         entry->sme_bsb.norm_gray_gc = XtAllocateGC(w, 0, mask_i18n, &values, GCFont, 0 );
     else
+#endif
         entry->sme_bsb.norm_gray_gc = XtGetGC(w, mask, &values);
 
     values.foreground ^= values.background;
@@ -711,18 +844,34 @@ Widget w;
     XtReleaseGC(w, entry->sme_bsb.invert_gc);
 }
 
-#ifdef apollo
-
-/*
- * The apollo compiler that we have optomizes out my code for
- * FlipColors() since it is static. and no one executes it in this
- * file.  I am setting the function pointer into the class structure so
- * that it can be called by my parent who will tell me to when to
- * highlight and unhighlight.
+/*      Function Name: FlipColors
+ *      Description: Invert the colors of the current entry.
+ *      Arguments: w - the bsb menu entry widget.
+ *      Returns: none.
  */
 
-void _XawSmeBSBApolloHack ()
+static void 
+FlipColors(w)
+Widget w;
 {
-    FlipColors();
+    SmeBSBObject entry = (SmeBSBObject) w;
+    SmeBSBObjectClass oclass = (SmeBSBObjectClass) XtClass (w);
+    SimpleMenuWidget smw = (SimpleMenuWidget) XtParent (w);
+    ThreeDWidget tdw = (ThreeDWidget) smw->simple_menu.threeD;
+    Dimension s = tdw->threeD.shadow_width;
+
+    if (entry->sme_bsb.set_values_area_cleared) {
+	entry->sme_threeD.shadowed = False;
+	return;
+    }
+
+    if (entry->sme_threeD.shadow_width > 0) {
+	(*oclass->sme_threeD_class.shadowdraw) (w);
+    } else
+		XFillRectangle(XtDisplayOfObject(w), XtWindowOfObject(w),
+		   entry->sme_bsb.invert_gc, 
+		   s, (int) entry->rectangle.y,
+		   (unsigned int) entry->rectangle.width - 2 * s,
+		   (unsigned int) entry->rectangle.height);
 }
-#endif /* apollo */
+

@@ -89,7 +89,9 @@ Meta<Key>Z:	scroll-one-line-down() \n\
  Shift Meta<Key>Delete:		backward-kill-word() \n\
 ~Shift Meta<Key>BackSpace:	delete-previous-word() \n\
  Shift Meta<Key>BackSpace:	backward-kill-word() \n\
-", *_XawDefaultTextTranslations3 = "\
+",
+#if XtVersion >= 11006
+*_XawDefaultTextTranslations3 = "\
 <Key>Home:	beginning-of-file() \n\
 :<Key>KP_Home:	beginning-of-file() \n\
 <Key>End:	end-of-file() \n\
@@ -115,7 +117,22 @@ Meta<Key>Z:	scroll-one-line-down() \n\
 Ctrl<Key>backslash:	reconnect-im() \n\
 <Key>Kanji:	reconnect-im()\n\
 <Key>:		insert-char() \n\
-", *_XawDefaultTextTranslations4 = "\
+",
+#else
+*_XawDefaultTextTranslations3 = "\
+<Key>Right:	forward-character() \n\
+<Key>Left:	backward-character() \n\
+<Key>Down:	next-line() \n\
+<Key>Up:	previous-line() \n\
+<Key>Delete:	delete-previous-character() \n\
+<Key>BackSpace:	delete-previous-character() \n\
+<Key>Linefeed:	newline-and-indent() \n\
+<Key>Return:	newline() \n\
+<Key>KP_Enter:	newline() \n\
+<Key>:		insert-char() \n\
+",
+#endif
+*_XawDefaultTextTranslations4 = "\
 <EnterWindow>:	enter-window() \n\
 <LeaveWindow>:	leave-window() \n\
 <FocusIn>:	focus-in() \n\

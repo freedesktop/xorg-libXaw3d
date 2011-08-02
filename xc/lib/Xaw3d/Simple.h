@@ -51,6 +51,7 @@ SOFTWARE.
 #ifndef _Simple_h
 #define _Simple_h
 
+#include "Xaw3dP.h"
 #include <X11/Xmu/Converters.h>
 
 /****************************************************************
@@ -87,12 +88,13 @@ SOFTWARE.
 
 #define XtCInsensitive "Insensitive"
 
+#ifdef XAW_INTERNATIONALIZATION
 #ifndef XtCInternational
 #define XtCInternational "International"
 #endif
-
 #ifndef XtNinternational
 #define XtNinternational "international"
+#endif
 #endif
 
 typedef struct _SimpleClassRec	*SimpleWidgetClass;

@@ -52,6 +52,7 @@ SOFTWARE.
 #ifndef _SimpleP_h
 #define _SimpleP_h
 
+#include "Xaw3dP.h"
 #include <X11/Xaw3d/Simple.h>
 
 typedef struct {
@@ -74,7 +75,9 @@ typedef struct {
     String      cursor_name;	/* cursor specified by name. */
 
     Pixel       pointer_fg, pointer_bg;	/* Pointer colors. */
+#ifdef XAW_INTERNATIONALIZATION
     Boolean     international;
+#endif
     /* private state */
 } SimplePart;
 

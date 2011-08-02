@@ -49,6 +49,11 @@ SOFTWARE.
 ******************************************************************/
 
 /*
+ * Portions Copyright (c) 1996 Alfredo Kojima
+ * Rights, permissions, and disclaimer per the above X Consortium license.
+ */
+
+/*
  * This is a copy of Xt/Vendor.c with an additional ClassInitialize
  * procedure to register Xmu resource type converters, and all the
  * monkey business associated with input methods...
@@ -57,6 +62,7 @@ SOFTWARE.
 
 /* Make sure all wm properties can make it out of the resource manager */
 
+#include "Xaw3dP.h"
 #include <stdio.h>
 #include <X11/IntrinsicP.h>
 #include <X11/StringDefs.h>
@@ -65,12 +71,19 @@ SOFTWARE.
 #include <X11/Xmu/Converters.h>
 #include <X11/Xmu/Atoms.h>
 #include <X11/Xmu/Editres.h>
+#ifdef XAW_INTERNATIONALIZATION
 #include <X11/Xmu/ExtAgent.h>
+#endif
+#ifdef XAW_MULTIPLANE_PIXMAPS
+#include <X11/xpm.h>
+#include <X11/Xmu/Drawing.h>
+#endif
 
 /* The following two headers are for the input method. */
-
+#ifdef XAW_INTERNATIONALIZATION
 #include <X11/Xaw3d/VendorEP.h>
 #include <X11/Xaw3d/XawImP.h>
+#endif
 
 
 static XtResource resources[] = {
@@ -86,13 +99,16 @@ static XtResource resources[] = {
  ***************************************************************************/
 
 static void XawVendorShellClassInitialize();
-static void XawVendorShellClassPartInit();
 static void XawVendorShellInitialize();
 static Boolean XawVendorShellSetValues();
 static void Realize(), ChangeManaged();
 static XtGeometryResult GeometryManager();
+#ifdef XAW_INTERNATIONALIZATION
+static void XawVendorShellClassPartInit();
 void XawVendorShellExtResize();
+#endif
 
+#ifdef XAW_INTERNATIONALIZATION
 static CompositeClassExtensionRec vendorCompositeExt = {
     /* next_extension     */	NULL,
     /* record_type        */    NULLQUARK,
@@ -101,6 +117,7 @@ static CompositeClassExtensionRec vendorCompositeExt = {
     /* accepts_objects    */    TRUE,
     /* allows_change_managed_set */ FALSE
 };
+#endif
 
 #define SuperClass (&wmShellClassRec)
 externaldef(vendorshellclassrec) VendorShellClassRec vendorShellClassRec = {
@@ -109,7 +126,11 @@ externaldef(vendorshellclassrec) VendorShellClassRec vendorShellClassRec = {
     /* class_name	  */	"VendorShell",
     /* size		  */	sizeof(VendorShellRec),
     /* class_initialize	  */	XawVendorShellClassInitialize,
+#ifdef XAW_INTERNATIONALIZATION
     /* class_part_init	  */	XawVendorShellClassPartInit,
+#else
+    /* class_part_init	  */	NULL,
+#endif
     /* Class init'ed ?	  */	FALSE,
     /* initialize         */	XawVendorShellInitialize,
     /* initialize_hook	  */	NULL,		
@@ -124,7 +145,11 @@ externaldef(vendorshellclassrec) VendorShellClassRec vendorShellClassRec = {
     /* compress_enterleave*/	FALSE,
     /* visible_interest	  */	FALSE,
     /* destroy		  */	NULL,
+#ifdef XAW_INTERNATIONALIZATION
     /* resize		  */	XawVendorShellExtResize,
+#else
+    /* resize		  */	XtInheritResize,
+#endif
     /* expose		  */	NULL,
     /* set_values	  */	XawVendorShellSetValues,
     /* set_values_hook	  */	NULL,			
@@ -142,7 +167,11 @@ externaldef(vendorshellclassrec) VendorShellClassRec vendorShellClassRec = {
     /* change_managed	  */	ChangeManaged,
     /* insert_child	  */	XtInheritInsertChild,
     /* delete_child	  */	XtInheritDeleteChild,
+#ifdef XAW_INTERNATIONALIZATION
     /* extension	  */	(XtPointer) &vendorCompositeExt
+#else
+    /* extension	  */	NULL
+#endif
   },{
     /* extension	  */	NULL
   },{
@@ -156,6 +185,7 @@ externaldef(vendorshellwidgetclass) WidgetClass vendorShellWidgetClass =
 	(WidgetClass) (&vendorShellClassRec);
 
 
+#ifdef XAW_INTERNATIONALIZATION
 /***************************************************************************
  *
  * The following section is for the Vendor shell Extension class record
@@ -224,6 +254,7 @@ externaldef(vendorshellextclassrec) XawVendorShellExtClassRec
 
 externaldef(xawvendorshellwidgetclass) WidgetClass
      xawvendorShellExtWidgetClass = (WidgetClass) (&xawvendorShellExtClassRec);
+#endif
 
 
 /*ARGSUSED*/
@@ -262,23 +293,123 @@ XtPointer *cvt_data;
     return True;
 }
 
+#ifdef XAW_MULTIPLANE_PIXMAPS
+#define DONE(type, address) \
+	{to->size = sizeof(type); to->addr = (XPointer)address;}
+
+/* ARGSUSED */
+static Boolean
+_XawCvtStringToPixmap(dpy, args, nargs, from, to, data)
+Display *dpy;
+XrmValuePtr args;
+Cardinal *nargs;
+XrmValuePtr from, to;
+XtPointer *data;
+{
+    static Pixmap pixmap;
+    Window win;
+    XpmAttributes attr;
+    XpmColorSymbol colors[1];
+
+    if (*nargs != 3)
+	XtAppErrorMsg(XtDisplayToApplicationContext(dpy),
+		"_XawCvtStringToPixmap", "wrongParameters", "XtToolkitError",
+	"_XawCvtStringToPixmap needs screen, colormap, and background_pixel",
+		      (String *) NULL, (Cardinal *) NULL);
+
+    if (strcmp(from->addr, "None") == 0)
+    {
+	pixmap = None;
+	DONE(Pixmap, &pixmap);
+	return (True);
+    }
+    if (strcmp(from->addr, "ParentRelative") == 0)
+    {
+	pixmap = ParentRelative;
+	DONE(Pixmap, &pixmap);
+	return (True);
+    }
+
+    win = RootWindowOfScreen(*((Screen **) args[0].addr));
+
+    attr.colormap = *((Colormap *) args[1].addr);
+    attr.closeness = 32768;	/* might help on 8-bpp displays? */
+    attr.valuemask = XpmColormap | XpmCloseness;
+
+    colors[0].name = NULL;
+    colors[0].value = "none";
+    colors[0].pixel = *((Pixel *) args[2].addr);
+    attr.colorsymbols = colors;
+    attr.numsymbols = 1;
+    attr.valuemask |= XpmColorSymbols;
+
+    if (XpmReadFileToPixmap(dpy, win, (String) from->addr,
+			    &pixmap, NULL, &attr) != XpmSuccess)
+    {
+	if ((pixmap = XmuLocateBitmapFile(*((Screen **) args[0].addr),
+	      (char *)from->addr, NULL, 0, NULL, NULL, NULL, NULL)) == None)
+	{
+	    XtDisplayStringConversionWarning(dpy, (String) from->addr,
+					     XtRPixmap);
+	    return (False);
+	}
+    }
+
+    if (to->addr == NULL)
+	to->addr = (XtPointer) & pixmap;
+    else
+    {
+	if (to->size < sizeof(Pixmap))
+	{
+	    to->size = sizeof(Pixmap);
+	    XtDisplayStringConversionWarning(dpy, (String) from->addr,
+					     XtRPixmap);
+	    return (False);
+	}
+
+	*((Pixmap *) to->addr) = pixmap;
+    }
+    to->size = sizeof(Pixmap);
+    return (True);
+}
+#endif
+
 static void XawVendorShellClassInitialize()
 {
     static XtConvertArgRec screenConvertArg[] = {
         {XtWidgetBaseOffset, (XtPointer) XtOffsetOf(WidgetRec, core.screen),
 	     sizeof(Screen *)}
     };
+#ifdef XAW_MULTIPLANE_PIXMAPS
+    static XtConvertArgRec _XawCvtStrToPix[] = {
+	{XtWidgetBaseOffset, (XtPointer)XtOffsetOf(WidgetRec, core.screen),
+	     sizeof(Screen *)},
+	{XtWidgetBaseOffset, (XtPointer)XtOffsetOf(WidgetRec, core.colormap),
+	     sizeof(Colormap)},
+	{XtWidgetBaseOffset,
+	     (XtPointer)XtOffsetOf(WidgetRec, core.background_pixel),
+	     sizeof(Pixel)}
+    };
+#endif
 
     XtAddConverter(XtRString, XtRCursor, XmuCvtStringToCursor,      
 		   screenConvertArg, XtNumber(screenConvertArg));
 
+#ifdef XAW_MULTIPLANE_PIXMAPS
+    XtSetTypeConverter(XtRString, XtRBitmap,
+		       (XtTypeConverter)_XawCvtStringToPixmap,
+		       _XawCvtStrToPix, XtNumber(_XawCvtStrToPix),
+		       XtCacheByDisplay, (XtDestructor)NULL);
+#else
     XtAddConverter(XtRString, XtRBitmap, XmuCvtStringToBitmap,
 		   screenConvertArg, XtNumber(screenConvertArg));
+#endif
 
     XtSetTypeConverter("CompoundText", XtRString, XawCvtCompoundTextToString,
 			NULL, 0, XtCacheNone, NULL);
 }
 
+#ifdef XAW_INTERNATIONALIZATION
 static void XawVendorShellClassPartInit(class)
     WidgetClass class;
 {
@@ -302,6 +433,7 @@ static void XawVendorShellClassPartInit(class)
 	}
     }
 }
+#endif
 
 #ifdef __osf__
 /* stupid OSF/1 shared libraries have the wrong semantics */
@@ -322,9 +454,11 @@ static void XawVendorShellInitialize(req, new, args, num_args)
 	Cardinal    *num_args;
 {
     XtAddEventHandler(new, (EventMask) 0, TRUE, _XEditResCheckMessages, NULL);
+#ifdef XAW_INTERNATIONALIZATION
     XtAddEventHandler(new, (EventMask) 0, TRUE, XmuRegisterExternalAgent, NULL);
     XtCreateWidget("shellext", xawvendorShellExtWidgetClass,
 		   new, args, *num_args);
+#endif
 }
 
 /* ARGSUSED */
@@ -344,10 +478,13 @@ static void Realize(wid, vmask, attr)
 	/* Make my superclass do all the dirty work */
 
 	(*super->core_class.realize) (wid, vmask, attr);
+#ifdef XAW_INTERNATIONALIZATION
 	_XawImRealize(wid);
+#endif
 }
 
 
+#ifdef XAW_INTERNATIONALIZATION
 static void XawVendorShellExtClassInitialize()
 {
 }
@@ -391,6 +528,7 @@ void XawVendorShellExtResize( w )
 	    }
 	}
 }
+#endif
 
 /*ARGSUSED*/
 static XtGeometryResult GeometryManager( wid, request, reply )
@@ -415,7 +553,10 @@ static XtGeometryResult GeometryManager( wid, request, reply )
 	}
 	if (request->request_mode & CWHeight) {
 	    my_request.height = request->height
-			      + _XawImGetImAreaHeight( wid );
+#ifdef XAW_INTERNATIONALIZATION
+			      + _XawImGetImAreaHeight( wid )
+#endif
+			      ;
 	    my_request.request_mode |= CWHeight;
 	}
 	if (request->request_mode & CWBorderWidth) {
@@ -438,7 +579,9 @@ static XtGeometryResult GeometryManager( wid, request, reply )
 	    if (request->request_mode & CWBorderWidth) {
 		wid->core.x = wid->core.y = -request->border_width;
 	    }
+#ifdef XAW_INTERNATIONALIZATION
 	    _XawImCallVendorShellExtResize(wid);
+#endif
 	    return XtGeometryYes;
 	} else return XtGeometryNo;
 }

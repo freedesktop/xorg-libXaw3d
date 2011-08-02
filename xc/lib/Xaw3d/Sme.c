@@ -35,10 +35,10 @@ in this Software without prior written authorization from the X Consortium.
  *          kit@expo.lcs.mit.edu
  */
 
+#include "Xaw3dP.h"
 #include <stdio.h>
 #include <X11/IntrinsicP.h>
 #include <X11/StringDefs.h>
-
 #include <X11/Xaw3d/XawInit.h>
 #include <X11/Xaw3d/SmeP.h>
 #include <X11/Xaw3d/Cardinals.h>
@@ -47,8 +47,10 @@ in this Software without prior written authorization from the X Consortium.
 static XtResource resources[] = {
   {XtNcallback, XtCCallback, XtRCallback, sizeof(XtPointer),
      offset(callbacks), XtRCallback, (XtPointer)NULL},
+#ifdef XAW_INTERNATIONALIZATION
   {XtNinternational, XtCInternational, XtRBoolean, sizeof(Boolean),
      offset(international), XtRImmediate, (XtPointer) FALSE},
+#endif
 };   
 #undef offset
 

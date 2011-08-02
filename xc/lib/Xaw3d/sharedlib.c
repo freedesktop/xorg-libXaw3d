@@ -28,12 +28,15 @@ in this Software without prior written authorization from the X Consortium.
 
 #if defined(SUNSHLIB) && !defined(SHAREDCODE)
 
+#include <X11/Xaw3d/Xaw3dP.h>
 #include <X11/IntrinsicP.h>
 #include <X11/Xaw3d/AsciiSinkP.h>
 #include <X11/Xaw3d/AsciiSrcP.h>
 #include <X11/Xaw3d/AsciiTextP.h>
+#ifdef XAW_INTERNATIONALIZATION
 #include <X11/Xaw3d/MultiSinkP.h>
 #include <X11/Xaw3d/MultiSrcP.h>
+#endif
 #include <X11/Xaw3d/BoxP.h>
 #include <X11/Xaw3d/CommandP.h>
 #include <X11/Xaw3d/DialogP.h>
@@ -58,6 +61,7 @@ in this Software without prior written authorization from the X Consortium.
 #include <X11/Xaw3d/TextSinkP.h>
 #include <X11/Xaw3d/TextSrcP.h>
 #include <X11/Xaw3d/ThreeDP.h>
+#include <X11/Xaw3d/TipP.h>
 #include <X11/Xaw3d/ToggleP.h>
 #include <X11/Xaw3d/TreeP.h>
 #include <X11/VendorP.h>
@@ -82,11 +86,15 @@ extern AsciiDiskClassRec asciiDiskClassRec;
 WidgetClass asciiDiskWidgetClass = (WidgetClass)&asciiDiskClassRec;
 #endif
 
+#ifdef XAW_INTERNATIONALIZATION
 extern MultiSinkClassRec multiSinkClassRec;
 WidgetClass multiSinkObjectClass = (WidgetClass)&multiSinkClassRec;
+#endif
 
+#ifdef XAW_INTERNATIONALIZATION
 extern MultiSrcClassRec multiSrcClassRec;
 WidgetClass multiSrcObjectClass = (WidgetClass)&multiSrcClassRec;
+#endif
 
 extern BoxClassRec boxClassRec;
 WidgetClass boxWidgetClass = (WidgetClass)&boxClassRec;
@@ -153,7 +161,9 @@ WidgetClass textWidgetClass = (WidgetClass)&textClassRec;
 
 unsigned long FMT8BIT = 0L;
 unsigned long XawFmt8Bit = 0L;
+#ifdef XAW_INTERNATIONALIZATION
 unsigned long XawFmtWide = 0L;
+#endif
 
 extern TextSinkClassRec textSinkClassRec;
 WidgetClass textSinkObjectClass = (WidgetClass)&textSinkClassRec;
@@ -163,6 +173,9 @@ WidgetClass textSrcObjectClass = (WidgetClass)&textSrcClassRec;
 
 extern ThreeDClassRec threeDClassRec;
 WidgetClass threeDClass = (WidgetClass)&threeDClassRec;
+
+extern TipClassRec tipClassRec;
+WidgetClass tipWidgetClass = (WidgetClass)&tipClassRec;
 
 extern ToggleClassRec toggleClassRec;
 WidgetClass toggleWidgetClass = (WidgetClass) &toggleClassRec;

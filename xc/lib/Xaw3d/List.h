@@ -44,6 +44,7 @@ in this Software without prior written authorization from the X Consortium.
  *
  ***********************************************************************/
 
+#include "Xaw3dP.h"
 #include <X11/Xaw3d/Simple.h>
 
 /* Resources:
@@ -135,12 +136,13 @@ in this Software without prior written authorization from the X Consortium.
 #define XtNrowSpacing "rowSpacing"
 #define XtNverticalList "verticalList"
  
+#ifdef XAW_INTERNATIONALIZATION
 #ifndef XtNfontSet
 #define XtNfontSet "fontSet"
 #endif
-
 #ifndef XtCFontSet
 #define XtCFontSet "FontSet"
+#endif
 #endif
 
 /* Class record constants */

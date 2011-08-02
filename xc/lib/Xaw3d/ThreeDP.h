@@ -33,6 +33,8 @@ SOFTWARE.
 #include <X11/Xaw3d/ThreeD.h>
 #include <X11/Xaw3d/SimpleP.h>
 
+#define XtRRelief "Relief"
+
 typedef struct {
     Dimension	shadow_width;
     Pixel	top_shadow_pixel;
@@ -45,6 +47,7 @@ typedef struct {
     GC		bot_shadow_GC;
     XtPointer	user_data;
     Boolean	be_nice_to_cmap;
+    XtRelief	relief;
   } ThreeDPart;
 
 /* Full instance record declaration */

@@ -238,7 +238,7 @@ static void Redisplay(gw, event, region)
     StripChartWidgetClass swclass = (StripChartWidgetClass) XtClass (gw);
     Dimension x, width, s = w->threeD.shadow_width;
 
-    (*swclass->threeD_class.shadowdraw) (gw, event, region, FALSE);
+    (*swclass->threeD_class.shadowdraw) (gw, event, region, w->threeD.relief, FALSE);
 
     if (event->type == GraphicsExpose) {
 	x = event->xgraphicsexpose.x;
@@ -295,7 +295,7 @@ XtIntervalId *id;		/* unused */
 	   w->strip_chart.interval = repaint_window((Widget)w, 0, (int) w->core.width - 2 * s);
 	   (*swclass->threeD_class.shadowdraw) ((Widget) w, 
 						(XEvent *)0, (Region)0, 
-						FALSE);
+						w->threeD.relief, FALSE);
        }
    }
 
@@ -364,7 +364,7 @@ int left, width;
 
       if (XtIsRealized (gw)) {
 	XClearWindow (XtDisplay (gw), XtWindow (gw));
-	(*swclass->threeD_class.shadowdraw) (gw, (XEvent *)0, (Region)0, FALSE);
+	(*swclass->threeD_class.shadowdraw) (gw, (XEvent *)0, (Region)0, w->threeD.relief, FALSE);
       }
 
     }
