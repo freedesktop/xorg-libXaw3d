@@ -8,6 +8,10 @@ lib_LTLIBRARIES = libXaw3d.la
 #
 # SHAREDLIB_SOURCES = sharedlib.c
 
+if XAW_INTERNATIONALIZATION
+I18N_SRCS = MultiSrc.c MultiSink.c XawIm.c XawI18n.c XawI18n.h
+endif
+
 libXaw3d_la_SOURCES = \
 	AllWidgets.c \
 	AsciiSink.c \
@@ -22,8 +26,6 @@ libXaw3d_la_SOURCES = \
 	Layout.c \
 	List.c \
 	MenuButton.c \
-	MultiSink.c \
-	MultiSrc.c \
 	Paned.c \
 	Panner.c \
 	Porthole.c \
@@ -49,21 +51,22 @@ libXaw3d_la_SOURCES = \
 	Vendor.c \
 	Viewport.c \
 	Xaw3dP.c \
-	XawI18n.c \
-	XawIm.c \
 	XawInit.c \
 	laygram.y \
-	laylex.l
+	laylex.l \
+	$(I18N_SRCS)
 
 libXaw3d_la_CFLAGS = \
-	$(CWARNFLAGS) $(X11_CFLAGS)
+	$(CWARNFLAGS)
 
 libXaw3d_la_LIBADD = \
-	$(X11_LIBS)
+	$(X11_LIBS) $(XPM_LIBS)
 
 libXaw3d_la_CPPFLAGS = \
 	-I${top_srcdir}/include \
 	-I${top_srcdir}/include/X11/Xaw3d \
+	$(XAW3D_CFLAGS) \
+	$(X11_CFLAGS) $(XPM_CFLAGS) \
 	-DPROJECT_ROOT=\"$(prefix)\"
 
 libXaw3d_la_LDFLAGS = -version-info 8:0:0 -no-undefined

@@ -1,5 +1,15 @@
 xaw3dincludedir=${includedir}
 
+if XAW_INTERNATIONALIZATION
+I18N_HDRS = \
+       X11/Xaw3d/MultiSrc.h \
+       X11/Xaw3d/MultiSrcP.h \
+       X11/Xaw3d/MultiSink.h \
+       X11/Xaw3d/MultiSinkP.h \
+       X11/Xaw3d/VendorEP.h \
+       X11/Xaw3d/XawImP.h
+endif
+
 xaw3dinclude_HEADERS = \
 	X11/Xaw3d/AllWidgets.h \
 	X11/Xaw3d/AsciiSink.h \
@@ -27,10 +37,6 @@ xaw3dinclude_HEADERS = \
 	X11/Xaw3d/ListP.h \
 	X11/Xaw3d/MenuButton.h \
 	X11/Xaw3d/MenuButtoP.h \
-	X11/Xaw3d/MultiSink.h \
-	X11/Xaw3d/MultiSinkP.h \
-	X11/Xaw3d/MultiSrc.h \
-	X11/Xaw3d/MultiSrcP.h \
 	X11/Xaw3d/Paned.h \
 	X11/Xaw3d/PanedP.h \
 	X11/Xaw3d/Panner.h \
@@ -70,12 +76,11 @@ xaw3dinclude_HEADERS = \
 	X11/Xaw3d/ToggleP.h \
 	X11/Xaw3d/Tree.h \
 	X11/Xaw3d/TreeP.h \
-	X11/Xaw3d/VendorEP.h \
 	X11/Xaw3d/Viewport.h \
 	X11/Xaw3d/ViewportP.h \
 	X11/Xaw3d/Xaw3dP.h \
-	X11/Xaw3d/XawImP.h \
-	X11/Xaw3d/XawInit.h
+	X11/Xaw3d/XawInit.h \
+	$(I18N_HDRS)
 
 EXTRA_DIST = \
 	X11/Xaw3d/Template.h \
