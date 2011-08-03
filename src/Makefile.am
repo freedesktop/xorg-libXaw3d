@@ -65,22 +65,4 @@ libXaw3d_la_CPPFLAGS = \
 
 libXaw3d_la_LDFLAGS = -version-info 8:0:0 -no-undefined
 
-if !PLATFORM_WIN32
-install-exec-hook::
-if PLATFORM_DARWIN
-	-rm -f $(DESTDIR)$(libdir)/libXaw3d.8.@LIBEXT@
-	(cd $(DESTDIR)$(libdir) && ln -s libXaw3d.8.@LIBEXT@ libXaw3d.8.@LIBEXT@)
-else
-	-rm -f $(DESTDIR)$(libdir)/libXaw3d.@LIBEXT@.8
-	(cd $(DESTDIR)$(libdir) && ln -s libXaw3d.@LIBEXT@.8 libXaw3d.@LIBEXT@.8)
-endif
-
-uninstall-local::
-if PLATFORM_DARWIN
-	-rm -f $(DESTDIR)$(libdir)/libXaw3d.8.@LIBEXT@
-else
-	-rm -f $(DESTDIR)$(libdir)/libXaw3d.@LIBEXT@.8
-endif
-endif
-
 EXTRA_DIST = sharedlib.c
