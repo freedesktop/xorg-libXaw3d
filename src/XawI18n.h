@@ -29,10 +29,10 @@ in this Software without prior written authorization from the X Consortium.
 #include <wctype.h>
 #ifdef HAVE_WIDEC_H
 #include <widec.h>
-#endif
 #define wcslen(c) wslen(c)
 #define wcscpy(d,s) wscpy(d,s)
 #define wcsncpy(d,s,l) wsncpy(d,s,l)
+#endif
 #endif
 
 #ifdef HAVE_WCHAR_H
@@ -70,7 +70,7 @@ extern wchar_t _Xaw_atowc (
 #endif
 );
 
-#ifndef HAVE_ISW_FUNCS
+#ifndef HAVE_ISWSPACE
 #include <ctype.h>
 #ifndef iswspace
 #define iswspace(c) (isascii(c) && isspace(toascii(c)))

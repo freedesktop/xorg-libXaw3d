@@ -25,6 +25,7 @@ PKG_PROG_PKG_CONFIG
 # Checks for header files.
 PKG_CHECK_MODULES(X11, [x11 xt xmu])
 AC_CHECK_HEADERS([wctype.h wchar.h widec.h])
+AC_CHECK_FUNCS([iswspace])
 
 AC_CONFIG_FILES([Makefile
 		include/Makefile
