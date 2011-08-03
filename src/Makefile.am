@@ -53,7 +53,9 @@ libXaw3d_la_SOURCES = \
 	Xaw3dP.c \
 	XawI18n.c \
 	XawIm.c \
-	XawInit.c
+	XawInit.c \
+	laygram.y \
+	laylex.l
 
 libXaw3d_la_CFLAGS = \
 	$(CWARNFLAGS)

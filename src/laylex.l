@@ -1,4 +1,5 @@
-
+%option prefix="LayYY"
+%option outfile="lex.yy.c"
 %{
 #ifndef FLEX_SCANNER
 #undef input
@@ -12,6 +13,11 @@
 
 #include    "LayoutP.h"
 #include    "laygram.h"
+
+#define yylval LayYYlval
+#define yyerror LayYYerror
+#define yysetsource LayYYsetsource
+
 static char *yysourcebase, *yysource;
 
 #ifndef FLEX_SCANNER
@@ -23,9 +29,7 @@ static void my_yyinput(char *buf, int *result, int max_size);
 #define YY_INPUT(buf, res, max) my_yyinput(buf, &(res), max)
 #endif
 
-#ifdef __STDC__
-static int count ();
-#endif
+static int count (char *s, char c);
 %}
 %%
 vertical		return VERTICAL;
@@ -75,9 +79,7 @@ height			return HEIGHT;
 %%
 
 static int
-count (s, c)
-    char    *s;
-    char    c;
+count (char *s, char c)
 {
     int	i = 0;
     while (*s)
@@ -86,14 +88,12 @@ count (s, c)
     return i;
 }
 
-yysetsource(s)
-    char    *s;
+void yysetsource(char *s)
 {
     yysourcebase = yysource = s;
 }
 
-yyerror(s)
-    char    *s;
+void yyerror(char *s)
 {
     char    *t;
 
@@ -115,8 +115,7 @@ yyerror(s)
 
 #ifdef FLEX_SCANNER
 static void
-my_yyinput(buf, result, max_size)
-    char *buf; int *result; int max_size;
+my_yyinput(char *buf, int *result, int max_size)
 {
     int size = max_size < strlen(yysource) ? max_size : strlen(yysource);
 

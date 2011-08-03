@@ -1,3 +1,5 @@
+%name-prefix "LayYY"
+%defines
 %{
 #include    <X11/Xlib.h>
 #include    <X11/Xresource.h>
@@ -9,6 +11,9 @@
 #include    <X11/Xmu/Misc.h>
 #include    <X11/Xmu/Converters.h>
 #include    "LayoutP.h"
+
+#define yysetdest LayYYsetdest
+#define yywrap LayYYwrap
 
 static LayoutPtr    *dest;
 
@@ -251,13 +256,12 @@ orientation	:   VERTICAL
 		;
 %%
 
-int yywrap ()
+int yywrap (void)
 {
     return 1;
 }
 
-void yysetdest (c)
-    LayoutPtr	*c;
+void yysetdest (LayoutPtr *c)
 {
     dest = c;
 }

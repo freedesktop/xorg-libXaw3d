@@ -7,6 +7,8 @@ AC_CONFIG_SRCDIR([Makefile.am])
 # Initialize Automake
 AM_INIT_AUTOMAKE([foreign dist-bzip2])
 AM_MAINTAINER_MODE
+AC_PROG_LEX
+AC_PROG_YACC
 
 # Initialize libtool
 AC_PROG_LIBTOOL
