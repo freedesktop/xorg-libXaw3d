@@ -29,7 +29,6 @@ libXaw3d_la_SOURCES = \
 	Porthole.c \
 	Repeater.c \
 	Scrollbar.c \
-	sharedlib.c \
 	Simple.c \
 	SimpleMenu.c \
 	SmeBSB.c \
@@ -37,7 +36,6 @@ libXaw3d_la_SOURCES = \
 	SmeLine.c \
 	SmeThreeD.c \
 	StripChart.c \
-	Template.c \
 	TextAction.c \
 	Text.c \
 	TextPop.c \
@@ -67,4 +65,4 @@ libXaw3d_la_CPPFLAGS = \
 
 libXaw3d_la_LDFLAGS = -version-info 8:0:0 -no-undefined
 
-EXTRA_DIST = sharedlib.c
+EXTRA_DIST = sharedlib.c Template.c

@@ -56,8 +56,6 @@ xaw3dinclude_HEADERS = \
 	X11/Xaw3d/SmeThreeDP.h \
 	X11/Xaw3d/StripCharP.h \
 	X11/Xaw3d/StripChart.h \
-	X11/Xaw3d/Template.h \
-	X11/Xaw3d/TemplateP.h \
 	X11/Xaw3d/Text.h \
 	X11/Xaw3d/TextP.h \
 	X11/Xaw3d/TextSink.h \
@@ -78,3 +76,7 @@ xaw3dinclude_HEADERS = \
 	X11/Xaw3d/Xaw3dP.h \
 	X11/Xaw3d/XawImP.h \
 	X11/Xaw3d/XawInit.h
+
+EXTRA_DIST = \
+	X11/Xaw3d/Template.h \
+	X11/Xaw3d/TemplateP.h
