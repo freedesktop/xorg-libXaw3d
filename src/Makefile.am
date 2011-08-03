@@ -56,7 +56,10 @@ libXaw3d_la_SOURCES = \
 	laylex.l
 
 libXaw3d_la_CFLAGS = \
-	$(CWARNFLAGS)
+	$(CWARNFLAGS) $(X11_CFLAGS)
+
+libXaw3d_la_LIBADD = \
+	$(X11_LIBS)
 
 libXaw3d_la_CPPFLAGS = \
 	-I${top_srcdir}/include \
