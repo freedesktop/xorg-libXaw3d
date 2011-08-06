@@ -76,6 +76,3 @@ core
 #		Edit the following section as needed
 # For example, !report.pc overrides *.pc. See 'man gitignore'
 #
-src/laygram.c
-src/laygram.h
-src/laylex.c
