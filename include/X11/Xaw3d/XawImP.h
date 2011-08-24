@@ -125,114 +125,82 @@ typedef	struct _contextErrDataRec
 } contextErrDataRec;
 
 void _XawImResizeVendorShell( 
-#if NeedFunctionPrototypes
     Widget /* w */
-#endif
 );
 
 Dimension _XawImGetShellHeight( 
-#if NeedFunctionPrototypes
     Widget /* w */
-#endif
 );
 
 void _XawImRealize( 
-#if NeedFunctionPrototypes
     Widget /* w */
-#endif
 );
 
 void _XawImInitialize( 
-#if NeedFunctionPrototypes
     Widget, /* w */
     Widget  /* ext */
-#endif
 );
 
 void _XawImReconnect( 
-#if NeedFunctionPrototypes
     Widget  /* w */
-#endif
 );
 
 void _XawImRegister( 
-#if NeedFunctionPrototypes
     Widget  /* w */
-#endif
 );
 
 void _XawImUnregister( 
-#if NeedFunctionPrototypes
     Widget  /* w */
-#endif
 );
 
 void _XawImSetValues( 
-#if NeedFunctionPrototypes
     Widget,  /* w */
     ArgList, /* args */
     Cardinal /* num_args */
-#endif
 );
 
 /* DON'T USE THIS FUNCTION -- it's going away in the next release */
 void _XawImVASetValues( 
-#if NeedVarargsPrototypes
     Widget,  /* w */
     ... 
-#endif
 );
 
 void _XawImSetFocusValues( 
-#if NeedFunctionPrototypes
     Widget,  /* w */
     ArgList, /* args */
     Cardinal /* num_args */
-#endif
 );
 
 /* DON'T USE THIS FUNCTION -- it's going away in the next release */
 void _XawImVASetFocusValues( 
-#if NeedVarargsPrototypes
     Widget,  /* w */
     ... 
-#endif
 );
 
 void _XawImUnsetFocus( 
-#if NeedFunctionPrototypes
     Widget  /* w */
-#endif
 );
 
 int  _XawImWcLookupString( 
-#if NeedFunctionPrototypes
     Widget,   /* w */
     XKeyPressedEvent*, /* event */
     wchar_t*, /* buffer_return */
     int,      /* bytes_buffer */
     KeySym*,  /* keysym_return */
     Status*   /* status return */
-#endif
 );
 
 int  _XawImGetImAreaHeight( 
-#if NeedFunctionPrototypes
     Widget  /* w */
-#endif
 );
 
 void _XawImCallVendorShellExtResize( 
-#if NeedFunctionPrototypes
     Widget  /* w */
-#endif
 );
 
 void _XawImDestroy( 
-#if NeedFunctionPrototypes
     Widget,  /* w */
     Widget   /* ext */
-#endif
 );
 
 #endif	/* _XawImP_h */

@@ -150,13 +150,11 @@ extern WidgetClass formWidgetClass;
 _XFUNCPROTOBEGIN
 
 extern void XawFormDoLayout(
-#if NeedFunctionPrototypes
     Widget		/* w */,
 #if NeedWidePrototypes
     /* Boolean */ int	/* do_layout */
 #else
     Boolean		/* do_layout */
-#endif
 #endif
 );
 

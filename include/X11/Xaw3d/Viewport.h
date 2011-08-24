@@ -92,7 +92,6 @@ typedef struct _ViewportRec  *ViewportWidget;
 _XFUNCPROTOBEGIN
 
 extern void XawViewportSetLocation (
-#if NeedFunctionPrototypes
     Widget		/* gw */,
 #if NeedWidePrototypes
     /* float */ double	/* xoff */,
@@ -101,11 +100,9 @@ extern void XawViewportSetLocation (
     float		/* xoff */,
     float		/* yoff */
 #endif
-#endif
 );
 
 extern void XawViewportSetCoordinates (
-#if NeedFunctionPrototypes
     Widget		/* gw */,
 #if NeedWidePrototypes
     /* Position */ int	/* x */,
@@ -113,7 +110,6 @@ extern void XawViewportSetCoordinates (
 #else
     Position		/* x */,
     Position		/* y */
-#endif
 #endif
 );
 

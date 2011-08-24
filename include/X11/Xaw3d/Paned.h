@@ -175,11 +175,9 @@ _XFUNCPROTOBEGIN
  */
 
 extern void XawPanedSetMinMax(
-#if NeedFunctionPrototypes
     Widget		/* w */,
     int			/* min */,
     int			/* max */
-#endif
 );
 
 /*	Function Name: XawPanedGetMinMax
@@ -190,11 +188,9 @@ extern void XawPanedSetMinMax(
  */
 
 extern void XawPanedGetMinMax(
-#if NeedFunctionPrototypes
     Widget		/* w */,
     int *		/* min_return */,
     int *		/* max_return */
-#endif
 );
 
 /*	Function Name: XawPanedSetRefigureMode
@@ -206,13 +202,11 @@ extern void XawPanedGetMinMax(
  */
 
 extern void XawPanedSetRefigureMode(
-#if NeedFunctionPrototypes
     Widget		/* w */,
 #if NeedWidePrototypes
     /* Boolean */ int	/* mode */
 #else
     Boolean		/* mode */
-#endif
 #endif
 );
 
@@ -223,9 +217,7 @@ extern void XawPanedSetRefigureMode(
  */
 
 extern int XawPanedGetNumSub(
-#if NeedFunctionPrototypes
     Widget		/* w */
-#endif
 );
 
 /*	Function Name: XawPanedAllowResize
@@ -236,13 +228,11 @@ extern int XawPanedGetNumSub(
  */
 
 extern void XawPanedAllowResize(
-#if NeedFunctionPrototypes
     Widget		/* w */,
 #if NeedWidePrototypes
     /* Boolean */ int	/* allow_resize */
 #else
     Boolean		/* allow_resize */
-#endif
 #endif
 );
 

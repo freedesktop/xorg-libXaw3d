@@ -405,16 +405,8 @@ Widget w;
 
 
 void
-#if NeedFunctionPrototypes
 XawDialogAddButton(Widget dialog, _Xconst char* name, XtCallbackProc function,
 		   XtPointer param)
-#else
-XawDialogAddButton(dialog, name, function, param)
-Widget dialog;
-String name;
-XtCallbackProc function;
-XtPointer param;
-#endif
 {
 /*
  * Correct Constraints are all set in ConstraintInitialize().
@@ -430,12 +422,7 @@ XtPointer param;
 
 
 char *
-#if NeedFunctionPrototypes
 XawDialogGetValueString(Widget w)
-#else
-XawDialogGetValueString(w)
-Widget w;
-#endif
 {
     Arg args[1];
     char * value;

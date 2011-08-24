@@ -1840,13 +1840,7 @@ Cardinal *num_args;
  */
 
 void
-#if NeedFunctionPrototypes
 XawPanedSetMinMax(Widget widget, int min, int max)
-#else
-XawPanedSetMinMax(widget, min, max)
-Widget widget;
-int min, max;
-#endif
 {
     Pane pane = PaneInfo(widget);
 
@@ -1863,13 +1857,7 @@ int min, max;
  */
 
 void
-#if NeedFunctionPrototypes
 XawPanedGetMinMax(Widget widget, int *min, int *max)
-#else
-XawPanedGetMinMax(widget, min, max)
-Widget widget;
-int    *min, *max;
-#endif
 {
     Pane pane = PaneInfo(widget);
 
@@ -1886,17 +1874,11 @@ int    *min, *max;
  */
 
 void
-#if NeedFunctionPrototypes
 XawPanedSetRefigureMode(Widget w,
 #if NeedWidePrototypes
 			int mode)
 #else
 			Boolean mode)
-#endif
-#else
-XawPanedSetRefigureMode(w, mode)
-Widget w;
-Boolean mode;
 #endif
 {
     ((PanedWidget) w)->paned.refiguremode = mode;
@@ -1910,12 +1892,7 @@ Boolean mode;
  */
 
 int
-#if NeedFunctionPrototypes
 XawPanedGetNumSub(Widget w)
-#else
-XawPanedGetNumSub(w)
-Widget w;
-#endif
 {
     return ((PanedWidget)w)->paned.num_panes;
 }
@@ -1928,17 +1905,11 @@ Widget w;
  */
 
 void
-#if NeedFunctionPrototypes
 XawPanedAllowResize(Widget widget,
 #if NeedWidePrototypes
 		    int allow_resize)
 #else
 		    Boolean allow_resize)
-#endif
-#else
-XawPanedAllowResize(widget, allow_resize)
-Widget widget;
-Boolean allow_resize;
 #endif
 {
     PaneInfo(widget)->allow_resize = allow_resize;

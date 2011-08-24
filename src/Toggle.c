@@ -477,12 +477,7 @@ Widget w;
  */
 
 void
-#if NeedFunctionPrototypes
 XawToggleChangeRadioGroup(Widget w, Widget radio_group)
-#else
-XawToggleChangeRadioGroup(w, radio_group)
-Widget w, radio_group;
-#endif
 {
   ToggleWidget tw = (ToggleWidget) w;
   RadioGroup * group;
@@ -511,12 +506,7 @@ Widget w, radio_group;
  */
 
 XtPointer
-#if NeedFunctionPrototypes
 XawToggleGetCurrent(Widget w)
-#else
-XawToggleGetCurrent(w)
-Widget w;
-#endif
 {
   RadioGroup * group;
 
@@ -541,13 +531,7 @@ Widget w;
  */
 
 void
-#if NeedFunctionPrototypes
 XawToggleSetCurrent(Widget radio_group, XtPointer radio_data)
-#else
-XawToggleSetCurrent(radio_group, radio_data)
-Widget radio_group;
-XtPointer radio_data;
-#endif
 {
   RadioGroup * group;
   ToggleWidget local_tog;
@@ -594,12 +578,7 @@ XtPointer radio_data;
  */
 
 void
-#if NeedFunctionPrototypes
 XawToggleUnsetCurrent(Widget radio_group)
-#else
-XawToggleUnsetCurrent(radio_group)
-Widget radio_group;
-#endif
 {
   ToggleWidgetClass class;
   ToggleWidget local_tog = (ToggleWidget) radio_group;

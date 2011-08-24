@@ -65,9 +65,7 @@ extern int _Xaw_iswspace(wchar_t);
 #endif
 
 extern wchar_t _Xaw_atowc (
-#if NeedFunctionPrototypes
     unsigned char	c
-#endif
 );
 
 #ifndef HAVE_ISWSPACE

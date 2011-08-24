@@ -123,9 +123,7 @@ _XFUNCPROTOBEGIN
  */
 
 extern void XawSimpleMenuAddGlobalActions(
-#if NeedFunctionPrototypes
     XtAppContext	/* app_con */
-#endif
 );
  
 /*	Function Name: XawSimpleMenuGetActiveEntry
@@ -135,9 +133,7 @@ extern void XawSimpleMenuAddGlobalActions(
  */
 
 extern Widget XawSimpleMenuGetActiveEntry(
-#if NeedFunctionPrototypes
     Widget		/* w */
-#endif
 );
 
 /*	Function Name: XawSimpleMenuClearActiveEntry
@@ -147,9 +143,7 @@ extern Widget XawSimpleMenuGetActiveEntry(
  */
 
 extern void XawSimpleMenuClearActiveEntry(
-#if NeedFunctionPrototypes
     Widget		/* w */
-#endif
 );
 
 _XFUNCPROTOEND

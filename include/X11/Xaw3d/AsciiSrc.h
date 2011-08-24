@@ -111,9 +111,7 @@ _XFUNCPROTOBEGIN
  */
 
 extern void XawAsciiSourceFreeString(
-#if NeedFunctionPrototypes
     Widget		/* w */
-#endif
 );
 
 /*	Function Name: XawAsciiSave
@@ -123,9 +121,7 @@ extern void XawAsciiSourceFreeString(
  */
 
 extern Boolean XawAsciiSave(
-#if NeedFunctionPrototypes
     Widget		/* w */
-#endif
 );
 
 /*	Function Name: XawAsciiSaveAsFile
@@ -136,10 +132,8 @@ extern Boolean XawAsciiSave(
  */
 
 extern Boolean XawAsciiSaveAsFile(
-#if NeedFunctionPrototypes
     Widget		/* w */,
     _Xconst char*	/* name */
-#endif 
 );
 
 /*	Function Name: XawAsciiSourceChanged
@@ -149,9 +143,7 @@ extern Boolean XawAsciiSaveAsFile(
  */
 
 extern Boolean XawAsciiSourceChanged(
-#if NeedFunctionPrototypes
     Widget		/* w */
-#endif
 );
 
 _XFUNCPROTOEND

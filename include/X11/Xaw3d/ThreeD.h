@@ -84,21 +84,16 @@ extern WidgetClass threeDWidgetClass;
 _XFUNCPROTOBEGIN
 
 extern void Xaw3dComputeTopShadowRGB (
-#if NeedFunctionPrototypes
     Widget 		/* new */,
     XColor*		/* xcol_out */
-#endif
 );
 
 extern void Xaw3dComputeBottomShadowRGB (
-#if NeedFunctionPrototypes
     Widget		/* new */,
     XColor*		/* xcol_out */
-#endif
 );
 
 extern void _ShadowSurroundedBox (
-#if NeedFunctionPrototypes
     Widget,
     ThreeDWidget,
     Position,
@@ -107,7 +102,6 @@ extern void _ShadowSurroundedBox (
     Position,
     XtRelief,
     Boolean
-#endif
 );
 
 _XFUNCPROTOEND

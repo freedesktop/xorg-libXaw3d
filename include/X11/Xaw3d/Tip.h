@@ -108,10 +108,8 @@ extern WidgetClass tipWidgetClass;
  *	Enables the tip event handler for this widget.
  */
 void XawTipEnable(
-#if NeedFunctionPrototypes
  Widget,
  String
-#endif
 );
 
 /*
@@ -125,9 +123,7 @@ void XawTipEnable(
  *	Disables the tip event handler for this widget.
  */
 void XawTipDisable(
-#if NeedFunctionPrototypes
  Widget
-#endif
 );
 
 #endif /* _XawTip_h */

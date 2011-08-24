@@ -104,12 +104,10 @@ _XFUNCPROTOBEGIN
  */
 
 extern XawTextPosition XawTextSourceRead(
-#if NeedFunctionPrototypes
     Widget		/* w */,
     XawTextPosition	/* pos */,
     XawTextBlock*	/* text_return */,
     int			/* length */
-#endif
 );
 
 /*	Function Name: XawTextSourceReplace.
@@ -121,12 +119,10 @@ extern XawTextPosition XawTextSourceRead(
  */
 
 extern int XawTextSourceReplace (
-#if NeedFunctionPrototypes
     Widget		/* w */,
     XawTextPosition	/* start */,
     XawTextPosition	/* end */,
     XawTextBlock*	/* text */
-#endif
 );
 
 /*	Function Name: XawTextSourceScan
@@ -144,7 +140,6 @@ extern int XawTextSourceReplace (
  */
 
 extern XawTextPosition XawTextSourceScan(
-#if NeedFunctionPrototypes
     Widget		/* w */,
     XawTextPosition	/* position */,
 #if NeedWidePrototypes
@@ -160,7 +155,6 @@ extern XawTextPosition XawTextSourceScan(
 #else
     Boolean		/* include */
 #endif
-#endif
 );
 
 /*	Function Name: XawTextSourceSearch
@@ -174,7 +168,6 @@ extern XawTextPosition XawTextSourceScan(
  */
 
 extern XawTextPosition XawTextSourceSearch(
-#if NeedFunctionPrototypes
     Widget		/* w */,
     XawTextPosition	/* position */,
 #if NeedWidePrototypes
@@ -183,7 +176,6 @@ extern XawTextPosition XawTextSourceSearch(
     XawTextScanDirection /* dir */,
 #endif
     XawTextBlock*	/* text */
-#endif
 );
 
 /*	Function Name: XawTextSourceConvertSelection
@@ -199,7 +191,6 @@ extern XawTextPosition XawTextSourceSearch(
  */
 
 extern Boolean XawTextSourceConvertSelection(
-#if NeedFunctionPrototypes
     Widget		/* w */,
     Atom*		/* selection */,
     Atom*		/* target */,
@@ -207,7 +198,6 @@ extern Boolean XawTextSourceConvertSelection(
     XtPointer*		/* value_return */,
     unsigned long*	/* length_return */,
     int*		/* format_return */
-#endif
 );
 
 /*	Function Name: XawTextSourceSetSelection
@@ -219,12 +209,10 @@ extern Boolean XawTextSourceConvertSelection(
  */
 
 extern void XawTextSourceSetSelection(
-#if NeedFunctionPrototypes
     Widget		/* w */,
     XawTextPosition	/* start */,
     XawTextPosition	/* end */,
     Atom		/* selection */
-#endif
 );
 
 _XFUNCPROTOEND

@@ -113,9 +113,7 @@ typedef struct _TreeRec      *TreeWidget;
 _XFUNCPROTOBEGIN
 
 extern void XawTreeForceLayout (
-#if NeedFunctionPrototypes
     Widget /* tree */
-#endif
 );
 
 _XFUNCPROTOEND

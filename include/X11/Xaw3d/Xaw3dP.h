@@ -57,11 +57,9 @@ CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #ifdef XAW_GRAY_BLKWHT_STIPPLES
 extern unsigned long
 grayPixel(
-#if NeedFunctionPrototypes
     unsigned long,
     Display *,
     Screen *
-#endif
 );
 #else
 #define grayPixel(p, dpy, scn)	(p)
@@ -70,13 +68,11 @@ grayPixel(
 #ifdef XAW_MULTIPLANE_PIXMAPS
 extern Pixmap 
 stipplePixmap(
-#if NeedFunctionPrototypes
     Widget,
     Pixmap,
     Colormap,
     Pixel,
     unsigned int
-#endif
 );
 #endif
 

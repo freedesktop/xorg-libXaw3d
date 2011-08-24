@@ -937,17 +937,10 @@ Position *x, *y;
  */
 
 void
-#if NeedFunctionPrototypes
 _XawTextBuildLineTable (
     TextWidget ctx,
     XawTextPosition position,
     _XtBoolean force_rebuild)
-#else
-_XawTextBuildLineTable (ctx, position, force_rebuild)
-    TextWidget ctx;
-    XawTextPosition position;
-    Boolean force_rebuild;
-#endif
 {
   Dimension height = 0;
   int lines = 0;
@@ -3211,18 +3204,11 @@ XRectangle * expose;
 /* Li wrote this so the IM can find a given text position's screen position. */
 
 void
-#if NeedFunctionPrototypes
 _XawTextPosToXY(
     Widget w,
     XawTextPosition pos,
     Position* x,
     Position* y )
-#else
-_XawTextPosToXY( w, pos, x, y )
-    Widget w;
-    XawTextPosition pos;
-    Position *x, *y;
-#endif
 {
     int line;
     LineAndXYForPosition( (TextWidget)w, pos, &line, x, y );
@@ -3239,12 +3225,7 @@ version of Text.
 ********************************************************************/
 
 void
-#if NeedFunctionPrototypes
 XawTextDisplay (Widget w)
-#else
-XawTextDisplay (w)
-Widget w;
-#endif
 {
   if (!XtIsRealized(w)) return;
 
@@ -3254,25 +3235,13 @@ Widget w;
 }
 
 void
-#if NeedFunctionPrototypes
 XawTextSetSelectionArray(Widget w, XawTextSelectType *sarray)
-#else
-XawTextSetSelectionArray(w, sarray)
-Widget w;
-XawTextSelectType *sarray;
-#endif
 {
   ((TextWidget)w)->text.sarray = sarray;
 }
 
 void
-#if NeedFunctionPrototypes
 XawTextGetSelectionPos(Widget w, XawTextPosition *left, XawTextPosition *right)
-#else
-XawTextGetSelectionPos(w, left, right)
-Widget w;
-XawTextPosition* left,* right;
-#endif
 {
   *left = ((TextWidget) w)->text.s.left;
   *right = ((TextWidget) w)->text.s.right;
@@ -3280,13 +3249,7 @@ XawTextPosition* left,* right;
 
 
 void
-#if NeedFunctionPrototypes
 XawTextSetSource(Widget w, Widget source, XawTextPosition startPos)
-#else
-XawTextSetSource(w, source, startPos)
-Widget w, source;
-XawTextPosition startPos;
-#endif
 {
   TextWidget ctx = (TextWidget) w;
 
@@ -3308,15 +3271,8 @@ XawTextPosition startPos;
  */
 
 int
-#if NeedFunctionPrototypes
 XawTextReplace(Widget w, XawTextPosition startPos, XawTextPosition endPos,
                XawTextBlock *text)
-#else
-XawTextReplace(w, startPos, endPos, text)
-Widget w;
-XawTextPosition  startPos, endPos;
-XawTextBlock *text;
-#endif
 {
   TextWidget ctx = (TextWidget) w;
   int result;
@@ -3341,24 +3297,13 @@ XawTextBlock *text;
 }
 
 XawTextPosition
-#if NeedFunctionPrototypes
 XawTextTopPosition(Widget w)
-#else
-XawTextTopPosition(w)
-Widget w;
-#endif
 {
   return( ((TextWidget) w)->text.lt.top );
 }
 
 void
-#if NeedFunctionPrototypes
 XawTextSetInsertionPoint(Widget w, XawTextPosition position)
-#else
-XawTextSetInsertionPoint(w, position)
-Widget w;
-XawTextPosition position;
-#endif
 {
   TextWidget ctx = (TextWidget) w;
 
@@ -3370,12 +3315,7 @@ XawTextPosition position;
 }
 
 XawTextPosition
-#if NeedFunctionPrototypes
 XawTextGetInsertionPoint(Widget w)
-#else
-XawTextGetInsertionPoint(w)
-Widget w;
-#endif
 {
   return( ((TextWidget) w)->text.insertPos);
 }
@@ -3385,12 +3325,7 @@ Widget w;
  */
 
 void
-#if NeedFunctionPrototypes
 XawTextUnsetSelection(Widget w)
-#else
-XawTextUnsetSelection(w)
-Widget w;
-#endif
 {
   TextWidget ctx = (TextWidget)w;
 
@@ -3409,13 +3344,7 @@ Widget w;
 }
 
 void
-#if NeedFunctionPrototypes
 XawTextSetSelection (Widget w, XawTextPosition left, XawTextPosition right)
-#else
-XawTextSetSelection (w, left, right)
-Widget w;
-XawTextPosition left, right;
-#endif
 {
   TextWidget ctx = (TextWidget) w;
 
@@ -3426,13 +3355,7 @@ XawTextPosition left, right;
 }
 
 void
-#if NeedFunctionPrototypes
 XawTextInvalidate(Widget w, XawTextPosition from, XawTextPosition to)
-#else
-XawTextInvalidate(w, from, to)
-Widget w;
-XawTextPosition from,to;
-#endif
 {
   TextWidget ctx = (TextWidget) w;
 
@@ -3447,24 +3370,14 @@ XawTextPosition from,to;
 
 /*ARGSUSED*/
 void
-#if NeedFunctionPrototypes
 XawTextDisableRedisplay(Widget w)
-#else
-XawTextDisableRedisplay(w)
-Widget w;
-#endif
 {
   ((TextWidget) w)->text.update_disabled = True;
   _XawTextPrepareToUpdate( (TextWidget) w);
 }
 
 void
-#if NeedFunctionPrototypes
 XawTextEnableRedisplay(Widget w)
-#else
-XawTextEnableRedisplay(w)
-Widget w;
-#endif
 {
   TextWidget ctx = (TextWidget)w;
   XawTextPosition lastPos;
@@ -3485,28 +3398,17 @@ Widget w;
 }
 
 Widget
-#if NeedFunctionPrototypes
 XawTextGetSource(Widget w)
-#else
-XawTextGetSource(w)
-Widget w;
-#endif
 {
   return ((TextWidget)w)->text.source;
 }
 
 void
-#if NeedFunctionPrototypes
 XawTextDisplayCaret (Widget w,
 #if NeedWidePrototypes
 		    /* Boolean */ int display_caret)
 #else
 		    Boolean display_caret)
-#endif
-#else
-XawTextDisplayCaret (w, display_caret)
-Widget w;
-Boolean display_caret;
 #endif
 {
   TextWidget ctx = (TextWidget) w;
@@ -3533,7 +3435,6 @@ Boolean display_caret;
  */
 
 XawTextPosition
-#if NeedFunctionPrototypes
 XawTextSearch(Widget w,
 #if NeedWidePrototypes
 	    /* XawTextScanDirection */ int dir,
@@ -3541,12 +3442,6 @@ XawTextSearch(Widget w,
 	    XawTextScanDirection dir,
 #endif
 	    XawTextBlock *text)
-#else
-XawTextSearch(w, dir, text)
-Widget w;
-XawTextScanDirection dir;
-XawTextBlock * text;
-#endif
 {
   TextWidget ctx = (TextWidget) w;
 

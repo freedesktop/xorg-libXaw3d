@@ -736,12 +736,7 @@ Widget w;
  */
 
 void
-#if NeedFunctionPrototypes
 XawAsciiSourceFreeString(Widget w)
-#else
-XawAsciiSourceFreeString(w)
-Widget w;
-#endif
 {
   AsciiSrcObject src = (AsciiSrcObject) w;
 
@@ -778,12 +773,7 @@ Widget w;
  */
 
 Boolean
-#if NeedFunctionPrototypes
 XawAsciiSave(Widget w)
-#else
-XawAsciiSave(w)
-Widget w;
-#endif
 {
   AsciiSrcObject src = (AsciiSrcObject) w;
 
@@ -846,13 +836,7 @@ Widget w;
  */
 
 Boolean
-#if NeedFunctionPrototypes
 XawAsciiSaveAsFile(Widget w, _Xconst char* name)
-#else
-XawAsciiSaveAsFile(w, name)
-Widget w;
-String name;
-#endif
 {
   AsciiSrcObject src = (AsciiSrcObject) w;
   String string;
@@ -889,12 +873,7 @@ String name;
  */
 
 Boolean
-#if NeedFunctionPrototypes
 XawAsciiSourceChanged(Widget w)
-#else
-XawAsciiSourceChanged(w)
-Widget w;
-#endif
 {
 #ifdef XAW_INTERNATIONALIZATION
   if ( XtIsSubclass( w, multiSrcObjectClass ) )
