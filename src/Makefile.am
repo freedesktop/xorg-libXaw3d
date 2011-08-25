@@ -71,4 +71,4 @@ libXaw3d_la_CPPFLAGS = \
 
 libXaw3d_la_LDFLAGS = -version-info 8:0:0 -no-undefined
 
-EXTRA_DIST = sharedlib.c Template.c
+EXTRA_DIST = laygram.h sharedlib.c Template.c
