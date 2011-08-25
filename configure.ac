@@ -13,6 +13,12 @@ AC_PROG_YACC
 # Initialize libtool
 AC_PROG_LIBTOOL
 
+# Require xorg-macros minimum of 1.8 for XORG_DEFAULT_OPTIONS with XORG_INSTALL
+m4_ifndef([XORG_MACROS_VERSION],
+          [m4_fatal([must install xorg-macros 1.8 or later before running autoconf/autogen])])
+XORG_MACROS_VERSION(1.8)
+XORG_DEFAULT_OPTIONS
+
 # Some compilers do not support per target -c and -o flags
 AM_PROG_CC_C_O
 
