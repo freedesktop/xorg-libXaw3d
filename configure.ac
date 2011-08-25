@@ -16,12 +16,6 @@ AC_PROG_LIBTOOL
 # Some compilers do not support per target -c and -o flags
 AM_PROG_CC_C_O
 
-# Checks for programs.
-
-# Need to call this explicitly since the first call to PKG_CHECK_MODULES
-# is in an if statement, and later calls would break if it's skipped.
-PKG_PROG_PKG_CONFIG
-
 # Checks for header files.
 PKG_CHECK_MODULES(X11, [x11 xt xmu])
 AC_CHECK_HEADERS([wctype.h wchar.h widec.h])
