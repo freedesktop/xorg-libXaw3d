@@ -66,8 +66,7 @@ libXaw3d_la_CPPFLAGS = \
 	-I${top_srcdir}/include \
 	-I${top_srcdir}/include/X11/Xaw3d \
 	$(XAW3D_CFLAGS) \
-	$(X11_CFLAGS) $(XPM_CFLAGS) \
-	-DPROJECT_ROOT=\"$(prefix)\"
+	$(X11_CFLAGS) $(XPM_CFLAGS)
 
 libXaw3d_la_LDFLAGS = -version-info 8:0:0 -no-undefined
 
