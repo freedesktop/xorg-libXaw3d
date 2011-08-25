@@ -54,6 +54,7 @@ AC_SUBST(XAW3D_CFLAGS)
 
 AC_CONFIG_FILES([Makefile
 		include/Makefile
-		src/Makefile])
+		src/Makefile
+		xaw3d.pc])
 
 AC_OUTPUT
