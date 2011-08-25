@@ -19,9 +19,6 @@ m4_ifndef([XORG_MACROS_VERSION],
 XORG_MACROS_VERSION(1.8)
 XORG_DEFAULT_OPTIONS
 
-# Some compilers do not support per target -c and -o flags
-AM_PROG_CC_C_O
-
 # Checks for header files.
 PKG_CHECK_MODULES(X11, [x11 xt xmu])
 AC_CHECK_HEADERS([wctype.h wchar.h widec.h])

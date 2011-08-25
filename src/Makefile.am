@@ -1,5 +1,14 @@
 lib_LTLIBRARIES = libXaw3d.la
 
+AM_CFLAGS = \
+	$(CWARNFLAGS)
+
+AM_CPPFLAGS = \
+	-I${top_srcdir}/include \
+	-I${top_srcdir}/include/X11/Xaw3d \
+	$(XAW3D_CFLAGS) \
+	$(X11_CFLAGS) $(XPM_CFLAGS)
+
 #
 # This doesn't appear to be used on any
 # current systems -- it requires SUNSHLIB and !SHAREDCODE,
@@ -56,17 +65,8 @@ libXaw3d_la_SOURCES = \
 	laylex.l \
 	$(I18N_SRCS)
 
-libXaw3d_la_CFLAGS = \
-	$(CWARNFLAGS)
-
 libXaw3d_la_LIBADD = \
 	$(X11_LIBS) $(XPM_LIBS)
-
-libXaw3d_la_CPPFLAGS = \
-	-I${top_srcdir}/include \
-	-I${top_srcdir}/include/X11/Xaw3d \
-	$(XAW3D_CFLAGS) \
-	$(X11_CFLAGS) $(XPM_CFLAGS)
 
 libXaw3d_la_LDFLAGS = -version-info 8:0:0 -no-undefined
 
