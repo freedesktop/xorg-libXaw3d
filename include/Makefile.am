@@ -1,4 +1,4 @@
-xaw3dincludedir=${includedir}
+xaw3dincludedir=${includedir}/X11/Xaw3d
 
 if XAW_INTERNATIONALIZATION
 I18N_HDRS = \
