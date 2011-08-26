@@ -90,15 +90,29 @@ static XtResource resources[] = {
 };
 #undef offset
 
-static XawTextPosition Scan(), Search(), ReadText();
-static int ReplaceText();
-static Piece * FindPiece(), * AllocNewPiece();
-static FILE * InitStringOrFile();
-static void FreeAllPieces(), RemovePiece(), BreakPiece(), LoadPieces();
-static void RemoveOldStringOrFile(),  CvtStringToAsciiType();
-static void ClassInitialize(), Initialize(), Destroy(), GetValuesHook();
-static String MyStrncpy(), StorePiecesInString();
-static Boolean SetValues(), WriteToFile();
+static XawTextPosition Scan(Widget, XawTextPosition, XawTextScanType,
+                            XawTextScanDirection, int, Boolean);
+static XawTextPosition Search(Widget, XawTextPosition, XawTextScanDirection,
+                              XawTextBlock *);
+static XawTextPosition ReadText(Widget, XawTextPosition, XawTextBlock *, int);
+static int ReplaceText(Widget, XawTextPosition, XawTextPosition, XawTextBlock *);
+static Piece * FindPiece(AsciiSrcObject, XawTextPosition, XawTextPosition *);
+static Piece * AllocNewPiece(AsciiSrcObject, Piece *);
+static FILE * InitStringOrFile(AsciiSrcObject, Boolean);
+static void FreeAllPieces(AsciiSrcObject);
+static void RemovePiece(AsciiSrcObject, Piece *);
+static void BreakPiece(AsciiSrcObject, Piece *);
+static void LoadPieces(AsciiSrcObject, FILE *, char *);
+static void RemoveOldStringOrFile(AsciiSrcObject, Boolean);
+static void CvtStringToAsciiType(XrmValuePtr, Cardinal *, XrmValuePtr, XrmValuePtr);
+static void ClassInitialize(void);
+static void Initialize(Widget, Widget, ArgList, Cardinal *);
+static void Destroy(Widget);
+static void GetValuesHook(Widget, ArgList, Cardinal *);
+static String MyStrncpy(char *, char *, int);
+static String StorePiecesInString(AsciiSrcObject);
+static Boolean SetValues(Widget, Widget, Widget, ArgList, Cardinal *);
+static Boolean WriteToFile(String, String);
 #ifdef X_NOT_STDC_ENV
 extern int errno;
 #endif
@@ -178,7 +192,7 @@ WidgetClass asciiSrcObjectClass = (WidgetClass)&asciiSrcClassRec;
  */
 
 static void
-ClassInitialize()
+ClassInitialize(void)
 {
   XawInitializeWidgetSet();
   XtAddConverter( XtRString, XtRAsciiType, CvtStringToAsciiType,
@@ -195,10 +209,7 @@ ClassInitialize()
 
 /* ARGSUSED */
 static void
-Initialize(request, new, args, num_args)
-Widget request, new;
-ArgList args;
-Cardinal *num_args;
+Initialize(Widget request, Widget new, ArgList args, Cardinal *num_args)
 {
   AsciiSrcObject src = (AsciiSrcObject) new;
   FILE * file;
@@ -242,11 +253,7 @@ Cardinal *num_args;
  */
 
 static XawTextPosition
-ReadText(w, pos, text, length)
-Widget w;
-XawTextPosition pos;
-XawTextBlock *text;
-int length;
+ReadText(Widget w, XawTextPosition pos, XawTextBlock *text, int length)
 {
   AsciiSrcObject src = (AsciiSrcObject) w;
   XawTextPosition count, start;
@@ -269,10 +276,8 @@ int length;
 
 /*ARGSUSED*/
 static int
-ReplaceText (w, startPos, endPos, text)
-Widget w;
-XawTextPosition startPos, endPos;
-XawTextBlock *text;
+ReplaceText (Widget w, XawTextPosition startPos, XawTextPosition endPos,
+             XawTextBlock *text)
 {
   AsciiSrcObject src = (AsciiSrcObject) w;
   Piece *start_piece, *end_piece, *temp_piece;
@@ -409,13 +414,8 @@ XawTextBlock *text;
 
 static
 XawTextPosition
-Scan (w, position, type, dir, count, include)
-Widget                w;
-XawTextPosition       position;
-XawTextScanType       type;
-XawTextScanDirection  dir;
-int     	      count;
-Boolean	              include;
+Scan (Widget w, XawTextPosition position, XawTextScanType type,
+      XawTextScanDirection dir, int count, Boolean include)
 {
   AsciiSrcObject src = (AsciiSrcObject) w;
   int inc;
@@ -545,11 +545,8 @@ Boolean	              include;
  */
 
 static XawTextPosition
-Search(w, position, dir, text)
-Widget                w;
-XawTextPosition       position;
-XawTextScanDirection  dir;
-XawTextBlock *        text;
+Search(Widget w, XawTextPosition position, XawTextScanDirection dir,
+       XawTextBlock *text)
 {
   AsciiSrcObject src = (AsciiSrcObject) w;
   int inc, count = 0;
@@ -627,10 +624,8 @@ XawTextBlock *        text;
 
 /* ARGSUSED */
 static Boolean
-SetValues(current, request, new, args, num_args)
-Widget current, request, new;
-ArgList args;
-Cardinal * num_args;
+SetValues(Widget current, Widget request, Widget new, ArgList args,
+          Cardinal * num_args)
 {
   AsciiSrcObject src =      (AsciiSrcObject) new;
   AsciiSrcObject old_src = (AsciiSrcObject) current;
@@ -686,10 +681,7 @@ Cardinal * num_args;
  */
 
 static void
-GetValuesHook(w, args, num_args)
-Widget w;
-ArgList args;
-Cardinal * num_args;
+GetValuesHook(Widget w, ArgList args, Cardinal * num_args)
 {
   AsciiSrcObject src = (AsciiSrcObject) w;
   int i;
@@ -716,8 +708,7 @@ Cardinal * num_args;
  */
 
 static void
-Destroy (w)
-Widget w;
+Destroy (Widget w)
 {
   RemoveOldStringOrFile((AsciiSrcObject) w, True);
 }
@@ -901,9 +892,7 @@ XawAsciiSourceChanged(Widget w)
  ************************************************************/
 
 static void
-RemoveOldStringOrFile(src, checkString)
-AsciiSrcObject src;
-Boolean checkString;
+RemoveOldStringOrFile(AsciiSrcObject src, Boolean checkString)
 {
   FreeAllPieces(src);
 
@@ -923,8 +912,7 @@ Boolean checkString;
  */
 
 static Boolean
-WriteToFile(string, name)
-String string, name;
+WriteToFile(String string, String name)
 {
   int fd;
 
@@ -945,8 +933,7 @@ String string, name;
  */
 
 static String
-StorePiecesInString(src)
-AsciiSrcObject src;
+StorePiecesInString(AsciiSrcObject src)
 {
   String string;
   XawTextPosition first;
@@ -980,9 +967,7 @@ AsciiSrcObject src;
  */
 
 static FILE *
-InitStringOrFile(src, newString)
-AsciiSrcObject src;
-Boolean newString;
+InitStringOrFile(AsciiSrcObject src, Boolean newString)
 {
     char * open_mode = NULL;
     FILE * file;
@@ -1075,10 +1060,7 @@ Boolean newString;
 }
 
 static void
-LoadPieces(src, file, string)
-AsciiSrcObject src;
-FILE * file;
-char * string;
+LoadPieces(AsciiSrcObject src, FILE * file, char * string)
 {
   char *local_str, *ptr;
   Piece * piece = NULL;
@@ -1139,9 +1121,7 @@ char * string;
  */
 
 static Piece *
-AllocNewPiece(src, prev)
-AsciiSrcObject src;
-Piece * prev;
+AllocNewPiece(AsciiSrcObject src, Piece * prev)
 {
   Piece * piece = XtNew(Piece);
 
@@ -1168,8 +1148,7 @@ Piece * prev;
  */
 
 static void
-FreeAllPieces(src)
-AsciiSrcObject src;
+FreeAllPieces(AsciiSrcObject src)
 {
   Piece * next, * first = src->ascii_src.first_piece;
 
@@ -1190,9 +1169,7 @@ AsciiSrcObject src;
  */
 
 static void
-RemovePiece(src, piece)
-AsciiSrcObject src;
-Piece * piece;
+RemovePiece(AsciiSrcObject src, Piece * piece)
 {
   if (piece->prev == NULL)
     src->ascii_src.first_piece = piece->next;
@@ -1217,9 +1194,7 @@ Piece * piece;
  */
 
 static Piece *
-FindPiece(src, position, first)
-AsciiSrcObject src;
-XawTextPosition position, *first;
+FindPiece(AsciiSrcObject src, XawTextPosition position, XawTextPosition * first)
 {
   Piece * old_piece = NULL, * piece = src->ascii_src.first_piece;
   XawTextPosition temp;
@@ -1243,9 +1218,7 @@ XawTextPosition position, *first;
  */
 
 static String
-MyStrncpy(s1, s2, n)
-char * s1, * s2;
-int n;
+MyStrncpy(char * s1, char * s2, int n)
 {
   char buf[256];
   char* temp;
@@ -1272,9 +1245,7 @@ int n;
 #define HALF_PIECE (src->ascii_src.piece_size/2)
 
 static void
-BreakPiece(src, piece)
-AsciiSrcObject src;
-Piece * piece;
+BreakPiece(AsciiSrcObject src, Piece * piece)
 {
   Piece * new = AllocNewPiece(src, piece);
 
@@ -1287,11 +1258,8 @@ Piece * piece;
 
 /* ARGSUSED */
 static void
-CvtStringToAsciiType(args, num_args, fromVal, toVal)
-XrmValuePtr 	args;		/* unused */
-Cardinal	*num_args;	/* unused */
-XrmValuePtr	fromVal;
-XrmValuePtr	toVal;
+CvtStringToAsciiType(XrmValuePtr args, Cardinal * num_args, XrmValuePtr fromVal,
+                     XrmValuePtr toVal)
 {
   static XawAsciiType type;
   static XrmQuark  XtQEstring = NULLQUARK;
@@ -1342,10 +1310,7 @@ XrmValuePtr	toVal;
  */
 
 Widget
-XawStringSourceCreate(parent, args, num_args)
-Widget parent;
-ArgList args;
-Cardinal num_args;
+XawStringSourceCreate(Widget parent, ArgList args, Cardinal num_args)
 {
   XawTextSource src;
   ArgList ascii_args;
@@ -1369,9 +1334,7 @@ Cardinal num_args;
  */
 
 void
-XawTextSetLastPos (w, lastPos)
-Widget w;
-XawTextPosition lastPos;
+XawTextSetLastPos (Widget w, XawTextPosition lastPos)
 {
   AsciiSrcObject src = (AsciiSrcObject) XawTextGetSource(w);
 
@@ -1388,10 +1351,7 @@ XawTextPosition lastPos;
  */
 
 Widget
-XawDiskSourceCreate(parent, args, num_args)
-Widget parent;
-ArgList args;
-Cardinal num_args;
+XawDiskSourceCreate(Widget parent, ArgList args, Cardinal num_args)
 {
   XawTextSource src;
   ArgList ascii_args;
