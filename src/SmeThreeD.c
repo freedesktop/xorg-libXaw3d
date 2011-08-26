@@ -72,9 +72,11 @@ static XtResource resources[] = {
 
 #undef offset
 
-static void Initialize(), Destroy();
-static void ClassPartInitialize(), _XawSme3dDrawShadows();
-static Boolean SetValues();
+static void Initialize(Widget, Widget, ArgList, Cardinal *);
+static void Destroy(Widget);
+static void ClassPartInitialize(WidgetClass);
+static void _XawSme3dDrawShadows(Widget);
+static Boolean SetValues(Widget, Widget, Widget, ArgList, Cardinal *);
 
 SmeThreeDClassRec smeThreeDClassRec = {
     { /* core fields */
@@ -143,8 +145,8 @@ static char mbshadowpm_bits[] = {
     0x6d, 0xdb, 0xb6, 0x6d, 0xdb, 0xb6, 0x6d, 0xdb};
 
 /* ARGSUSED */
-static void AllocTopShadowGC (w)
-    Widget w;
+static void
+AllocTopShadowGC (Widget w)
 {
     SmeThreeDObject	tdo = (SmeThreeDObject) w;
     Screen		*scn = XtScreenOfObject (w);
@@ -163,8 +165,8 @@ static void AllocTopShadowGC (w)
 }
 
 /* ARGSUSED */
-static void AllocBotShadowGC (w)
-    Widget w;
+static void
+AllocBotShadowGC (Widget w)
 {
     SmeThreeDObject	tdo = (SmeThreeDObject) w;
     Screen		*scn = XtScreenOfObject (w);
@@ -183,8 +185,8 @@ static void AllocBotShadowGC (w)
 }
 
 /* ARGSUSED */
-static void AllocEraseGC (w)
-    Widget w;
+static void
+AllocEraseGC (Widget w)
 {
     Widget		parent = XtParent (w);
     SmeThreeDObject	tdo = (SmeThreeDObject) w;
@@ -197,8 +199,8 @@ static void AllocEraseGC (w)
 }
 
 /* ARGSUSED */
-static void AllocTopShadowPixmap (new)
-    Widget new;
+static void
+AllocTopShadowPixmap (Widget new)
 {
     SmeThreeDObject	tdo = (SmeThreeDObject) new;
     Widget		parent = XtParent (new);
@@ -253,8 +255,8 @@ static void AllocTopShadowPixmap (new)
 }
 
 /* ARGSUSED */
-static void AllocBotShadowPixmap (new)
-    Widget new;
+static void
+AllocBotShadowPixmap (Widget new)
 {
     SmeThreeDObject	tdo = (SmeThreeDObject) new;
     Widget		parent = XtParent (new);
@@ -303,9 +305,8 @@ static void AllocBotShadowPixmap (new)
 }
 
 /* ARGSUSED */
-void XawSme3dComputeTopShadowRGB (new, xcol_out)
-    Widget new;
-    XColor *xcol_out;
+void
+XawSme3dComputeTopShadowRGB (Widget new, XColor *xcol_out)
 {
     if (XtIsSubclass (new, smeThreeDObjectClass)) {
 	SmeThreeDObject tdo = (SmeThreeDObject) new;
@@ -337,8 +338,8 @@ void XawSme3dComputeTopShadowRGB (new, xcol_out)
 }
 
 /* ARGSUSED */
-static void AllocTopShadowPixel (new)
-    Widget new;
+static void
+AllocTopShadowPixel (Widget new)
 {
     XColor set_c;
     SmeThreeDObject tdo = (SmeThreeDObject) new;
@@ -353,9 +354,8 @@ static void AllocTopShadowPixel (new)
 
 
 /* ARGSUSED */
-void XawSme3dComputeBottomShadowRGB (new, xcol_out)
-    Widget new;
-    XColor *xcol_out;
+void
+XawSme3dComputeBottomShadowRGB (Widget new, XColor *xcol_out)
 {
     if (XtIsSubclass (new, smeThreeDObjectClass)) {
 	SmeThreeDObject tdo = (SmeThreeDObject) new;
@@ -385,8 +385,8 @@ void XawSme3dComputeBottomShadowRGB (new, xcol_out)
 }
 
 /* ARGSUSED */
-static void AllocBotShadowPixel (new)
-    Widget new;
+static void
+AllocBotShadowPixel (Widget new)
 {
     XColor set_c;
     SmeThreeDObject tdo = (SmeThreeDObject) new;
@@ -401,8 +401,8 @@ static void AllocBotShadowPixel (new)
 
 
 /* ARGSUSED */
-static void ClassPartInitialize (wc)
-    WidgetClass	wc;
+static void
+ClassPartInitialize (WidgetClass wc)
 {
     SmeThreeDClassRec *tdwc = (SmeThreeDClassRec *) wc;
     SmeThreeDClassRec *super =
@@ -413,10 +413,8 @@ static void ClassPartInitialize (wc)
 }
 
 /* ARGSUSED */
-static void Initialize (request, new, args, num_args)
-    Widget request, new;
-    ArgList args;
-    Cardinal *num_args;
+static void
+Initialize (Widget request, Widget new, ArgList args, Cardinal *num_args)
 {
     SmeThreeDObject 	w = (SmeThreeDObject) new;
     Screen		*scr = XtScreenOfObject (new);
@@ -436,8 +434,8 @@ static void Initialize (request, new, args, num_args)
     AllocEraseGC (new);
 }
 
-static void Destroy (gw)
-     Widget gw;
+static void
+Destroy (Widget gw)
 {
     SmeThreeDObject w = (SmeThreeDObject) gw;
     XtReleaseGC (gw, w->sme_threeD.top_shadow_GC);
@@ -450,10 +448,8 @@ static void Destroy (gw)
 }
 
 /* ARGSUSED */
-static Boolean SetValues (gcurrent, grequest, gnew, args, num_args)
-    Widget gcurrent, grequest, gnew;
-    ArgList args;
-    Cardinal *num_args;
+static Boolean
+SetValues (Widget gcurrent, Widget grequest, Widget gnew, ArgList args, Cardinal *num_args)
 {
     SmeThreeDObject current = (SmeThreeDObject) gcurrent;
     SmeThreeDObject new = (SmeThreeDObject) gnew;
@@ -535,8 +531,7 @@ static Boolean SetValues (gcurrent, grequest, gnew, args, num_args)
 
 /* ARGSUSED */
 static void
-_XawSme3dDrawShadows(gw)
-    Widget gw;
+_XawSme3dDrawShadows(Widget gw)
 {
     SmeThreeDObject tdo = (SmeThreeDObject) gw;
     SimpleMenuWidget smw = (SimpleMenuWidget) XtParent(gw);
