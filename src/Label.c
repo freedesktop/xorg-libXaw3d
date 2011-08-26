@@ -117,13 +117,13 @@ static XtResource resources[] = {
 };
 #undef offset
 
-static void Initialize();
-static void Resize();
-static void Redisplay();
-static Boolean SetValues();
-static void ClassInitialize();
-static void Destroy();
-static XtGeometryResult QueryGeometry();
+static void Initialize(Widget, Widget, ArgList, Cardinal *);
+static void Resize(Widget);
+static void Redisplay(Widget, XEvent *, Region);
+static Boolean SetValues(Widget, Widget, Widget, ArgList, Cardinal *);
+static void ClassInitialize(void);
+static void Destroy(Widget);
+static XtGeometryResult QueryGeometry(Widget, XtWidgetGeometry *, XtWidgetGeometry *);
 
 LabelClassRec labelClassRec = {
   {
@@ -183,7 +183,8 @@ WidgetClass labelWidgetClass = (WidgetClass)&labelClassRec;
  *
  ****************************************************************/
 
-static void ClassInitialize()
+static void
+ClassInitialize(void)
 {
     XawInitializeWidgetSet();
     XtAddConverter( XtRString, XtRJustify, XmuCvtStringToJustify,
@@ -201,10 +202,8 @@ static void ClassInitialize()
 static XChar2b *buf2b;
 static int buf2blen = 0;
 
-_XawLabelWidth16(fs, str, n)
-    XFontStruct *fs;
-    char *str;
-    int	n;
+static int
+_XawLabelWidth16(XFontStruct *fs, char *str, int n)
 {
     int i;
     XChar2b *ptr;
@@ -220,13 +219,8 @@ _XawLabelWidth16(fs, str, n)
     return XTextWidth16(fs, buf2b, n);
 }
 
-_XawLabelDraw16(dpy, d, gc, x, y, str, n)
-    Display *dpy;
-    Drawable d;
-    GC gc;
-    int x, y;
-    char *str;
-    int n;
+static int
+_XawLabelDraw16(Display *dpy, Drawable d, GC gc, int x, int y, char *str, int n)
 {
     int i;
     XChar2b *ptr;
@@ -251,8 +245,8 @@ _XawLabelDraw16(dpy, d, gc, x, y, str, n)
  * Calculate width and height of displayed text in pixels
  */
 
-static void SetTextWidthAndHeight(lw)
-    LabelWidget lw;
+static void
+SetTextWidthAndHeight(LabelWidget lw)
 {
     XFontStruct	*fs = lw->label.font;
 
@@ -357,8 +351,8 @@ static void SetTextWidthAndHeight(lw)
     }
 }
 
-static void GetnormalGC(lw)
-    LabelWidget lw;
+static void
+GetnormalGC(LabelWidget lw)
 {
     XGCValues	values;
 
@@ -382,8 +376,8 @@ static void GetnormalGC(lw)
 	&values);
 }
 
-static void GetgrayGC(lw)
-    LabelWidget lw;
+static void
+GetgrayGC(LabelWidget lw)
 {
     XGCValues	values;
 
@@ -415,8 +409,8 @@ static void GetgrayGC(lw)
 				&values);
 }
 
-static void compute_bitmap_offsets (lw)
-    LabelWidget lw;
+static void
+compute_bitmap_offsets (LabelWidget lw)
 {
     if (lw->label.lbm_height != 0)
 	lw->label.lbm_y = (lw->core.height - lw->label.lbm_height) / 2;
@@ -424,8 +418,8 @@ static void compute_bitmap_offsets (lw)
 	lw->label.lbm_y = 0;
 }
 
-static void set_bitmap_info (lw)
-    LabelWidget lw;
+static void
+set_bitmap_info (LabelWidget lw)
 {
     Window root;
     int x, y;
@@ -441,10 +435,8 @@ static void set_bitmap_info (lw)
 }
 
 /* ARGSUSED */
-static void Initialize(request, new, args, num_args)
-    Widget request, new;
-    ArgList args;
-    Cardinal *num_args;
+static void
+Initialize(Widget request, Widget new, ArgList args, Cardinal *num_args)
 {
     extern WidgetClass commandWidgetClass;
     LabelWidget lw = (LabelWidget) new;
@@ -489,10 +481,8 @@ static void Initialize(request, new, args, num_args)
  */
 
 /* ARGSUSED */
-static void Redisplay(gw, event, region)
-    Widget gw;
-    XEvent *event;
-    Region region;
+static void
+Redisplay(Widget gw, XEvent *event, Region region)
 {
     extern WidgetClass commandWidgetClass;
     LabelWidget w = (LabelWidget) gw;
@@ -647,10 +637,9 @@ static void Redisplay(gw, event, region)
 #endif /* notdef */
 }
 
-static void _Reposition(lw, width, height, dx, dy)
-    LabelWidget lw;
-    Dimension width, height;
-    Position *dx, *dy;
+static void
+_Reposition(LabelWidget lw, Dimension width, Dimension height,
+            Position *dx, Position *dy)
 {
     Position newPos;
     Position leftedge = lw->label.internal_width + LEFT_OFFSET(lw);
@@ -682,8 +671,8 @@ static void _Reposition(lw, width, height, dx, dy)
     return;
 }
 
-static void Resize(w)
-    Widget w;
+static void
+Resize(Widget w)
 {
     LabelWidget lw = (LabelWidget)w;
     Position dx, dy;
@@ -701,10 +690,8 @@ static void Resize(w)
 #define HEIGHT		2
 #define NUM_CHECKS	3
 
-static Boolean SetValues(current, request, new, args, num_args)
-    Widget current, request, new;
-    ArgList args;
-    Cardinal *num_args;
+static Boolean
+SetValues(Widget current, Widget request, Widget new, ArgList args, Cardinal *num_args)
 {
     LabelWidget curlw = (LabelWidget) current;
     LabelWidget reqlw = (LabelWidget) request;
@@ -825,8 +812,8 @@ static Boolean SetValues(current, request, new, args, num_args)
 	   XtIsSensitive(current) != XtIsSensitive(new);
 }
 
-static void Destroy(w)
-    Widget w;
+static void
+Destroy(Widget w)
 {
     LabelWidget lw = (LabelWidget)w;
 
@@ -844,9 +831,8 @@ static void Destroy(w)
 }
 
 
-static XtGeometryResult QueryGeometry(w, intended, preferred)
-    Widget w;
-    XtWidgetGeometry *intended, *preferred;
+static XtGeometryResult
+QueryGeometry(Widget w, XtWidgetGeometry *intended, XtWidgetGeometry *preferred)
 {
     LabelWidget lw = (LabelWidget)w;
 
