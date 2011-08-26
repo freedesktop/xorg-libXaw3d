@@ -82,14 +82,14 @@ static XtResource resources[] = {
  *
  ****************************************************************/
 
-static void ClassInitialize();
-static void Initialize();
-static void Realize();
-static void Resize();
-static Boolean SetValues();
-static XtGeometryResult GeometryManager();
-static void ChangeManaged();
-static XtGeometryResult PreferredSize();
+static void ClassInitialize(void);
+static void Initialize(Widget, Widget, ArgList, Cardinal *);
+static void Realize(Widget, Mask *, XSetWindowAttributes *);
+static void Resize(Widget);
+static Boolean SetValues(Widget, Widget, Widget, ArgList, Cardinal *);
+static XtGeometryResult GeometryManager(Widget, XtWidgetGeometry *, XtWidgetGeometry *);
+static void ChangeManaged(Widget);
+static XtGeometryResult PreferredSize(Widget, XtWidgetGeometry *, XtWidgetGeometry *);
 
 BoxClassRec boxClassRec = {
   {
@@ -155,11 +155,9 @@ WidgetClass boxWidgetClass = (WidgetClass)&boxClassRec;
  *
  */
 
-static void DoLayout(bbw, width, height, reply_width, reply_height, position)
-    BoxWidget	bbw;
-    Dimension	width, height;
-    Dimension	*reply_width, *reply_height; /* bounding box */
-    Boolean	position;	/* actually reposition the windows? */
+static void
+DoLayout(BoxWidget bbw, Dimension width, Dimension height,
+         Dimension *reply_width, Dimension *reply_height, Boolean position)
 {
     Boolean vbox = (bbw->box.orientation == XtorientVertical);
     Cardinal  i;
@@ -286,9 +284,8 @@ static void DoLayout(bbw, width, height, reply_width, reply_height, position)
  *
  */
 
-static XtGeometryResult PreferredSize(widget, constraint, preferred)
-    Widget widget;
-    XtWidgetGeometry *constraint, *preferred;
+static XtGeometryResult
+PreferredSize(Widget widget, XtWidgetGeometry *constraint, XtWidgetGeometry *preferred)
 {
     BoxWidget w = (BoxWidget)widget;
     Dimension width /*, height */;
@@ -387,8 +384,8 @@ static XtGeometryResult PreferredSize(widget, constraint, preferred)
  *
  */
 
-static void Resize(w)
-    Widget	w;
+static void
+Resize(Widget w)
 {
     Dimension junk;
 
@@ -405,8 +402,8 @@ static void Resize(w)
  * TryNewLayout just says if it's possible, and doesn't actually move the kids
  */
 
-static Boolean TryNewLayout(bbw)
-    BoxWidget	bbw;
+static Boolean
+TryNewLayout(BoxWidget bbw)
 {
     Dimension 	preferred_width, preferred_height;
     Dimension	proposed_width, proposed_height;
@@ -496,11 +493,8 @@ static Boolean TryNewLayout(bbw)
  */
 
 /*ARGSUSED*/
-static XtGeometryResult GeometryManager(w, request, reply)
-    Widget		w;
-    XtWidgetGeometry	*request;
-    XtWidgetGeometry	*reply;	/* RETURN */
-
+static XtGeometryResult
+GeometryManager(Widget w, XtWidgetGeometry *request, XtWidgetGeometry *reply)
 {
     Dimension	width, height, borderWidth;
     BoxWidget bbw;
@@ -560,15 +554,16 @@ static XtGeometryResult GeometryManager(w, request, reply)
     return (XtGeometryYes);
 }
 
-static void ChangeManaged(w)
-    Widget w;
+static void
+ChangeManaged(Widget w)
 {
     /* Reconfigure the box */
     (void) TryNewLayout((BoxWidget)w);
     Resize(w);
 }
 
-static void ClassInitialize()
+static void
+ClassInitialize(void)
 {
     XawInitializeWidgetSet();
     XtAddConverter( XtRString, XtROrientation, XmuCvtStringToOrientation,
@@ -576,10 +571,8 @@ static void ClassInitialize()
 }
 
 /* ARGSUSED */
-static void Initialize(request, new, args, num_args)
-    Widget request, new;
-    ArgList args;
-    Cardinal *num_args;
+static void
+Initialize(Widget request, Widget new, ArgList args, Cardinal *num_args)
 {
     BoxWidget newbbw = (BoxWidget)new;
 
@@ -596,10 +589,8 @@ static void Initialize(request, new, args, num_args)
 
 } /* Initialize */
 
-static void Realize(w, valueMask, attributes)
-    Widget w;
-    Mask *valueMask;
-    XSetWindowAttributes *attributes;
+static void
+Realize(Widget w, Mask *valueMask, XSetWindowAttributes *attributes)
 {
     attributes->bit_gravity = NorthWestGravity;
     *valueMask |= CWBitGravity;
@@ -609,10 +600,8 @@ static void Realize(w, valueMask, attributes)
 } /* Realize */
 
 /* ARGSUSED */
-static Boolean SetValues(current, request, new, args, num_args)
-    Widget current, request, new;
-    ArgList args;
-    Cardinal *num_args;
+static Boolean
+SetValues(Widget current, Widget request, Widget new, ArgList args, Cardinal *num_args)
 {
    /* need to relayout if h_space or v_space change */
 
