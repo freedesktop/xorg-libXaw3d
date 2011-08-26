@@ -82,10 +82,11 @@ static XtResource resources[] = {
      XtOffsetOf(DialogRec, dialog.icon), XtRImmediate, 0},
 };
 
-static void Initialize(), ConstraintInitialize(), CreateDialogValueWidget(),
-            GetValuesHook();
-
-static Boolean SetValues();
+static void Initialize(Widget, Widget, ArgList, Cardinal *);
+static void ConstraintInitialize(Widget, Widget, ArgList, Cardinal *);
+static void CreateDialogValueWidget(Widget);
+static void GetValuesHook(Widget, ArgList, Cardinal *);
+static Boolean SetValues(Widget, Widget, Widget, ArgList, Cardinal *);
 
 DialogClassRec dialogClassRec = {
   { /* core_class fields */
@@ -149,10 +150,8 @@ DialogClassRec dialogClassRec = {
 WidgetClass dialogWidgetClass = (WidgetClass)&dialogClassRec;
 
 /* ARGSUSED */
-static void Initialize(request, new, args, num_args)
-Widget request, new;
-ArgList args;
-Cardinal *num_args;
+static void
+Initialize(Widget request, Widget new, ArgList args, Cardinal *num_args)
 {
     DialogWidget dw = (DialogWidget)new;
     Arg arglist[9];
@@ -189,10 +188,8 @@ Cardinal *num_args;
 }
 
 /* ARGSUSED */
-static void ConstraintInitialize(request, new, args, num_args)
-Widget request, new;
-ArgList args;
-Cardinal *num_args;
+static void
+ConstraintInitialize(Widget request, Widget new, ArgList args, Cardinal *num_args)
 {
     DialogWidget dw = (DialogWidget)new->core.parent;
     DialogConstraints constraint = (DialogConstraints)new->core.constraints;
@@ -227,10 +224,8 @@ Cardinal *num_args;
 #define NUM_CHECKS 2
 
 /* ARGSUSED */
-static Boolean SetValues(current, request, new, in_args, in_num_args)
-Widget current, request, new;
-ArgList in_args;
-Cardinal *in_num_args;
+static Boolean
+SetValues(Widget current, Widget request, Widget new, ArgList in_args, Cardinal *in_num_args)
 {
     DialogWidget w = (DialogWidget)new;
     DialogWidget old = (DialogWidget)current;
@@ -326,10 +321,7 @@ Cardinal *in_num_args;
  */
 
 static void
-GetValuesHook(w, args, num_args)
-Widget w;
-ArgList args;
-Cardinal * num_args;
+GetValuesHook(Widget w, ArgList args, Cardinal *num_args)
 {
   Arg a[1];
   String s;
@@ -354,8 +346,7 @@ Cardinal * num_args;
  */
 
 static void
-CreateDialogValueWidget(w)
-Widget w;
+CreateDialogValueWidget(Widget w)
 {
     DialogWidget dw = (DialogWidget) w;
     Arg arglist[10];
