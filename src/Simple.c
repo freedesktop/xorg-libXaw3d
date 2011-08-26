@@ -74,8 +74,12 @@ static XtResource resources[] = {
 #undef offset
 };
 
-static void ClassPartInitialize(), ClassInitialize(),Realize(),ConvertCursor();
-static Boolean SetValues(), ChangeSensitive();
+static void ClassPartInitialize(WidgetClass);
+static void ClassInitialize(void);
+static void Realize(Widget, Mask *, XSetWindowAttributes *);
+static void ConvertCursor(Widget);
+static Boolean SetValues(Widget, Widget, Widget, ArgList, Cardinal *);
+static Boolean ChangeSensitive(Widget);
 
 SimpleClassRec simpleClassRec = {
   { /* core fields */
@@ -119,7 +123,8 @@ SimpleClassRec simpleClassRec = {
 
 WidgetClass simpleWidgetClass = (WidgetClass)&simpleClassRec;
 
-static void ClassInitialize()
+static void
+ClassInitialize(void)
 {
     static XtConvertArgRec convertArg[] = {
         {XtWidgetBaseOffset, (XtPointer) XtOffsetOf(WidgetRec, core.screen),
@@ -137,8 +142,8 @@ static void ClassInitialize()
 		       XtCacheByDisplay, (XtDestructor)NULL);
 }
 
-static void ClassPartInitialize(class)
-    WidgetClass class;
+static void
+ClassPartInitialize(WidgetClass class)
 {
     SimpleWidgetClass c     = (SimpleWidgetClass) class;
     SimpleWidgetClass super = (SimpleWidgetClass)
@@ -158,10 +163,8 @@ static void ClassPartInitialize(class)
 	c->simple_class.change_sensitive = super->simple_class.change_sensitive;
 }
 
-static void Realize(w, valueMask, attributes)
-    Widget w;
-    Mask *valueMask;
-    XSetWindowAttributes *attributes;
+static void
+Realize(Widget w, Mask *valueMask, XSetWindowAttributes *attributes)
 {
     Pixmap border_pixmap = 0;
     if (!XtIsSensitive(w)) {
@@ -200,8 +203,7 @@ static void Realize(w, valueMask, attributes)
  */
 
 static void
-ConvertCursor(w)
-Widget w;
+ConvertCursor(Widget w)
 {
     SimpleWidget simple = (SimpleWidget) w;
     XrmValue from, to;
@@ -230,10 +232,8 @@ Widget w;
 
 
 /* ARGSUSED */
-static Boolean SetValues(current, request, new, args, num_args)
-    Widget current, request, new;
-    ArgList args;
-    Cardinal *num_args;
+static Boolean
+SetValues(Widget current, Widget request, Widget new, ArgList args, Cardinal *num_args)
 {
     SimpleWidget s_old = (SimpleWidget) current;
     SimpleWidget s_new = (SimpleWidget) new;
@@ -270,8 +270,8 @@ static Boolean SetValues(current, request, new, args, num_args)
 }
 
 
-static Boolean ChangeSensitive(w)
-    Widget w;
+static Boolean
+ChangeSensitive(Widget w)
 {
     if (XtIsRealized(w)) {
 	if (XtIsSensitive(w))
