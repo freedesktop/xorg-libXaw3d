@@ -80,9 +80,13 @@ static XtResource resources[] = {
 
 #undef offset
 
-static void Initialize(), Destroy(), Redisplay(), MoveChart(), SetPoints();
-static Boolean SetValues();
-static int repaint_window();
+static void Initialize(Widget, Widget, ArgList, Cardinal *);
+static void Destroy(Widget);
+static void Redisplay(Widget, XEvent *, Region);
+static void MoveChart(StripChartWidget, Boolean);
+static void SetPoints(Widget);
+static Boolean SetValues(Widget, Widget, Widget, ArgList, Cardinal *);
+static int repaint_window(Widget, int, int);
 
 StripChartClassRec stripChartClassRec = {
     { /* core fields */
@@ -139,7 +143,7 @@ WidgetClass stripChartWidgetClass = (WidgetClass) &stripChartClassRec;
  *
  ****************************************************************/
 
-static void draw_it();
+static void draw_it(XtPointer, XtIntervalId *);
 
 /*	Function Name: CreateGC
  *	Description: Creates the GC's
@@ -149,9 +153,7 @@ static void draw_it();
  */
 
 static void
-CreateGC(w, which)
-StripChartWidget w;
-unsigned int which;
+CreateGC(StripChartWidget w, unsigned int which)
 {
   XGCValues	myXGCV;
 
@@ -174,9 +176,7 @@ unsigned int which;
  */
 
 static void
-DestroyGC(w, which)
-StripChartWidget w;
-unsigned int which;
+DestroyGC(StripChartWidget w, unsigned int which)
 {
   if (which & FOREGROUND)
     XtReleaseGC((Widget) w, w->strip_chart.fgGC);
@@ -186,10 +186,8 @@ unsigned int which;
 }
 
 /* ARGSUSED */
-static void Initialize (greq, gnew, args, num_args)
-    Widget greq, gnew;
-    ArgList args;
-    Cardinal *num_args;
+static void
+Initialize (Widget greq, Widget gnew, ArgList args, Cardinal *num_args)
 {
     StripChartWidget w = (StripChartWidget)gnew;
 
@@ -207,8 +205,8 @@ static void Initialize (greq, gnew, args, num_args)
     SetPoints((Widget)w);
 }
 
-static void Destroy (gw)
-     Widget gw;
+static void
+Destroy (Widget gw)
 {
      StripChartWidget w = (StripChartWidget)gw;
 
@@ -226,10 +224,8 @@ static void Destroy (gw)
  */
 
 /* ARGSUSED */
-static void Redisplay(gw, event, region)
-     Widget gw;
-     XEvent *event;
-     Region region;
+static void
+Redisplay(Widget gw, XEvent *event, Region region)
 {
 
     StripChartWidget w = (StripChartWidget)gw;
@@ -255,9 +251,7 @@ static void Redisplay(gw, event, region)
 
 /* ARGSUSED */
 static void
-draw_it(client_data, id)
-XtPointer client_data;
-XtIntervalId *id;		/* unused */
+draw_it(XtPointer client_data, XtIntervalId *id)
 {
    StripChartWidget w = (StripChartWidget)client_data;
    StripChartWidgetClass swclass = (StripChartWidgetClass) XtClass ((Widget) w);
@@ -333,9 +327,7 @@ XtIntervalId *id;		/* unused */
  */
 
 static int
-repaint_window(gw, left, width)
-Widget gw;
-int left, width;
+repaint_window(Widget gw, int left, int width)
 {
     StripChartWidget w = (StripChartWidget) gw;
     Dimension s = w->threeD.shadow_width;
@@ -405,9 +397,7 @@ int left, width;
  */
 
 static void
-MoveChart(w, blit)
-StripChartWidget w;
-Boolean blit;
+MoveChart(StripChartWidget w, Boolean blit)
 {
     Dimension s = w->threeD.shadow_width;
     double old_max;
@@ -475,10 +465,8 @@ Boolean blit;
 }
 
 /* ARGSUSED */
-static Boolean SetValues (current, request, new, args, num_args)
-    Widget current, request, new;
-    ArgList args;
-    Cardinal *num_args;
+static Boolean
+SetValues (Widget current, Widget request, Widget new, ArgList args, Cardinal *num_args)
 {
     StripChartWidget old = (StripChartWidget)current;
     StripChartWidget w = (StripChartWidget)new;
@@ -524,8 +512,7 @@ static Boolean SetValues (current, request, new, args, num_args)
 #define HEIGHT ( (unsigned int) w->core.height)
 
 static void
-SetPoints(widget)
-Widget widget;
+SetPoints(Widget widget)
 {
     StripChartWidget w = (StripChartWidget) widget;
     Dimension s = w->threeD.shadow_width;
