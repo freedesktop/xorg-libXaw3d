@@ -1,5 +1,6 @@
 lib_LTLIBRARIES = libXaw3d.la
 
+AM_YFLAGS = -d
 AM_CFLAGS = \
 	$(CWARNFLAGS)
 
@@ -70,4 +71,6 @@ libXaw3d_la_LIBADD = \
 
 libXaw3d_la_LDFLAGS = -version-info 8:0:0 -no-undefined
 
-EXTRA_DIST = laygram.h sharedlib.c Template.c
+BUILT_SOURCES = laygram.h
+
+EXTRA_DIST = sharedlib.c Template.c
