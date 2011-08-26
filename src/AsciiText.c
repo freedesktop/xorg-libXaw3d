@@ -82,7 +82,8 @@ SOFTWARE.
 
 #define TAB_COUNT 32
 
-static void Initialize(), Destroy();
+static void Initialize(Widget, Widget, ArgList, Cardinal *);
+static void Destroy(Widget);
 
 AsciiTextClassRec asciiTextClassRec = {
   { /* core fields */
@@ -132,10 +133,7 @@ WidgetClass asciiTextWidgetClass = (WidgetClass)&asciiTextClassRec;
 
 
 static void
-Initialize(request, new, args, num_args)
-Widget request, new;
-ArgList args;
-Cardinal *num_args;
+Initialize(Widget request, Widget new, ArgList args, Cardinal *num_args)
 {
   AsciiWidget w = (AsciiWidget) new;
   int i;
@@ -203,8 +201,7 @@ Cardinal *num_args;
 }
 
 static void
-Destroy(w)
-Widget w;
+Destroy(Widget w)
 {
     /* Disconnect input method */
 
