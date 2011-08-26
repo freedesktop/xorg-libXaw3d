@@ -56,9 +56,12 @@ static XtResource resources[] = {
  * Semi Public function definitions.
  */
 
-static void Unhighlight(), Highlight(), Notify(), ClassPartInitialize();
-static void Initialize();
-static XtGeometryResult QueryGeometry();
+static void Unhighlight(Widget);
+static void Highlight(Widget);
+static void Notify(Widget);
+static void ClassPartInitialize(WidgetClass);
+static void Initialize(Widget, Widget, ArgList, Cardinal *);
+static XtGeometryResult QueryGeometry(Widget, XtWidgetGeometry *, XtWidgetGeometry *);
 
 #define SUPERCLASS (&rectObjClassRec)
 
@@ -121,8 +124,7 @@ WidgetClass smeObjectClass = (WidgetClass) &smeClassRec;
  */
 
 static void
-ClassPartInitialize(class)
-WidgetClass class;
+ClassPartInitialize(WidgetClass class)
 {
     SmeObjectClass m_ent, superC;
 
@@ -156,10 +158,7 @@ WidgetClass class;
 
 /* ARGSUSED */
 static void
-Initialize(request, new, args, num_args)
-Widget request, new;
-ArgList args;
-Cardinal *num_args;
+Initialize(Widget request, Widget new, ArgList args, Cardinal *num_args)
 {
     SmeObject entry = (SmeObject) new;
 
@@ -174,8 +173,7 @@ Cardinal *num_args;
 
 /* ARGSUSED */
 static void
-Highlight(w)
-Widget w;
+Highlight(Widget w)
 {
 /* This space intentionally left blank. */
 }
@@ -188,8 +186,7 @@ Widget w;
 
 /* ARGSUSED */
 static void
-Unhighlight(w)
-Widget w;
+Unhighlight(Widget w)
 {
 /* This space intentionally left blank. */
 }
@@ -201,8 +198,7 @@ Widget w;
  */
 
 static void
-Notify(w)
-Widget w;
+Notify(Widget w)
 {
     XtCallCallbacks(w, XtNcallback, (XtPointer)NULL);
 }
@@ -219,9 +215,7 @@ Widget w;
  */
 
 static XtGeometryResult
-QueryGeometry(w, intended, return_val)
-Widget w;
-XtWidgetGeometry *intended, *return_val;
+QueryGeometry(Widget w, XtWidgetGeometry *intended, XtWidgetGeometry *return_val)
 {
     SmeObject entry = (SmeObject) w;
     Dimension width;
