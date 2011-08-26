@@ -177,13 +177,14 @@ CharWidth (Widget w, int x, unsigned char c)
 	return 0;
     }
 
-    if ( (nonPrinting = (c < (unsigned char) XawSP)) )
+    if ( (nonPrinting = (c < (unsigned char) XawSP)) ) {
 	if (sink->ascii_sink.display_nonprinting)
 	    c += '@';
 	else {
 	    c = XawSP;
 	    nonPrinting = False;
 	}
+    }
 
     if (font->per_char &&
 	    (c >= font->min_char_or_byte2 && c <= font->max_char_or_byte2))
@@ -629,12 +630,13 @@ SetTabs(Widget w, int tab_count, short *tabs)
   XA_FIGURE_WIDTH = XInternAtom(XtDisplayOfObject(w), "FIGURE_WIDTH", FALSE);
   if ( (XA_FIGURE_WIDTH != None) &&
        ( (!XGetFontProperty(font, XA_FIGURE_WIDTH, &figure_width)) ||
-	 (figure_width == 0)) )
+	 (figure_width == 0)) ) {
     if (font->per_char && font->min_char_or_byte2 <= '$' &&
 	font->max_char_or_byte2 >= '$')
       figure_width = font->per_char['$' - font->min_char_or_byte2].width;
     else
       figure_width = font->max_bounds.width;
+  }
 
   if (tab_count > sink->text_sink.tab_count) {
     sink->text_sink.tabs = (Position *)

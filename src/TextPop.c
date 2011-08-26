@@ -1020,13 +1020,14 @@ Boolean once_only, show_current;
     else
       XawTextSetInsertionPoint( tw, pos);
 
-    if (once_only)
+    if (once_only) {
       if (show_current)
 	break;
       else {
 	DoSearch(search);
 	return(TRUE);
       }
+    }
     count++;
   }
 

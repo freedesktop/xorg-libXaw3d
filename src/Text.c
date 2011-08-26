@@ -564,7 +564,7 @@ Cardinal *num_args;		/* unused */
       ctx->core.height += XawTextSinkMaxHeight(ctx->text.sink, 1);
   }
 
-  if (ctx->text.scroll_vert != XawtextScrollNever)
+  if (ctx->text.scroll_vert != XawtextScrollNever) {
     if ( (ctx->text.resize == XawtextResizeHeight) ||
      	 (ctx->text.resize == XawtextResizeBoth) ) {
       (void) sprintf(error_buf, "Xaw Text Widget %s:\n %s %s.", ctx->core.name,
@@ -575,8 +575,9 @@ Cardinal *num_args;		/* unused */
     }
     else if (ctx->text.scroll_vert == XawtextScrollAlways)
       CreateVScrollBar(ctx);
+  }
 
-  if (ctx->text.scroll_horiz != XawtextScrollNever)
+  if (ctx->text.scroll_horiz != XawtextScrollNever) {
     if (ctx->text.wrap != XawtextWrapNever) {
       (void) sprintf(error_buf, "Xaw Text Widget %s:\n %s %s.", ctx->core.name,
 	      "Horizontal scrolling not allowed with wrapping active.\n",
@@ -594,6 +595,7 @@ Cardinal *num_args;		/* unused */
     }
     else if (ctx->text.scroll_horiz == XawtextScrollAlways)
       CreateHScrollBar(ctx);
+  }
 }
 
 static void
@@ -1117,11 +1119,12 @@ TextWidget ctx;
 	_XawTextBuildLineTable (ctx, zeroPosition, FALSE);
     }
   }
-  else if (ctx->text.vbar != NULL)
+  else if (ctx->text.vbar != NULL) {
     if (ctx->text.scroll_vert == XawtextScrollWhenNeeded)
       DestroyVScrollBar(ctx);
     else if (ctx->text.scroll_vert == XawtextScrollAlways)
       XawScrollbarSetThumb(ctx->text.vbar, 0.0, 1.0);
+  }
 }
 
 /*
@@ -1149,11 +1152,12 @@ TextWidget ctx;
   else
     widest = ctx->core.width - 2 * s;
   widest /= (last = GetWidestLine(ctx));
-  if (ctx->text.scroll_horiz == XawtextScrollWhenNeeded)
+  if (ctx->text.scroll_horiz == XawtextScrollWhenNeeded) {
     if (widest < 1.0)
       CreateHScrollBar(ctx);
     else
       DestroyHScrollBar(ctx);
+  }
 
   if ( (ctx->text.hbar == NULL) != temp ) {
     _XawTextBuildLineTable (ctx, ctx->text.lt.top, TRUE);

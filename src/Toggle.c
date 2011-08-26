@@ -492,10 +492,11 @@ XawToggleChangeRadioGroup(Widget w, Widget radio_group)
   if ( tw->command.set && radio_group != NULL )
     XawToggleUnsetCurrent(radio_group);
 
-  if (radio_group != NULL)
+  if (radio_group != NULL) {
       if ((group = GetRadioGroup(radio_group)) == NULL)
 	  CreateRadioGroup(w, radio_group);
       else AddToRadioGroup(group, w);
+  }
 }
 
 /*	Function Name: XawToggleGetCurrent

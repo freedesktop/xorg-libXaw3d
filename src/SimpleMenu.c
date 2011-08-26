@@ -543,7 +543,7 @@ Cardinal *num_args;
 	XDefineCursor(XtDisplay(new),
 		      XtWindow(new), smw_new->simple_menu.cursor);
 
-    if (smw_old->simple_menu.label_string !=smw_new->simple_menu.label_string)
+    if (smw_old->simple_menu.label_string !=smw_new->simple_menu.label_string) {
 	if (smw_new->simple_menu.label_string == NULL)         /* Destroy. */
 	    XtDestroyWidget((Widget) smw_old->simple_menu.label);
 	else if (smw_old->simple_menu.label_string == NULL)    /* Create. */
@@ -554,6 +554,7 @@ Cardinal *num_args;
 	    XtSetArg(arglist[0], XtNlabel, smw_new->simple_menu.label_string);
 	    XtSetValues((Widget) smw_new->simple_menu.label, arglist, ONE);
 	}
+    }
 
     if (smw_old->simple_menu.label_class != smw_new->simple_menu.label_class)
 	XtAppWarning(XtWidgetToApplicationContext(new),

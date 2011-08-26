@@ -822,17 +822,19 @@ int *clip_width, *clip_height;
         if ( (w->viewport.allowvert || w->viewport.allowhoriz) ) {
 	    XtQueryGeometry( child, intended, &preferred );
 
-	    if ( !(intended->request_mode & CWWidth) )
+	    if ( !(intended->request_mode & CWWidth) ) {
 	        if ( preferred.request_mode & CWWidth )
 		    intended->width = preferred.width;
 		else
 		    intended->width = child->core.width;
+	    }
 
-	    if ( !(intended->request_mode & CWHeight) )
+	    if ( !(intended->request_mode & CWHeight) ) {
 	        if ( preferred.request_mode & CWHeight )
 		    intended->height = preferred.height;
 		else
 		    intended->height = child->core.height;
+	    }
 	}
     }
     else {

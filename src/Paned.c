@@ -1117,11 +1117,12 @@ ManageAndUnmanageGrips(PanedWidget pw)
    unmanagedP = unmanaged_grips = (WidgetList) XtMalloc(alloc_size);
 
    ForAllChildren(pw, childP)
-       if (IsPane(*childP) && HasGrip(*childP))
+       if (IsPane(*childP) && HasGrip(*childP)) {
 	   if ( XtIsManaged(*childP) )
 	       *managedP++ = PaneInfo(*childP)->grip;
 	   else
 	       *unmanagedP++ = PaneInfo(*childP)->grip;
+       }
 
    if (managedP != managed_grips) {
        *unmanagedP++ = *--managedP;   /* Last grip is never managed */
@@ -1152,11 +1153,12 @@ CreateGrip(Widget child)
 
     XtSetArg(arglist[num_args], XtNtranslations, pw->paned.grip_translations);
     num_args++;
-    if ( (cursor = pw->paned.grip_cursor) == None )
+    if ( (cursor = pw->paned.grip_cursor) == None ) {
         if (IsVert(pw))
 	    cursor = pw->paned.v_grip_cursor;
 	else
 	    cursor = pw->paned.h_grip_cursor;
+    }
 
     XtSetArg(arglist[num_args], XtNcursor, cursor);
     num_args++;
@@ -1264,11 +1266,12 @@ ChangeAllGripCursors(PanedWidget pw)
 	Arg arglist[1];
 	Cursor cursor;
 
-	if ( (cursor = pw->paned.grip_cursor) == None )
+	if ( (cursor = pw->paned.grip_cursor) == None ) {
 	    if ( IsVert(pw) )
 	        cursor = pw->paned.v_grip_cursor;
 	    else
 	        cursor = pw->paned.h_grip_cursor;
+	}
 
 	if (HasGrip (*childP)) {
 	    XtSetArg(arglist[0], XtNcursor, cursor);
@@ -1434,11 +1437,12 @@ GeometryManager(Widget w, XtWidgetGeometry *request, XtWidgetGeometry *reply)
  * a different on_size;
  */
 
-    if (result != XtGeometryNo)
+    if (result != XtGeometryNo) {
 	if (vert)
 	    pw->core.height = on_size;
 	else
 	    pw->core.width = on_size;
+    }
 
     RefigureLocations(pw, PaneIndex(w), AnyPane);
 
@@ -1469,11 +1473,12 @@ GeometryManager(Widget w, XtWidgetGeometry *request, XtWidgetGeometry *reply)
  * THEN: set almost
  */
 
-    if ( !((vert ? CWWidth : CWHeight) & mask))
+    if ( !((vert ? CWWidth : CWHeight) & mask)) {
         if (vert)
 	    request->width = w->core.width;
 	else
 	    request->height = w->core.height;
+    }
 
     almost = GetRequestInfo(request, !vert) != GetRequestInfo(reply, !vert);
     almost |= (GetRequestInfo(request, vert) != GetRequestInfo(reply, vert));
@@ -1613,7 +1618,7 @@ ChangeManaged(Widget w)
 
    pw->paned.num_panes = 0;
    ForAllChildren(pw, childP)
-       if ( IsPane(*childP) )
+       if ( IsPane(*childP) ) {
 	   if ( XtIsManaged(*childP) ) {
 	       Pane pane = PaneInfo(*childP);
 	       if (HasGrip(*childP))
@@ -1623,6 +1628,7 @@ ChangeManaged(Widget w)
 	   }
 	   else
 	       break;		/* This list is already sorted. */
+       }
 
    SetChildrenPrefSizes( (PanedWidget) w, size);
 
@@ -1735,7 +1741,7 @@ PaneSetValues(Widget old, Widget request, Widget new, ArgList args, Cardinal *nu
 
     /* Check for change in XtNshowGrip. */
 
-    if (old_pane->show_grip != new_pane->show_grip)
+    if (old_pane->show_grip != new_pane->show_grip) {
         if (new_pane->show_grip == TRUE) {
 	    CreateGrip(new);
 	    if (XtIsRealized(XtParent(new))) {
@@ -1751,6 +1757,7 @@ PaneSetValues(Widget old, Widget request, Widget new, ArgList args, Cardinal *nu
 	    new_pane->grip = NULL;
 	    redisplay = TRUE;
 	}
+    }
 
   /* ||| need to look at position changes */
 
