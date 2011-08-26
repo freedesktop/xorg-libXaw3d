@@ -183,24 +183,30 @@ static XtResource subresources[] = {
 
 #undef offset
 
-static void ClassInitialize(), Initialize();
-static void Realize(), Resize();
-static void Redisplay();
-static void GetGCs(), ReleaseGCs();
-static void RefigureLocationsAndCommit();
-static Boolean SetValues();
-static XtGeometryResult GeometryManager();
-static void ChangeManaged();
-static void InsertChild();
-static void DeleteChild();
-static Boolean PaneSetValues();
-static Dimension PaneSize(), GetRequestInfo();
-static Boolean SatisfiesRule1(), SatisfiesRule2(), SatisfiesRule3();
+static void ClassInitialize(void);
+static void Initialize(Widget, Widget, ArgList, Cardinal *);
+static void Realize(Widget, Mask *, XSetWindowAttributes *);
+static void Resize(Widget);
+static void Redisplay(Widget, XEvent *, Region);
+static void GetGCs(Widget);
+static void ReleaseGCs(Widget);
+static void RefigureLocationsAndCommit(Widget);
+static Boolean SetValues(Widget, Widget, Widget, ArgList, Cardinal *);
+static XtGeometryResult GeometryManager(Widget, XtWidgetGeometry *, XtWidgetGeometry *);
+static void ChangeManaged(Widget);
+static void InsertChild(Widget);
+static void DeleteChild(Widget);
+static Boolean PaneSetValues(Widget, Widget, Widget, ArgList, Cardinal *);
+static Dimension PaneSize(Widget, Boolean);
+static Dimension GetRequestInfo(XtWidgetGeometry *, Boolean);
+static Boolean SatisfiesRule1(Pane, Boolean);
+static Boolean SatisfiesRule2(Pane);
+static Boolean SatisfiesRule3(Pane, Boolean);
 
-static void PushPaneStack();
-static void GetPaneStack();
-static Boolean PopPaneStack();
-static void ClearPaneStack();
+static void PushPaneStack(PanedWidget, Pane);
+static void GetPaneStack(PanedWidget, Boolean, Pane *, int *);
+static Boolean PopPaneStack(PanedWidget);
+static void ClearPaneStack(PanedWidget);
 
 #define SuperClass ((ConstraintWidgetClass)&constraintClassRec)
 
@@ -280,11 +286,8 @@ WidgetClass vPanedWidgetClass = (WidgetClass) &panedClassRec;
  */
 
 static void
-AdjustPanedSize(pw, off_size, result_ret, on_size_ret, off_size_ret)
-PanedWidget pw;
-Dimension off_size;
-XtGeometryResult * result_ret;
-Dimension * on_size_ret, * off_size_ret;
+AdjustPanedSize(PanedWidget pw, Dimension off_size, XtGeometryResult * result_ret,
+                Dimension * on_size_ret, Dimension * off_size_ret)
 {
     Dimension old_size = PaneSize( (Widget) pw, IsVert(pw));
     Dimension newsize = 0;
@@ -352,9 +355,7 @@ Dimension * on_size_ret, * off_size_ret;
  */
 
 static Dimension
-PaneSize(w, vertical)
-Widget w;
-Boolean vertical;
+PaneSize(Widget w, Boolean vertical)
 {
     if (vertical) return (w->core.height);
     return (w->core.width);
@@ -368,9 +369,7 @@ Boolean vertical;
  */
 
 static Dimension
-GetRequestInfo(geo_struct, vert)
-XtWidgetGeometry * geo_struct;
-Boolean vert;
+GetRequestInfo(XtWidgetGeometry * geo_struct, Boolean vert)
 {
     if ( vert ) return ( (Dimension) geo_struct->height);
     return ( (Dimension) geo_struct->width);
@@ -401,11 +400,7 @@ Boolean vert;
  */
 
 static Pane
-ChoosePaneToResize(pw, paneindex, dir, shrink)
-PanedWidget pw;
-int paneindex;
-Direction dir;
-Boolean shrink;
+ChoosePaneToResize(PanedWidget pw, int paneindex, Direction dir, Boolean shrink)
 {
     Widget *childP;
     int rules = 3;
@@ -459,9 +454,7 @@ Boolean shrink;
  */
 
 static Boolean
-SatisfiesRule1(pane, shrink)
-Pane pane;
-Boolean shrink;
+SatisfiesRule1(Pane pane, Boolean shrink)
 {
   return( (shrink && (pane->size != pane->min)) ||
 	  (!shrink && (pane->size != pane->max)) );
@@ -474,8 +467,7 @@ Boolean shrink;
  */
 
 static Boolean
-SatisfiesRule2(pane)
-Pane pane;
+SatisfiesRule2(Pane pane)
 {
   return(!pane->skip_adjust || pane->paned_adjusted_me);
 }
@@ -488,9 +480,7 @@ Pane pane;
  */
 
 static Boolean
-SatisfiesRule3(pane, shrink)
-Pane pane;
-Boolean shrink;
+SatisfiesRule3(Pane pane, Boolean shrink)
 {
   return ( pane->paned_adjusted_me &&
 	   ( (shrink && ((int)pane->wp_size <= pane->size)) ||
@@ -510,10 +500,7 @@ Boolean shrink;
  */
 
 static void
-LoopAndRefigureChildren(pw, paneindex, dir, sizeused)
-PanedWidget pw;
-int paneindex, *sizeused;
-Direction dir;
+LoopAndRefigureChildren(PanedWidget pw, int paneindex, Direction dir, int *sizeused)
 {
     int pane_size = (int) PaneSize( (Widget) pw, IsVert(pw));
     Boolean shrink = (*sizeused > pane_size);
@@ -591,10 +578,7 @@ Direction dir;
  */
 
 static void
-RefigureLocations(pw, paneindex, dir)
-PanedWidget pw;
-int paneindex;
-Direction dir;
+RefigureLocations(PanedWidget pw, int paneindex, Direction dir)
 {
     Widget *childP;
     int pane_size = (int) PaneSize( (Widget) pw, IsVert(pw) );
@@ -654,8 +638,7 @@ Direction dir;
  */
 
 static void
-CommitNewLocations(pw)
-PanedWidget pw;
+CommitNewLocations(PanedWidget pw)
 {
     Widget *childP;
     XWindowChanges changes;
@@ -726,8 +709,7 @@ PanedWidget pw;
  */
 
 static void
-RefigureLocationsAndCommit(w)
-Widget w;
+RefigureLocationsAndCommit(Widget w)
 {
     PanedWidget pw = (PanedWidget) w;
     if (pw->paned.refiguremode && XtIsRealized( (Widget) pw) &&
@@ -747,11 +729,8 @@ Widget w;
  */
 
 static void
-_DrawRect(pw, gc, on_loc, off_loc, on_size, off_size)
-PanedWidget pw;
-GC gc;
-int on_loc, off_loc;
-unsigned int on_size, off_size;
+_DrawRect(PanedWidget pw, GC gc, int on_loc, int off_loc,
+          unsigned int on_size, unsigned int off_size)
 {
   if (IsVert(pw))
     XFillRectangle(XtDisplay(pw), XtWindow(pw), gc,
@@ -769,9 +748,7 @@ unsigned int on_size, off_size;
  */
 
 static void
-_DrawInternalBorders(pw, gc)
-PanedWidget pw;
-GC gc;
+_DrawInternalBorders(PanedWidget pw, GC gc)
 {
     Widget *childP;
     int on_loc, off_loc;
@@ -814,9 +791,7 @@ GC gc;
  */
 
 static void
-_DrawTrackLines(pw, erase)
-PanedWidget pw;
-Boolean erase;
+_DrawTrackLines(PanedWidget pw, Boolean erase)
 {
     Widget *childP;
     Pane pane;
@@ -862,9 +837,7 @@ Boolean erase;
  */
 
 static int
-GetEventLocation(pw, event)
-PanedWidget pw;
-XEvent *event;
+GetEventLocation(PanedWidget pw, XEvent *event)
 {
     int x, y;
 
@@ -901,10 +874,7 @@ XEvent *event;
  */
 
 static void
-StartGripAdjustment(pw, grip, dir)
-PanedWidget pw;
-Widget grip;
-Direction dir;
+StartGripAdjustment(PanedWidget pw, Widget grip, Direction dir)
 {
     Widget *childP;
     Cursor cursor;
@@ -965,11 +935,7 @@ Direction dir;
  */
 
 static void
-MoveGripAdjustment(pw, grip, dir, loc)
-PanedWidget pw;
-Widget grip;
-Direction dir;
-int loc;
+MoveGripAdjustment(PanedWidget pw, Widget grip, Direction dir, int loc)
 {
     int diff, add_size = 0, sub_size = 0;
 
@@ -1015,8 +981,7 @@ int loc;
  */
 
 static void
-CommitGripAdjustment(pw)
-PanedWidget pw;
+CommitGripAdjustment(PanedWidget pw)
 {
     EraseTrackLines(pw);
     CommitNewLocations(pw);
@@ -1046,9 +1011,7 @@ PanedWidget pw;
 
 /* ARGSUSED */
 static void
-HandleGrip(grip, junk, callData)
-Widget grip;
-XtPointer junk, callData;
+HandleGrip(Widget grip, XtPointer junk, XtPointer callData)
 {
     XawGripCallData call_data = (XawGripCallData)callData;
     PanedWidget pw = (PanedWidget) XtParent(grip);
@@ -1107,8 +1070,7 @@ XtPointer junk, callData;
  */
 
 static void
-ResortChildren(pw)
-PanedWidget pw;
+ResortChildren(PanedWidget pw)
 {
     Widget * unmanagedP, * childP;
 
@@ -1144,8 +1106,7 @@ PanedWidget pw;
  */
 
 static void
-ManageAndUnmanageGrips(pw)
-PanedWidget pw;
+ManageAndUnmanageGrips(PanedWidget pw)
 {
    WidgetList managed_grips, unmanaged_grips;
    Widget *managedP, *unmanagedP, *childP;
@@ -1182,8 +1143,7 @@ PanedWidget pw;
  */
 
 static void
-CreateGrip(child)
-Widget child;
+CreateGrip(Widget child)
 {
     PanedWidget pw = (PanedWidget) XtParent(child);
     Arg arglist[2];
@@ -1214,8 +1174,7 @@ Widget child;
  */
 
 static void
-GetGCs(w)
-Widget w;
+GetGCs(Widget w)
 {
     PanedWidget pw = (PanedWidget) w;
     XtGCMask valuemask;
@@ -1255,9 +1214,7 @@ Widget w;
  */
 
 static void
-SetChildrenPrefSizes(pw, off_size)
-PanedWidget pw;
-Dimension off_size;
+SetChildrenPrefSizes(PanedWidget pw, Dimension off_size)
 {
     Widget * childP;
     Boolean vert = IsVert(pw);
@@ -1299,8 +1256,7 @@ Dimension off_size;
  */
 
 static void
-ChangeAllGripCursors(pw)
-PanedWidget pw;
+ChangeAllGripCursors(PanedWidget pw)
 {
     Widget * childP;
 
@@ -1335,9 +1291,7 @@ PanedWidget pw;
  */
 
 static void
-PushPaneStack(pw, pane)
-PanedWidget pw;
-Pane pane;
+PushPaneStack(PanedWidget pw, Pane pane)
 {
   PaneStack * stack = (PaneStack *) XtMalloc(sizeof(PaneStack));
 
@@ -1359,11 +1313,7 @@ Pane pane;
  */
 
 static void
-GetPaneStack(pw, shrink, pane, start_size)
-PanedWidget pw;
-Boolean shrink;
-Pane * pane;
-int * start_size;
+GetPaneStack(PanedWidget pw, Boolean shrink, Pane * pane, int * start_size)
 {
   if (pw->paned.stack == NULL) {
     *pane = NULL;
@@ -1383,8 +1333,7 @@ int * start_size;
  */
 
 static Boolean
-PopPaneStack(pw)
-PanedWidget pw;
+PopPaneStack(PanedWidget pw)
 {
   PaneStack * stack = pw->paned.stack;
 
@@ -1404,8 +1353,7 @@ PanedWidget pw;
  */
 
 static void
-ClearPaneStack(pw)
-PanedWidget pw;
+ClearPaneStack(PanedWidget pw)
 {
   while(PopPaneStack(pw));
 }
@@ -1423,7 +1371,7 @@ PanedWidget pw;
  */
 
 static void
-ClassInitialize()
+ClassInitialize(void)
 {
     XawInitializeWidgetSet();
     XtAddConverter( XtRString, XtROrientation, XmuCvtStringToOrientation,
@@ -1444,9 +1392,8 @@ ClassInitialize()
  * of the desired geometry.
  */
 
-static XtGeometryResult GeometryManager(w, request, reply)
-Widget w;
-XtWidgetGeometry *request, *reply;
+static XtGeometryResult
+GeometryManager(Widget w, XtWidgetGeometry *request, XtWidgetGeometry *reply)
 {
     PanedWidget pw = (PanedWidget) XtParent(w);
     XtGeometryMask mask = request->request_mode;
@@ -1548,10 +1495,8 @@ XtWidgetGeometry *request, *reply;
 }
 
 /* ARGSUSED */
-static void Initialize(request, new, args, num_args)
-Widget request, new;
-ArgList args;
-Cardinal *num_args;
+static void
+Initialize(Widget request, Widget new, ArgList args, Cardinal *num_args)
 {
     PanedWidget pw = (PanedWidget)new;
 
@@ -1564,10 +1509,7 @@ Cardinal *num_args;
 }
 
 static void
-Realize(w, valueMask, attributes)
-Widget w;
-Mask *valueMask;
-XSetWindowAttributes *attributes;
+Realize(Widget w, Mask *valueMask, XSetWindowAttributes *attributes)
 {
     PanedWidget pw = (PanedWidget) w;
     Widget * childP;
@@ -1593,8 +1535,7 @@ XSetWindowAttributes *attributes;
 } /* Realize */
 
 static void
-ReleaseGCs(w)
-Widget w;
+ReleaseGCs(Widget w)
 {
     PanedWidget pw = (PanedWidget)w;
 
@@ -1603,8 +1544,8 @@ Widget w;
     XtReleaseGC( w, pw->paned.flipgc );
 }
 
-static void InsertChild(w)
-Widget w;
+static void
+InsertChild(Widget w)
 {
    Pane pane = PaneInfo(w);
 
@@ -1632,8 +1573,8 @@ Widget w;
 
 } /* InsertChild */
 
-static void DeleteChild(w)
-Widget w;
+static void
+DeleteChild(Widget w)
 {
     /* remove the subwidget info and destroy the grip */
 
@@ -1645,8 +1586,8 @@ Widget w;
 
 } /* DeleteChild */
 
-static void ChangeManaged(w)
-   Widget w;
+static void
+ChangeManaged(Widget w)
 {
    PanedWidget pw = (PanedWidget)w;
    Boolean vert = IsVert(pw);
@@ -1705,8 +1646,7 @@ static void ChangeManaged(w)
  */
 
 static void
-Resize(w)
-Widget w;
+Resize(Widget w)
 {
     SetChildrenPrefSizes( (PanedWidget) w,
 			  PaneSize(w, !IsVert((PanedWidget) w)) );
@@ -1715,20 +1655,14 @@ Widget w;
 
 /* ARGSUSED */
 static void
-Redisplay(w, event, region)
-Widget w;
-XEvent * event;			/* unused. */
-Region region;			/* unused. */
+Redisplay(Widget w, XEvent * event, Region region)
 {
     DrawInternalBorders( (PanedWidget) w);
 }
 
 /* ARGSUSED */
 static Boolean
-SetValues(old, request, new, args, num_args)
-Widget old, request, new;
-ArgList args;
-Cardinal *num_args;
+SetValues(Widget old, Widget request, Widget new, ArgList args, Cardinal *num_args)
 {
     PanedWidget old_pw = (PanedWidget) old;
     PanedWidget new_pw = (PanedWidget) new;
@@ -1788,10 +1722,7 @@ Cardinal *num_args;
 
 /* ARGSUSED */
 static Boolean
-PaneSetValues(old, request, new, args, num_args)
-Widget old, request, new;
-ArgList args;
-Cardinal *num_args;
+PaneSetValues(Widget old, Widget request, Widget new, ArgList args, Cardinal *num_args)
 {
     Pane old_pane = PaneInfo(old);
     Pane new_pane = PaneInfo(new);
