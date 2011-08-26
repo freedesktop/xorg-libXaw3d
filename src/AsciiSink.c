@@ -62,13 +62,21 @@ SOFTWARE.
 
 #define GETLASTPOS XawTextSourceScan(source, (XawTextPosition) 0, XawstAll, XawsdRight, 1, TRUE)
 
-static void Initialize(), Destroy();
-static Boolean SetValues();
-static int MaxLines(), MaxHeight();
-static void SetTabs();
+static void Initialize(Widget, Widget, ArgList, Cardinal *);
+static void Destroy(Widget);
+static Boolean SetValues(Widget, Widget, Widget, ArgList, Cardinal *);
+static int MaxLines(Widget, Dimension);
+static int MaxHeight(Widget, int);
+static void SetTabs(Widget, int, short *);
 
-static void DisplayText(), InsertCursor(), FindPosition();
-static void FindDistance(), Resolve(), GetCursorBounds();
+static void DisplayText(Widget, Position, Position, Boolean, XawTextPosition, XawTextPosition);
+static void InsertCursor(Widget, Position, Position, XawTextInsertState);
+static void FindPosition(Widget, XawTextPosition, int, int, int,
+            XawTextPosition *, int *, int *);
+static void FindDistance(Widget, XawTextPosition, int, XawTextPosition, int *,
+                         XawTextPosition *, int *);
+static void Resolve(Widget, XawTextPosition, int, int, XawTextPosition *, XawTextPosition *);
+static void GetCursorBounds(Widget, XRectangle *);
 
 #define offset(field) XtOffsetOf(AsciiSinkRec, ascii_sink.field)
 
@@ -143,10 +151,7 @@ WidgetClass asciiSinkObjectClass = (WidgetClass)&asciiSinkClassRec;
 /* Utilities */
 
 static int
-CharWidth (w, x, c)
-Widget w;
-int x;
-unsigned char c;
+CharWidth (Widget w, int x, unsigned char c)
 {
     int    i, width, nonPrinting;
     AsciiSinkObject sink = (AsciiSinkObject) w;
@@ -205,12 +210,7 @@ unsigned char c;
  */
 
 static Dimension
-PaintText(w, gc, x, y, buf, len)
-Widget w;
-GC gc;
-Position x, y;
-unsigned char * buf;
-int len;
+PaintText(Widget w, GC gc, Position x, Position y, unsigned char * buf, int len)
 {
     AsciiSinkObject sink = (AsciiSinkObject) w;
     TextWidget ctx = (TextWidget) XtParent(w);
@@ -245,11 +245,8 @@ int len;
  */
 
 static void
-DisplayText(w, x, y, pos1, pos2, highlight)
-Widget w;
-Position x, y;
-Boolean highlight;
-XawTextPosition pos1, pos2;
+DisplayText(Widget w, Position x, Position y, Boolean highlight,
+            XawTextPosition pos1, XawTextPosition pos2)
 {
     AsciiSinkObject sink = (AsciiSinkObject) w;
     Widget source = XawTextGetSource(XtParent(w));
@@ -313,8 +310,7 @@ XawTextPosition pos1, pos2;
 static char insertCursor_bits[] = {0x0c, 0x1e, 0x33};
 
 static Pixmap
-CreateInsertCursor(s)
-Screen *s;
+CreateInsertCursor(Screen *s)
 {
     return (XCreateBitmapFromData (DisplayOfScreen(s), RootWindowOfScreen(s),
 		  insertCursor_bits, insertCursor_width, insertCursor_height));
@@ -328,9 +324,7 @@ Screen *s;
  */
 
 static void
-GetCursorBounds(w, rect)
-Widget w;
-XRectangle * rect;
+GetCursorBounds(Widget w, XRectangle * rect)
 {
     AsciiSinkObject sink = (AsciiSinkObject) w;
 
@@ -345,10 +339,7 @@ XRectangle * rect;
  */
 
 static void
-InsertCursor (w, x, y, state)
-Widget w;
-Position x, y;
-XawTextInsertState state;
+InsertCursor (Widget w, Position x, Position y, XawTextInsertState state)
 {
     AsciiSinkObject sink = (AsciiSinkObject) w;
     Widget text_widget = XtParent(w);
@@ -372,14 +363,13 @@ XawTextInsertState state;
  */
 
 static void
-FindDistance (w, fromPos, fromx, toPos, resWidth, resPos, resHeight)
-Widget w;
-XawTextPosition fromPos;	/* First position. */
-int fromx;			/* Horizontal location of first position. */
-XawTextPosition toPos;		/* Second position. */
-int *resWidth;			/* Distance between fromPos and resPos. */
-XawTextPosition *resPos;	/* Actual second position used. */
-int *resHeight;			/* Height required. */
+FindDistance (Widget w,
+              XawTextPosition fromPos,	/* First position. */
+              int fromx,		/* Horizontal location of first position. */
+              XawTextPosition toPos,	/* Second position. */
+              int *resWidth,		/* Distance between fromPos and resPos. */
+              XawTextPosition *resPos,	/* Actual second position used. */
+              int *resHeight		/* Height required. */)
 {
     AsciiSinkObject sink = (AsciiSinkObject) w;
     Widget source = XawTextGetSource(XtParent(w));
@@ -408,17 +398,15 @@ int *resHeight;			/* Height required. */
 
 
 static void
-FindPosition(w, fromPos, fromx, width, stopAtWordBreak,
-		  resPos, resWidth, resHeight)
-Widget w;
-XawTextPosition fromPos; 	/* Starting position. */
-int fromx;			/* Horizontal location of starting position.*/
-int width;			/* Desired width. */
-int stopAtWordBreak;		/* Whether the resulting position should be at
-				   a word break. */
-XawTextPosition *resPos;	/* Resulting position. */
-int *resWidth;			/* Actual width used. */
-int *resHeight;			/* Height required. */
+FindPosition(Widget w,
+             XawTextPosition fromPos, 	/* Starting position. */
+             int fromx,			/* Horizontal location of starting position.*/
+             int width,			/* Desired width. */
+             int stopAtWordBreak,	/* Whether the resulting position should
+					   be at a word break. */
+             XawTextPosition *resPos,	/* Resulting position. */
+             int *resWidth,		/* Actual width used. */
+             int *resHeight		/* Height required. */)
 {
     AsciiSinkObject sink = (AsciiSinkObject) w;
     Widget source = XawTextGetSource(XtParent(w));
@@ -466,11 +454,8 @@ int *resHeight;			/* Height required. */
 }
 
 static void
-Resolve (w, pos, fromx, width, leftPos, rightPos)
-Widget w;
-XawTextPosition pos;
-int fromx, width;
-XawTextPosition *leftPos, *rightPos;
+Resolve (Widget w, XawTextPosition pos, int fromx, int width,
+         XawTextPosition *leftPos, XawTextPosition *rightPos)
 {
     int resWidth, resHeight;
     Widget source = XawTextGetSource(XtParent(w));
@@ -482,8 +467,7 @@ XawTextPosition *leftPos, *rightPos;
 }
 
 static void
-GetGC(sink)
-AsciiSinkObject sink;
+GetGC(AsciiSinkObject sink)
 {
     XtGCMask valuemask = (GCFont |
 			  GCGraphicsExposures | GCForeground | GCBackground );
@@ -522,10 +506,7 @@ AsciiSinkObject sink;
 
 /* ARGSUSED */
 static void
-Initialize(request, new, args, num_args)
-Widget request, new;
-ArgList args;
-Cardinal *num_args;
+Initialize(Widget request, Widget new, ArgList args, Cardinal *num_args)
 {
     AsciiSinkObject sink = (AsciiSinkObject) new;
 
@@ -544,8 +525,7 @@ Cardinal *num_args;
  */
 
 static void
-Destroy(w)
-Widget w;
+Destroy(Widget w)
 {
    AsciiSinkObject sink = (AsciiSinkObject) w;
 
@@ -565,10 +545,7 @@ Widget w;
 
 /* ARGSUSED */
 static Boolean
-SetValues(current, request, new, args, num_args)
-Widget current, request, new;
-ArgList args;
-Cardinal *num_args;
+SetValues(Widget current, Widget request, Widget new, ArgList args, Cardinal *num_args)
 {
     AsciiSinkObject w = (AsciiSinkObject) new;
     AsciiSinkObject old_w = (AsciiSinkObject) current;
@@ -601,9 +578,7 @@ Cardinal *num_args;
 
 /* ARGSUSED */
 static int
-MaxLines(w, height)
-Widget w;
-Dimension height;
+MaxLines(Widget w, Dimension height)
 {
   AsciiSinkObject sink = (AsciiSinkObject) w;
   int font_height;
@@ -622,9 +597,7 @@ Dimension height;
 
 /* ARGSUSED */
 static int
-MaxHeight(w, lines)
-Widget w;
-int lines;
+MaxHeight(Widget w, int lines)
 {
   AsciiSinkObject sink = (AsciiSinkObject) w;
 
@@ -641,10 +614,7 @@ int lines;
  */
 
 static void
-SetTabs(w, tab_count, tabs)
-Widget w;
-int tab_count;
-short *tabs;
+SetTabs(Widget w, int tab_count, short *tabs)
 {
   AsciiSinkObject sink = (AsciiSinkObject) w;
   int i;
