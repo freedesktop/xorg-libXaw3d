@@ -8,8 +8,6 @@ AC_CONFIG_SRCDIR([Makefile.am])
 # Initialize Automake
 AM_INIT_AUTOMAKE([foreign dist-bzip2])
 AM_MAINTAINER_MODE
-AC_PROG_LEX
-AC_PROG_YACC
 
 # Initialize libtool
 AC_PROG_LIBTOOL
@@ -19,6 +17,16 @@ m4_ifndef([XORG_MACROS_VERSION],
           [m4_fatal([must install xorg-macros 1.8 or later before running autoconf/autogen])])
 XORG_MACROS_VERSION(1.8)
 XORG_DEFAULT_OPTIONS
+
+# Set-up Lex and Yacc, generated code is distributed
+AC_PROG_YACC
+AC_PATH_PROG([YACC_INST], $YACC)
+if test ! -f "$srcdir/src/laygram.c"; then
+   if test -z "$YACC_INST"; then
+      AC_MSG_ERROR([yacc not found - unable to compile laygram.y])
+   fi
+fi
+AC_PROG_LEX
 
 # Checks for header files.
 PKG_CHECK_MODULES(X11, [x11 xt xmu])
