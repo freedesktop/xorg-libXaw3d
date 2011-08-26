@@ -71,7 +71,7 @@ static XtResource resources[] = {
       XtOffsetOf(GripRec, grip.grip_action), XtRCallback, NULL},
 };
 
-static void GripAction( /* Widget, XEvent*, String*, Cardinal */ );
+static void GripAction(Widget, XEvent *, String *, Cardinal *);
 
 static XtActionsRec actionsList[] =
 {
@@ -132,11 +132,8 @@ GripClassRec gripClassRec = {
 
 WidgetClass gripWidgetClass = (WidgetClass) &gripClassRec;
 
-static void GripAction( widget, event, params, num_params )
-    Widget widget;
-    XEvent *event;
-    String *params;
-    Cardinal *num_params;
+static void
+GripAction(Widget widget, XEvent *event, String *params, Cardinal *num_params)
 {
     XawGripCallDataRec call_data;
 
