@@ -54,10 +54,11 @@ typedef struct _ThreeDRec {
   } ThreeDRec;
 
 typedef struct {
-    void (*shadowdraw)();
+    void (*shadowdraw)(Widget, XEvent *, Region, XtRelief, Boolean);
   } ThreeDClassPart;
 
-#define XtInheritXaw3dShadowDraw ((void (*)())_XtInherit)
+#define XtInheritXaw3dShadowDraw \
+((void (*)(Widget, XEvent *, Region, XtRelief, Boolean))_XtInherit)
 
 /* Full class record declaration. */
 typedef struct _ThreeDClassRec {

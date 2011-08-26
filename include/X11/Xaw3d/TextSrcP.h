@@ -69,6 +69,7 @@ SOFTWARE.
  *
  ************************************************************/
 
+#if 0	/* no longer used */
 typedef struct {
   XtPointer		next_extension;
   XrmQuark		record_type;
@@ -76,14 +77,34 @@ typedef struct {
   Cardinal		record_size;
   int			(*Input)();
 } TextSrcExtRec, *TextSrcExt;
+#endif
+
+typedef XawTextPosition (*_XawSrcReadProc)
+     (Widget, XawTextPosition, XawTextBlock*, int);
+
+typedef int (*_XawSrcReplaceProc)
+     (Widget, XawTextPosition, XawTextPosition, XawTextBlock*);
+
+typedef XawTextPosition (*_XawSrcScanProc)
+     (Widget, XawTextPosition, XawTextScanType, XawTextScanDirection,
+      int, Boolean);
+
+typedef XawTextPosition (*_XawSrcSearchProc)
+     (Widget, XawTextPosition, XawTextScanDirection, XawTextBlock*);
+
+typedef void (*_XawSrcSetSelectionProc)
+     (Widget, XawTextPosition, XawTextPosition, Atom);
+
+typedef Boolean (*_XawSrcConvertSelectionProc)
+     (Widget, Atom*, Atom*, Atom*, XtPointer*, unsigned long*, int*);
 
 typedef struct _TextSrcClassPart {
-  XawTextPosition	(*Read)();
-  int			(*Replace)();
-  XawTextPosition	(*Scan)();
-  XawTextPosition       (*Search)();
-  void                  (*SetSelection)();
-  Boolean		(*ConvertSelection)();
+    _XawSrcReadProc Read;
+    _XawSrcReplaceProc Replace;
+    _XawSrcScanProc Scan;
+    _XawSrcSearchProc Search;
+    _XawSrcSetSelectionProc SetSelection;
+    _XawSrcConvertSelectionProc ConvertSelection;
 } TextSrcClassPart;
 
 /* Full class record declaration */
@@ -137,18 +158,17 @@ wchar_t* _XawTextMBToWC(
  *
  ************************************************************/
 
-typedef Boolean (*_XawBooleanFunc)();
-typedef int (*_XawIntFunc)();
+#if 0	/* no longer used */
 typedef XawTextPosition (*_XawTextPositionFunc)();
-typedef void (*_XawTextVoidFunc)();
+#endif
 
 #define XtInheritInput                ((_XawTextPositionFunc) _XtInherit)
-#define XtInheritRead                 ((_XawTextPositionFunc) _XtInherit)
-#define XtInheritReplace              ((_XawIntFunc) _XtInherit)
-#define XtInheritScan                 ((_XawTextPositionFunc) _XtInherit)
-#define XtInheritSearch               ((_XawTextPositionFunc) _XtInherit)
-#define XtInheritSetSelection         ((_XawTextVoidFunc) _XtInherit)
-#define XtInheritConvertSelection     ((_XawBooleanFunc) _XtInherit)
+#define XtInheritRead                 ((_XawSrcReadProc) _XtInherit)
+#define XtInheritReplace              ((_XawSrcReplaceProc) _XtInherit)
+#define XtInheritScan                 ((_XawSrcScanProc) _XtInherit)
+#define XtInheritSearch               ((_XawSrcSearchProc) _XtInherit)
+#define XtInheritSetSelection         ((_XawSrcSetSelectionProc) _XtInherit)
+#define XtInheritConvertSelection     ((_XawSrcConvertSelectionProc) _XtInherit)
 #define XtTextSrcExtVersion	      1
 #define XtTextSrcExtTypeString        "XT_TEXTSRC_EXT"
 

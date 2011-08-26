@@ -70,17 +70,47 @@ SOFTWARE.
  *
  ************************************************************/
 
+typedef void (*_XawSinkDisplayTextProc)
+     (Widget, Position, Position, XawTextPosition, XawTextPosition, Boolean);
+
+typedef void (*_XawSinkInsertCursorProc)
+     (Widget, Position, Position, XawTextInsertState);
+
+typedef void (*_XawSinkClearToBackgroundProc)
+     (Widget, Position, Position, Dimension, Dimension);
+
+typedef void (*_XawSinkFindPositionProc)
+     (Widget, XawTextPosition, int, int, Boolean, XawTextPosition*, int*, int*);
+
+typedef void (*_XawSinkFindDistanceProc)
+     (Widget, XawTextPosition, int, XawTextPosition, int*, XawTextPosition*, int*);
+
+typedef void (*_XawSinkResolveProc)
+     (Widget, XawTextPosition, int, int, XawTextPosition*);
+
+typedef int  (*_XawSinkMaxLinesProc)
+     (Widget, Dimension);
+
+typedef int  (*_XawSinkMaxHeightProc)
+     (Widget, int);
+
+typedef void (*_XawSinkSetTabsProc)
+     (Widget, int, short*);
+
+typedef void (*_XawSinkGetCursorBoundsProc)
+     (Widget, XRectangle*);
+
 typedef struct _TextSinkClassPart {
-  void (*DisplayText)();
-  void (*InsertCursor)();
-  void (*ClearToBackground)();
-  void (*FindPosition)();
-  void (*FindDistance)();
-  void (*Resolve)();
-  int  (*MaxLines)();
-  int  (*MaxHeight)();
-  void (*SetTabs)();		
-  void (*GetCursorBounds)();	
+    _XawSinkDisplayTextProc DisplayText;
+    _XawSinkInsertCursorProc InsertCursor;
+    _XawSinkClearToBackgroundProc ClearToBackground;
+    _XawSinkFindPositionProc FindPosition;
+    _XawSinkFindDistanceProc FindDistance;
+    _XawSinkResolveProc Resolve;
+    _XawSinkMaxLinesProc MaxLines;
+    _XawSinkMaxHeightProc MaxHeight;
+    _XawSinkSetTabsProc	SetTabs;
+    _XawSinkGetCursorBoundsProc GetCursorBounds;
 } TextSinkClassPart;
 
 /* Full class record declaration */
@@ -121,18 +151,15 @@ typedef struct _TextSinkRec {
  *
  ************************************************************/
 
-typedef int (*_XawSinkIntFunc)();
-typedef void (*_XawSinkVoidFunc)();
-
-#define XtInheritDisplayText          ((_XawSinkVoidFunc) _XtInherit)
-#define XtInheritInsertCursor         ((_XawSinkVoidFunc) _XtInherit)
-#define XtInheritClearToBackground    ((_XawSinkVoidFunc) _XtInherit)
-#define XtInheritFindPosition         ((_XawSinkVoidFunc) _XtInherit)
-#define XtInheritFindDistance         ((_XawSinkVoidFunc) _XtInherit)
-#define XtInheritResolve              ((_XawSinkVoidFunc) _XtInherit)
-#define XtInheritMaxLines             ((_XawSinkIntFunc) _XtInherit)
-#define XtInheritMaxHeight            ((_XawSinkIntFunc) _XtInherit)
-#define XtInheritSetTabs              ((_XawSinkVoidFunc) _XtInherit)
-#define XtInheritGetCursorBounds      ((_XawSinkVoidFunc) _XtInherit)
+#define XtInheritDisplayText	   ((_XawSinkDisplayTextProc)_XtInherit)
+#define XtInheritInsertCursor	   ((_XawSinkInsertCursorProc)_XtInherit)
+#define XtInheritClearToBackground ((_XawSinkClearToBackgroundProc)_XtInherit)
+#define XtInheritFindPosition	   ((_XawSinkFindPositionProc)_XtInherit)
+#define XtInheritFindDistance	   ((_XawSinkFindDistanceProc)_XtInherit)
+#define XtInheritResolve	   ((_XawSinkResolveProc)_XtInherit)
+#define XtInheritMaxLines	   ((_XawSinkMaxLinesProc)_XtInherit)
+#define XtInheritMaxHeight	   ((_XawSinkMaxHeightProc)_XtInherit)
+#define XtInheritSetTabs	   ((_XawSinkSetTabsProc)_XtInherit)
+#define XtInheritGetCursorBounds   ((_XawSinkGetCursorBoundsProc)_XtInherit)
 
 #endif /* _XawTextSinkP_h */

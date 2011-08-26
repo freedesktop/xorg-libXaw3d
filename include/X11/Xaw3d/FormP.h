@@ -56,10 +56,11 @@ SOFTWARE.
 #define XtREdgeType "EdgeType"
 
 typedef enum {LayoutPending, LayoutInProgress, LayoutDone} LayoutState;
-#define XtInheritLayout ((Boolean (*)())_XtInherit)
+#define XtInheritLayout \
+((Boolean (*)(FormWidget, Dimension, Dimension, Boolean))_XtInherit)
 
 typedef struct {
-    Boolean	(*layout)(/* FormWidget, Dimension, Dimension */);
+    Boolean	(*layout)(FormWidget, Dimension, Dimension, Boolean);
 } FormClassPart;
 
 /*

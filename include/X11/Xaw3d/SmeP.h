@@ -55,9 +55,9 @@ in this Software without prior written authorization from the X Consortium.
  ************************************************************/
 
 typedef struct _SmeClassPart {
-  void (*highlight)();
-  void (*unhighlight)();
-  void (*notify)();	
+  void (*highlight)(Widget);
+  void (*unhighlight)(Widget);
+  void (*notify)(Widget);
   XtPointer extension;
 } SmeClassPart;
 
@@ -96,7 +96,7 @@ typedef struct _SmeRec {
  *
  ************************************************************/
 
-typedef void (*_XawEntryVoidFunc)();
+typedef void (*_XawEntryVoidFunc)(Widget);
 
 #define XtInheritHighlight   ((_XawEntryVoidFunc) _XtInherit)
 #define XtInheritUnhighlight XtInheritHighlight
