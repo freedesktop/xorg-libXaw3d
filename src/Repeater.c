@@ -32,7 +32,7 @@ in this Software without prior written authorization from the X Consortium.
 #include <X11/Xaw3d/XawInit.h>		/* for XawInitializeWidgetSet() */
 #include <X11/Xaw3d/RepeaterP.h>		/* us */
 
-static void tic();			/* clock timeout */
+static void tic(XtPointer, XtIntervalId *);	/* clock timeout */
 
 #define DO_CALLBACK(rw) \
     XtCallCallbackList ((Widget) rw, rw->command.callbacks, (XtPointer)NULL)
@@ -62,7 +62,8 @@ static char defaultTranslations[] =
 /*
  * Actions added by this widget
  */
-static void ActionStart(), ActionStop();
+static void ActionStart(Widget, XEvent *, String *, Cardinal *);
+static void ActionStop(Widget, XEvent *, String *, Cardinal *);
 
 static XtActionsRec actions[] = {
     { "start", ActionStart },		/* trigger timers */
@@ -97,9 +98,9 @@ static XtResource resources[] = {
  * Class Methods
  */
 
-static void Initialize();		/* setup private data */
-static void Destroy();			/* clear timers */
-static Boolean SetValues();		/* set resources */
+static void Initialize(Widget, Widget, ArgList, Cardinal *);
+static void Destroy(Widget);
+static Boolean SetValues(Widget, Widget, Widget, ArgList, Cardinal *);
 
 RepeaterClassRec repeaterClassRec = {
   { /* core fields */
@@ -163,9 +164,8 @@ WidgetClass repeaterWidgetClass = (WidgetClass) &repeaterClassRec;
  *****************************************************************************/
 
 /* ARGSUSED */
-static void tic (client_data, id)
-    XtPointer client_data;
-    XtIntervalId *id;
+static void
+tic (XtPointer client_data, XtIntervalId *id)
 {
     RepeaterWidget rw = (RepeaterWidget) client_data;
 
@@ -200,10 +200,8 @@ static void tic (client_data, id)
  *****************************************************************************/
 
 /* ARGSUSED */
-static void Initialize (greq, gnew, args, num_args)
-    Widget greq, gnew;
-    ArgList args;
-    Cardinal *num_args;
+static void
+Initialize (Widget greq, Widget gnew, ArgList args, Cardinal *num_args)
 {
     RepeaterWidget new = (RepeaterWidget) gnew;
 
@@ -211,17 +209,15 @@ static void Initialize (greq, gnew, args, num_args)
     new->repeater.timer = (XtIntervalId) 0;
 }
 
-static void Destroy (gw)
-    Widget gw;
+static void
+Destroy (Widget gw)
 {
     CLEAR_TIMEOUT ((RepeaterWidget) gw);
 }
 
 /* ARGSUSED */
-static Boolean SetValues (gcur, greq, gnew, args, num_args)
-    Widget gcur, greq, gnew;
-    ArgList args;
-    Cardinal *num_args;
+static Boolean
+SetValues (Widget gcur, Widget greq, Widget gnew, ArgList args, Cardinal *num_args)
 {
     RepeaterWidget cur = (RepeaterWidget) gcur;
     RepeaterWidget new = (RepeaterWidget) gnew;
@@ -242,11 +238,8 @@ static Boolean SetValues (gcur, greq, gnew, args, num_args)
  *****************************************************************************/
 
 /* ARGSUSED */
-static void ActionStart (gw, event, params, num_params)
-    Widget gw;
-    XEvent *event;
-    String *params;			/* unused */
-    Cardinal *num_params;		/* unused */
+static void
+ActionStart (Widget gw, XEvent *event, String *params, Cardinal *num_params)
 {
     RepeaterWidget rw = (RepeaterWidget) gw;
 
@@ -261,11 +254,8 @@ static void ActionStart (gw, event, params, num_params)
 
 
 /* ARGSUSED */
-static void ActionStop (gw, event, params, num_params)
-    Widget gw;
-    XEvent *event;
-    String *params;			/* unused */
-    Cardinal *num_params;		/* unused */
+static void
+ActionStop (Widget gw, XEvent *event, String *params, Cardinal *num_params)
 {
     RepeaterWidget rw = (RepeaterWidget) gw;
 
