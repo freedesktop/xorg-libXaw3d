@@ -51,8 +51,8 @@ in this Software without prior written authorization from the X Consortium.
 #include <X11/Xaw3d/XawInit.h>
 #include <X11/Xaw3d/MenuButtoP.h>
 
-static void ClassInitialize();
-static void PopupMenu();
+static void ClassInitialize(void);
+static void PopupMenu(Widget, XEvent *, String *, Cardinal *);
 
 #define superclass ((CommandWidgetClass)&commandClassRec)
 
@@ -143,7 +143,8 @@ WidgetClass menuButtonWidgetClass = (WidgetClass) &menuButtonClassRec;
  *
  ****************************************************************/
 
-static void ClassInitialize()
+static void
+ClassInitialize(void)
 {
     XawInitializeWidgetSet();
     XtRegisterGrabAction(PopupMenu, True,
@@ -153,11 +154,7 @@ static void ClassInitialize()
 
 /* ARGSUSED */
 static void
-PopupMenu(w, event, params, num_params)
-Widget w;
-XEvent * event;
-String * params;
-Cardinal * num_params;
+PopupMenu(Widget w, XEvent *event, String *params, Cardinal *num_params)
 {
   MenuButtonWidget mbw = (MenuButtonWidget) w;
   Widget menu = NULL, temp;
