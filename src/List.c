@@ -109,15 +109,17 @@ static XtResource resources[] = {
         offset(list.callback), XtRCallback, NULL},
 };
 
-static void Initialize();
-static void ChangeSize();
-static void Resize();
-static void Redisplay();
-static void Destroy();
-static Boolean Layout();
-static XtGeometryResult PreferredGeom();
-static Boolean SetValues();
-static void Notify(), Set(), Unset();
+static void Initialize(Widget, Widget, ArgList, Cardinal *);
+static void ChangeSize(Widget, Dimension, Dimension);
+static void Resize(Widget);
+static void Redisplay(Widget, XEvent *, Region);
+static void Destroy(Widget);
+static Boolean Layout(Widget, Boolean, Boolean, Dimension *, Dimension *);
+static XtGeometryResult PreferredGeom(Widget, XtWidgetGeometry *, XtWidgetGeometry *);
+static Boolean SetValues(Widget, Widget, Widget, ArgList, Cardinal *);
+static void Notify(Widget, XEvent *, String *, Cardinal *);
+static void Set(Widget, XEvent *, String *, Cardinal *);
+static void Unset(Widget, XEvent *, String *, Cardinal *);
 
 static XtActionsRec actions[] = {
       {"Notify",         Notify},
@@ -177,8 +179,8 @@ WidgetClass listWidgetClass = (WidgetClass)&listClassRec;
  *
  ****************************************************************/
 
-static void GetGCs(w)
-Widget w;
+static void
+GetGCs(Widget w)
 {
     XGCValues	values;
     ListWidget lw = (ListWidget) w;
@@ -233,8 +235,8 @@ Widget w;
  * MAY NOT change your geometry from within a SetValues. (Xt man,
  * sect. 9.7.2)  So, I factored these changes out. */
 
-static void CalculatedValues( w )
-Widget w;
+static void
+CalculatedValues(Widget w)
 {
     int i, len;
 
@@ -284,9 +286,7 @@ Widget w;
  */
 
 static void
-ResetList( w, changex, changey )
-Widget w;
-Boolean changex, changey;
+ResetList(Widget w, Boolean changex, Boolean changey)
 {
     Dimension width = w->core.width;
     Dimension height = w->core.height;
@@ -304,9 +304,7 @@ Boolean changex, changey;
  */
 
 static void
-ChangeSize(w, width, height)
-Widget w;
-Dimension width, height;
+ChangeSize(Widget w, Dimension width, Dimension height)
 {
     XtWidgetGeometry request, reply;
 
@@ -356,10 +354,7 @@ Dimension width, height;
 
 /* ARGSUSED */
 static void
-Initialize(junk, new, args, num_args)
-Widget junk, new;
-ArgList args;
-Cardinal *num_args;
+Initialize(Widget junk, Widget new, ArgList args, Cardinal *num_args)
 {
     ListWidget lw = (ListWidget) new;
 
@@ -402,10 +397,7 @@ Cardinal *num_args;
  */
 
 static int
-CvtToItem(w, xloc, yloc, item)
-Widget w;
-int xloc, yloc;
-int *item;
+CvtToItem(Widget w, int xloc, int yloc, int *item)
 {
     int one, another;
     ListWidget lw = (ListWidget) w;
@@ -450,10 +442,7 @@ int *item;
  */
 
 static void
-FindCornerItems(w, event, ul_ret, lr_ret)
-Widget w;
-XEvent * event;
-int *ul_ret, *lr_ret;
+FindCornerItems(Widget w, XEvent *event, int *ul_ret, int *lr_ret)
 {
     int xloc, yloc;
 
@@ -474,9 +463,7 @@ int *ul_ret, *lr_ret;
  */
 
 static Boolean
-ItemInRectangle(w, ul, lr, item)
-Widget w;
-int ul, lr, item;
+ItemInRectangle(Widget w, int ul, int lr, int item)
 {
     ListWidget lw = (ListWidget) w;
     int mod_item;
@@ -506,10 +493,7 @@ int ul, lr, item;
  *  gc - the gc to use to paint this rectangle */
 
 static void
-HighlightBackground( w, x, y, gc )
-Widget w;
-int x, y;
-GC gc;
+HighlightBackground(Widget w, int x, int y, GC gc)
 {
     ListWidget lw = (ListWidget) w;
 
@@ -551,10 +535,8 @@ GC gc;
  * maximum of all item lengths).  If the user does specify, say, 80 pixel
  * columns, though, this prevents items from overwriting other items. */
 
-static void ClipToShadowInteriorAndLongest(lw, gc_p, x)
-    ListWidget lw;
-    GC* gc_p;
-    Dimension x;
+static void
+ClipToShadowInteriorAndLongest(ListWidget lw, GC *gc_p, Dimension x)
 {
     XRectangle rect;
 
@@ -578,9 +560,7 @@ static void ClipToShadowInteriorAndLongest(lw, gc_p, x)
  *  NOTE: no action taken on an unrealized widget. */
 
 static void
-PaintItemName(w, item)
-Widget w;
-int item;
+PaintItemName(Widget w, int item)
 {
     char * str;
     GC gc;
@@ -674,10 +654,7 @@ int item;
 
 /* ARGSUSED */
 static void
-Redisplay(w, event, junk)
-Widget w;
-XEvent *event;
-Region junk;
+Redisplay(Widget w, XEvent *event, Region junk)
 {
     int item;			/* an item to work with. */
     int ul_item, lr_item;       /* corners of items we need to paint. */
@@ -706,9 +683,7 @@ Region junk;
  * requested - what we want to happen. */
 
 static XtGeometryResult
-PreferredGeom(w, intended, requested)
-Widget w;
-XtWidgetGeometry *intended, *requested;
+PreferredGeom(Widget w, XtWidgetGeometry *intended, XtWidgetGeometry *requested)
 {
     Dimension new_width, new_height;
     Boolean change, width_req, height_req;
@@ -753,8 +728,7 @@ XtWidgetGeometry *intended, *requested;
  * resizes the widget, by changing the number of rows and columns. */
 
 static void
-Resize(w)
-    Widget w;
+Resize(Widget w)
 {
     Dimension width, height;
 
@@ -780,10 +754,7 @@ Resize(w)
  * RETURNS: TRUE if width or height have been changed. */
 
 static Boolean
-Layout(w, xfree, yfree, width, height)
-Widget w;
-Boolean xfree, yfree;
-Dimension *width, *height;
+Layout(Widget w, Boolean xfree, Boolean yfree, Dimension *width, Dimension *height)
 {
     ListWidget lw = (ListWidget) w;
     Boolean change = FALSE;
@@ -874,11 +845,7 @@ Dimension *width, *height;
 
 /* ARGSUSED */
 static void
-Notify(w, event, params, num_params)
-Widget w;
-XEvent * event;
-String * params;
-Cardinal *num_params;
+Notify(Widget w, XEvent *event, String *params, Cardinal *num_params)
 {
     ListWidget lw = ( ListWidget ) w;
     int item, item_len;
@@ -919,11 +886,7 @@ Cardinal *num_params;
 
 /* ARGSUSED */
 static void
-Unset(w, event, params, num_params)
-Widget w;
-XEvent * event;
-String * params;
-Cardinal *num_params;
+Unset(Widget w, XEvent *event, String *params, Cardinal *num_params)
 {
   XawListUnhighlight(w);
 }
@@ -935,11 +898,7 @@ Cardinal *num_params;
 
 /* ARGSUSED */
 static void
-Set(w, event, params, num_params)
-Widget w;
-XEvent * event;
-String * params;
-Cardinal *num_params;
+Set(Widget w, XEvent *event, String *params, Cardinal *num_params)
 {
   int item;
   ListWidget lw = (ListWidget) w;
@@ -956,10 +915,7 @@ Cardinal *num_params;
  */
 
 static Boolean
-SetValues(current, request, new, args, num_args)
-Widget current, request, new;
-ArgList args;
-Cardinal *num_args;
+SetValues(Widget current, Widget request, Widget new, ArgList args, Cardinal *num_args)
 {
     ListWidget cl = (ListWidget) current;
     ListWidget rl = (ListWidget) request;
@@ -1072,8 +1028,8 @@ Cardinal *num_args;
     return(redraw);
 }
 
-static void Destroy(w)
-    Widget w;
+static void
+Destroy(Widget w)
 {
     ListWidget lw = (ListWidget) w;
     XGCValues values;
