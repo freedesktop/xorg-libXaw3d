@@ -95,12 +95,21 @@ static XtResource resources[] = {
 };
 #undef offset
 
-static Boolean SetValues();
-static void Initialize(), Redisplay(), Set(), Reset(), Notify(), Unset();
-static void Highlight(), Unhighlight(), Destroy(), PaintCommandWidget();
-static void ClassInitialize();
-static Boolean ShapeButton();
-static void Realize(), Resize();
+static Boolean SetValues(Widget, Widget, Widget, ArgList, Cardinal *);
+static void Initialize(Widget, Widget, ArgList, Cardinal *);
+static void Redisplay(Widget, XEvent *, Region);
+static void Set(Widget, XEvent *, String *, Cardinal *);
+static void Reset(Widget, XEvent *, String *, Cardinal *);
+static void Notify(Widget, XEvent *, String *, Cardinal *);
+static void Unset(Widget, XEvent *, String *, Cardinal *);
+static void Highlight(Widget, XEvent *, String *, Cardinal *);
+static void Unhighlight(Widget, XEvent *, String *, Cardinal *);
+static void Destroy(Widget);
+static void PaintCommandWidget(Widget, XEvent *, Region, Boolean);
+static void ClassInitialize(void);
+static Boolean ShapeButton(CommandWidget, Boolean);
+static void Realize(Widget, Mask *, XSetWindowAttributes *);
+static void Resize(Widget);
 
 static XtActionsRec actionsList[] = {
   {"set",		Set},
@@ -172,9 +181,7 @@ WidgetClass commandWidgetClass = (WidgetClass) &commandClassRec;
  ****************************************************************/
 
 static GC
-Get_GC(cbw, fg, bg)
-CommandWidget cbw;
-Pixel fg, bg;
+Get_GC(CommandWidget cbw, Pixel fg, Pixel bg)
 {
   XGCValues	values;
 
@@ -203,10 +210,7 @@ Pixel fg, bg;
 
 /* ARGSUSED */
 static void
-Initialize(request, new, args, num_args)
-Widget request, new;
-ArgList args;			/* unused */
-Cardinal *num_args;		/* unused */
+Initialize(Widget request, Widget new, ArgList args, Cardinal *num_args)
 {
   CommandWidget cbw = (CommandWidget) new;
   int shape_event_base, shape_error_base;
@@ -240,8 +244,7 @@ Cardinal *num_args;		/* unused */
 }
 
 static Region
-HighlightRegion(cbw)
-CommandWidget cbw;
+HighlightRegion(CommandWidget cbw)
 {
   static Region outerRegion = NULL, innerRegion, emptyRegion;
   Dimension s = cbw->threeD.shadow_width;
@@ -279,11 +282,7 @@ CommandWidget cbw;
 
 /* ARGSUSED */
 static void
-Set(w,event,params,num_params)
-Widget w;
-XEvent *event;
-String *params;		/* unused */
-Cardinal *num_params;	/* unused */
+Set(Widget w, XEvent *event, String *params, Cardinal *num_params)
 {
   CommandWidget cbw = (CommandWidget)w;
 
@@ -297,11 +296,7 @@ Cardinal *num_params;	/* unused */
 
 /* ARGSUSED */
 static void
-Unset(w,event,params,num_params)
-Widget w;
-XEvent *event;
-String *params;		/* unused */
-Cardinal *num_params;
+Unset(Widget w, XEvent *event, String *params, Cardinal *num_params)
 {
   CommandWidget cbw = (CommandWidget)w;
 
@@ -317,11 +312,7 @@ Cardinal *num_params;
 
 /* ARGSUSED */
 static void
-Reset(w,event,params,num_params)
-Widget w;
-XEvent *event;
-String *params;		/* unused */
-Cardinal *num_params;   /* unused */
+Reset(Widget w, XEvent *event, String *params, Cardinal *num_params)
 {
   CommandWidget cbw = (CommandWidget)w;
 
@@ -334,11 +325,7 @@ Cardinal *num_params;   /* unused */
 
 /* ARGSUSED */
 static void
-Highlight(w,event,params,num_params)
-Widget w;
-XEvent *event;
-String *params;
-Cardinal *num_params;
+Highlight(Widget w, XEvent *event, String *params, Cardinal *num_params)
 {
   CommandWidget cbw = (CommandWidget)w;
 
@@ -364,11 +351,7 @@ Cardinal *num_params;
 
 /* ARGSUSED */
 static void
-Unhighlight(w,event,params,num_params)
-Widget w;
-XEvent *event;
-String *params;		/* unused */
-Cardinal *num_params;	/* unused */
+Unhighlight(Widget w, XEvent *event, String *params, Cardinal *num_params)
 {
   CommandWidget cbw = (CommandWidget)w;
 
@@ -379,11 +362,7 @@ Cardinal *num_params;	/* unused */
 
 /* ARGSUSED */
 static void
-Notify(w,event,params,num_params)
-Widget w;
-XEvent *event;
-String *params;		/* unused */
-Cardinal *num_params;	/* unused */
+Notify(Widget w, XEvent *event, String *params, Cardinal *num_params)
 {
   CommandWidget cbw = (CommandWidget)w;
 
@@ -407,10 +386,7 @@ Cardinal *num_params;	/* unused */
 
 /* ARGSUSED */
 static void
-Redisplay(w, event, region)
-Widget w;
-XEvent *event;
-Region region;
+Redisplay(Widget w, XEvent *event, Region region)
 {
   PaintCommandWidget(w, event, region, FALSE);
 }
@@ -424,11 +400,7 @@ Region region;
  */
 
 static void
-PaintCommandWidget(w, event, region, change)
-Widget w;
-XEvent *event;
-Region region;
-Boolean change;
+PaintCommandWidget(Widget w, XEvent *event, Region region, Boolean change)
 {
   CommandWidget cbw = (CommandWidget) w;
   CommandWidgetClass cwclass = (CommandWidgetClass) XtClass (w);
@@ -489,8 +461,7 @@ Boolean change;
 }
 
 static void
-Destroy(w)
-Widget w;
+Destroy(Widget w)
 {
   CommandWidget cbw = (CommandWidget) w;
 
@@ -507,10 +478,7 @@ Widget w;
 
 /* ARGSUSED */
 static Boolean
-SetValues (current, request, new, args, num_args)
-Widget current, request, new;
-ArgList args;
-Cardinal *num_args;
+SetValues (Widget current, Widget request, Widget new, ArgList args, Cardinal *num_args)
 {
   CommandWidget oldcbw = (CommandWidget) current;
   CommandWidget cbw = (CommandWidget) new;
@@ -575,7 +543,8 @@ Cardinal *num_args;
   return (redisplay);
 }
 
-static void ClassInitialize()
+static void
+ClassInitialize(void)
 {
     XawInitializeWidgetSet();
     XtSetTypeConverter( XtRString, XtRShapeStyle, XmuCvtStringToShapeStyle,
@@ -584,9 +553,7 @@ static void ClassInitialize()
 
 
 static Boolean
-ShapeButton(cbw, checkRectangular)
-CommandWidget cbw;
-Boolean checkRectangular;
+ShapeButton(CommandWidget cbw, Boolean checkRectangular)
 {
     Dimension corner_size = 0;
 
@@ -606,10 +573,8 @@ Boolean checkRectangular;
     return(TRUE);
 }
 
-static void Realize(w, valueMask, attributes)
-    Widget w;
-    Mask *valueMask;
-    XSetWindowAttributes *attributes;
+static void
+Realize(Widget w, Mask *valueMask, XSetWindowAttributes *attributes)
 {
     (*commandWidgetClass->core_class.superclass->core_class.realize)
 	(w, valueMask, attributes);
@@ -617,8 +582,8 @@ static void Realize(w, valueMask, attributes)
     ShapeButton( (CommandWidget) w, FALSE);
 }
 
-static void Resize(w)
-    Widget w;
+static void
+Resize(Widget w)
 {
     if (XtIsRealized(w))
 	ShapeButton( (CommandWidget) w, FALSE);
