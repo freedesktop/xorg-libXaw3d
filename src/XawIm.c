@@ -87,6 +87,8 @@ in this Software without prior written authorization from the X Consortium.
  *
  *****************************************************/
 
+extern void XawVendorShellExtResize(Widget);
+
 static XawIcTableList CurrentSharedIcTable(
     XawVendorShellExtPart* /* ve */
 );
@@ -122,14 +124,14 @@ static XtResource resources[] =
 #undef Offset
 
 
-static void SetVaArg( arg, value )
-    XPointer *arg, value;
+static void
+SetVaArg(XPointer *arg, XPointer value)
 {
     *arg = value;
 }
 
-static VendorShellWidget SearchVendorShell( w )
-    Widget w;
+static VendorShellWidget
+SearchVendorShell(Widget w)
 {
     while(w && !XtIsShell(w)) w = XtParent(w);
     if (w && XtIsVendorShell(w)) return((VendorShellWidget)w);
@@ -138,9 +140,8 @@ static VendorShellWidget SearchVendorShell( w )
 
 static XContext extContext = (XContext)NULL;
 
-static XawVendorShellExtPart *SetExtPart( w, vew )
-    VendorShellWidget w;
-    XawVendorShellExtWidget vew;
+static XawVendorShellExtPart *
+SetExtPart(VendorShellWidget w, XawVendorShellExtWidget vew)
 {
     contextDataRec *contextData;
 
@@ -155,8 +156,8 @@ static XawVendorShellExtPart *SetExtPart( w, vew )
     return(&(vew->vendor_ext));
 }
 
-static XawVendorShellExtPart *GetExtPart( w )
-    VendorShellWidget w;
+static XawVendorShellExtPart *
+GetExtPart(VendorShellWidget w)
 {
     contextDataRec *contextData;
     XawVendorShellExtWidget vew;
@@ -169,15 +170,14 @@ static XawVendorShellExtPart *GetExtPart( w )
     return(&(vew->vendor_ext));
 }
 
-static Boolean IsSharedIC( ve )
-    XawVendorShellExtPart * ve;
+static Boolean
+IsSharedIC(XawVendorShellExtPart *ve)
 {
     return( ve->ic.shared_ic );
 }
 
-static XawIcTableList GetIcTableShared( w, ve )
-    Widget w;
-    XawVendorShellExtPart * ve;
+static XawIcTableList
+GetIcTableShared(Widget w, XawVendorShellExtPart *ve)
 {
     XawIcTableList	p;
 
@@ -193,9 +193,8 @@ static XawIcTableList GetIcTableShared( w, ve )
     return(NULL);
 }
 
-static XawIcTableList GetIcTable( w, ve )
-    Widget w;
-    XawVendorShellExtPart * ve;
+static XawIcTableList
+GetIcTable(Widget w, XawVendorShellExtPart *ve)
 {
     XawIcTableList	p;
 
@@ -207,18 +206,16 @@ static XawIcTableList GetIcTable( w, ve )
     return(NULL);
 }
 
-static XIMStyle GetInputStyleOfIC( ve )
-    XawVendorShellExtPart * ve;
+static XIMStyle
+GetInputStyleOfIC(XawVendorShellExtPart *ve)
 {
 
     if (!ve) return((XIMStyle)0);
     return(ve->ic.input_style);
 }
 
-static void ConfigureCB( w, closure, event )
-    Widget	w;
-    XtPointer	closure;
-    XEvent *	event;
+static void
+ConfigureCB(Widget w, XtPointer closure, XEvent *event)
 {
     XawIcTableList		p;
     XawVendorShellExtPart	*ve;
@@ -254,9 +251,8 @@ static void ConfigureCB( w, closure, event )
 
 static XContext errContext = (XContext)NULL;
 
-static Widget SetErrCnxt( w, xim )
-    Widget w;
-    XIM xim;
+static Widget
+SetErrCnxt(Widget w, XIM xim)
 {
     contextErrDataRec *contextErrData;
 
@@ -272,16 +268,15 @@ static Widget SetErrCnxt( w, xim )
     return(contextErrData->widget);
 }
 
-static void CloseIM( ve )
-    XawVendorShellExtPart * ve;
+static void
+CloseIM(XawVendorShellExtPart *ve)
 {
     if (ve->im.xim)
 	XCloseIM(ve->im.xim);
 }
 
-static Dimension SetVendorShellHeight( ve, height )
-    XawVendorShellExtPart* ve;
-    Dimension height;
+static Dimension
+SetVendorShellHeight(XawVendorShellExtPart *ve, Dimension height)
 {
     Arg			args[2];
     Cardinal		i = 0;
@@ -295,8 +290,8 @@ static Dimension SetVendorShellHeight( ve, height )
    return(ve->im.area_height);
 }
 
-static void DestroyAllIM( ve )
-    XawVendorShellExtPart * ve;
+static void
+DestroyAllIM(XawVendorShellExtPart *ve)
 {
     XawIcTableList	p;
     contextErrDataRec *contextErrData;
@@ -340,9 +335,8 @@ static void DestroyAllIM( ve )
     return;
 }
 
-static void FreeAllDataOfVendorShell(ve, vw)
-    XawVendorShellExtPart * ve;
-    VendorShellWidget vw;
+static void
+FreeAllDataOfVendorShell(XawVendorShellExtPart *ve, VendorShellWidget vw)
 {
     XawIcTableList       p, next;
     contextErrDataRec *contextErrData;
@@ -361,9 +355,8 @@ static void FreeAllDataOfVendorShell(ve, vw)
     }
 }
 
-static void VendorShellDestroyed( w, cl_data, ca_data )
-    Widget w;
-    XtPointer cl_data, ca_data;
+static void
+VendorShellDestroyed(Widget w, XtPointer cl_data, XtPointer ca_data)
 {
     XawVendorShellExtPart	*ve;
 
@@ -377,8 +370,8 @@ static void VendorShellDestroyed( w, cl_data, ca_data )
  * Attempt to open an input method
  */
 
-static void OpenIM(ve)
-    XawVendorShellExtPart * ve;
+static void
+OpenIM(XawVendorShellExtPart *ve)
 {
     int		i;
     char	*p, *s, *ns, *end, *pbuf, buf[32];
@@ -475,10 +468,8 @@ static void OpenIM(ve)
     }
 }
 
-static Boolean ResizeVendorShell_Core(vw, ve, p)
-    VendorShellWidget vw;
-    XawVendorShellExtPart * ve;
-    XawIcTableList p;
+static Boolean
+ResizeVendorShell_Core(VendorShellWidget vw, XawVendorShellExtPart *ve, XawIcTableList p)
 {
     XVaNestedList		pe_attr, st_attr;
     XRectangle			pe_area, st_area;
@@ -526,9 +517,8 @@ static Boolean ResizeVendorShell_Core(vw, ve, p)
     return(TRUE);
 }
 
-static void ResizeVendorShell(vw, ve)
-    VendorShellWidget vw;
-    XawVendorShellExtPart * ve;
+static void
+ResizeVendorShell(VendorShellWidget vw, XawVendorShellExtPart *ve)
 {
     XawIcTableList               p;
 
@@ -544,9 +534,8 @@ static void ResizeVendorShell(vw, ve)
     }
 }
 
-static XawIcTableList CreateIcTable( w, ve )
-    Widget w;
-    XawVendorShellExtPart * ve;
+static XawIcTableList
+CreateIcTable(Widget w, XawVendorShellExtPart *ve)
 {
     XawIcTableList	table;
 
@@ -565,9 +554,8 @@ static XawIcTableList CreateIcTable( w, ve )
     return(table);
 }
 
-static Boolean RegisterToVendorShell( w, ve )
-    Widget w;
-    XawVendorShellExtPart * ve;
+static Boolean
+RegisterToVendorShell(Widget w, XawVendorShellExtPart *ve)
 {
     XawIcTableList	table;
 
@@ -577,9 +565,8 @@ static Boolean RegisterToVendorShell( w, ve )
     return(TRUE);
 }
 
-static void UnregisterFromVendorShell(w, ve)
-    Widget w;
-    XawVendorShellExtPart * ve;
+static void
+UnregisterFromVendorShell(Widget w, XawVendorShellExtPart *ve)
 {
     XawIcTableList	*prev, p;
 
@@ -593,11 +580,8 @@ static void UnregisterFromVendorShell(w, ve)
     return;
 }
 
-static void SetICValuesShared(w, ve, p, check)
-    Widget w;
-    XawVendorShellExtPart * ve;
-    XawIcTableList	p;
-    Boolean     check;
+static void
+SetICValuesShared(Widget w, XawVendorShellExtPart *ve, XawIcTableList p, Boolean check)
 {
     XawIcTableList	pp;
 
@@ -630,9 +614,8 @@ static void SetICValuesShared(w, ve, p, check)
     }
 }
 
-static Boolean IsCreatedIC(w, ve)
-    Widget w;
-    XawVendorShellExtPart * ve;
+static Boolean
+IsCreatedIC(Widget w, XawVendorShellExtPart *ve)
 {
     XawIcTableList	p;
 
@@ -642,9 +625,8 @@ static Boolean IsCreatedIC(w, ve)
     return(TRUE);
 }
 
-static void SizeNegotiation(p, width, height)
-    XawIcTableList	p;
-    Dimension		width, height;
+static void
+SizeNegotiation(XawIcTableList p, Dimension width, Dimension height)
 {
     XRectangle		pe_area, st_area;
     XVaNestedList	pe_attr = NULL, st_attr = NULL;
@@ -715,9 +697,8 @@ static void SizeNegotiation(p, width, height)
     }
 }
 
-static void CreateIC( w, ve )
-    Widget w;
-    XawVendorShellExtPart* ve;
+static void
+CreateIC(Widget w, XawVendorShellExtPart *ve)
 {
     XawIcTableList	p;
     XPoint		position;
@@ -863,10 +844,8 @@ static void CreateIC( w, ve )
     }
 }
 
-static void SetICValues( w, ve, focus )
-    Widget	w;
-    XawVendorShellExtPart	*ve;
-    Boolean	focus;
+static void
+SetICValues(Widget w, XawVendorShellExtPart *ve, Boolean focus)
 {
     XawIcTableList	p;
     XPoint		position;
@@ -994,10 +973,8 @@ static void SetICValues( w, ve, focus )
     p->flg &= ~(CIFontSet | CIFg | CIBg | CIBgPixmap | CICursorP | CILineS);
 }
 
-static void SharedICChangeFocusWindow(w, ve, p)
-    Widget		w;
-    XawVendorShellExtPart	*ve;
-    XawIcTableList	p;
+static void
+SharedICChangeFocusWindow(Widget w, XawVendorShellExtPart *ve, XawIcTableList p)
 {
     XawIcTableList	pp;
 
@@ -1010,15 +987,14 @@ static void SharedICChangeFocusWindow(w, ve, p)
     SetICValues(w, ve, TRUE);
 }
 
-static XawIcTableList CurrentSharedIcTable( ve )
-    XawVendorShellExtPart * ve;
+static XawIcTableList
+CurrentSharedIcTable(XawVendorShellExtPart *ve)
 {
     return(ve->ic.current_ic_table);
 }
 
-static void SetICFocus(w, ve)
-    Widget w;
-    XawVendorShellExtPart * ve;
+static void
+SetICFocus(Widget w, XawVendorShellExtPart *ve)
 {
     XawIcTableList	p, pp;
 
@@ -1038,9 +1014,8 @@ static void SetICFocus(w, ve)
     p->flg &= ~CIICFocus;
 }
 
-static void UnsetICFocus(w, ve)
-    Widget w;
-    XawVendorShellExtPart * ve;
+static void
+UnsetICFocus(Widget w, XawVendorShellExtPart *ve)
 {
     XawIcTableList	p, pp;
 
@@ -1059,11 +1034,8 @@ static void UnsetICFocus(w, ve)
     }
 }
 
-static void SetValues( w, ve, args, num_args )
-    Widget w;
-    XawVendorShellExtPart * ve;
-    ArgList args;
-    Cardinal num_args;
+static void
+SetValues(Widget w, XawVendorShellExtPart *ve, ArgList args, Cardinal num_args)
 {
     ArgList	arg;
 
@@ -1109,9 +1081,8 @@ static void SetValues( w, ve, args, num_args )
     p->prev_flg |= p->flg;
 }
 
-static void SetFocus( w, ve )
-    Widget w;
-    XawVendorShellExtPart *ve;
+static void
+SetFocus(Widget w, XawVendorShellExtPart *ve)
 {
     XawIcTableList	p;
     if ((p = GetIcTableShared(w, ve)) == NULL) return;
@@ -1122,9 +1093,8 @@ static void SetFocus( w, ve )
     p->prev_flg |= p->flg;
 }
 
-static void DestroyIC(w, ve)
-    Widget w;
-    XawVendorShellExtPart *ve;
+static void
+DestroyIC(Widget w, XawVendorShellExtPart *ve)
 {
     XawIcTableList	p;
 
@@ -1145,11 +1115,8 @@ static void DestroyIC(w, ve)
     }
 }
 
-static void SetFocusValues( inwidg, args, num_args, focus )
-    Widget	inwidg;
-    ArgList	args;
-    Cardinal	num_args;
-    Boolean	focus;
+static void
+SetFocusValues(Widget inwidg, ArgList args, Cardinal num_args, Boolean focus)
 {
     XawVendorShellExtPart	*ve;
     VendorShellWidget		vw;
@@ -1170,8 +1137,8 @@ static void SetFocusValues( inwidg, args, num_args, focus )
     }
 }
 
-static void UnsetFocus( inwidg )
-    Widget inwidg;
+static void
+UnsetFocus(Widget inwidg)
 {
     XawVendorShellExtPart	*ve;
     VendorShellWidget		vw;
@@ -1190,9 +1157,8 @@ static void UnsetFocus( inwidg )
     }
 }
 
-static Boolean IsRegistered( w, ve )
-    Widget w;
-    XawVendorShellExtPart* ve;
+static Boolean
+IsRegistered(Widget w, XawVendorShellExtPart *ve)
 {
     XawIcTableList	p;
 
@@ -1203,9 +1169,8 @@ static Boolean IsRegistered( w, ve )
     return(FALSE);
 }
 
-static void Register(inwidg, ve)
-    Widget inwidg;
-    XawVendorShellExtPart* ve;
+static void
+Register(Widget inwidg, XawVendorShellExtPart *ve)
 {
     if (ve->im.xim == NULL)
 	{
@@ -1225,16 +1190,15 @@ static void Register(inwidg, ve)
 	}
 }
 
-static Boolean NoRegistered(ve)
-     XawVendorShellExtPart* ve;
+static Boolean
+NoRegistered(XawVendorShellExtPart *ve)
 {
     if (ve->ic.ic_table == NULL) return(TRUE);
     return(FALSE);
 }
 
-static void Unregister(inwidg, ve)
-    Widget inwidg;
-    XawVendorShellExtPart* ve;
+static void
+Unregister(Widget inwidg, XawVendorShellExtPart *ve)
 {
     if (!IsRegistered(inwidg, ve)) return;
 
@@ -1253,8 +1217,8 @@ static void Unregister(inwidg, ve)
 	}
 }
 
-static void AllCreateIC( ve )
-    XawVendorShellExtPart* ve;
+static void
+AllCreateIC(XawVendorShellExtPart *ve)
 {
     XawIcTableList p;
 
@@ -1276,8 +1240,8 @@ static void AllCreateIC( ve )
 }
 
 
-static void Reconnect(ve)
-    XawVendorShellExtPart* ve;
+static void
+Reconnect(XawVendorShellExtPart *ve)
 {
     XawIcTableList	p;
 
@@ -1301,9 +1265,8 @@ static void Reconnect(ve)
 }
 
 
-static void CompileResourceList( res, num_res )
-    XtResourceList res;
-    unsigned int num_res;
+static void
+CompileResourceList(XtResourceList res, unsigned int num_res)
 {
     unsigned int count;
 
@@ -1318,9 +1281,8 @@ static void CompileResourceList( res, num_res )
 #undef xrmres
 }
 
-static Boolean Initialize( vw, ve )
-    VendorShellWidget vw;
-    XawVendorShellExtPart* ve;
+static Boolean
+Initialize(VendorShellWidget vw, XawVendorShellExtPart *ve)
 {
     int 	i;
 
@@ -1348,9 +1310,8 @@ static Boolean Initialize( vw, ve )
  * It is called by _XawImDestroy, which is called by Vendor.c's
  * VendorExt's Destroy method.           Sheeran, Omron KK, 93/08/05 */
 
-static void Destroy( w, ve )
-    Widget w;
-    XawVendorShellExtPart* ve;
+static void
+Destroy(Widget w, XawVendorShellExtPart *ve)
 {
     contextDataRec *contextData;
     contextErrDataRec *contextErrData;
@@ -1407,7 +1368,6 @@ _XawImRealize(
     Widget w )
 {
     XawVendorShellExtPart	*ve;
-    extern void XawVendorShellExtResize();
 
     if ( !XtIsRealized( w ) || !XtIsVendorShell( w ) ) return;
     if ((ve = GetExtPart( (VendorShellWidget) w ))) {
@@ -1588,7 +1548,6 @@ _XawImCallVendorShellExtResize(
 {
     XawVendorShellExtPart	*ve;
     VendorShellWidget		vw;
-    extern void XawVendorShellExtResize();
 
     if ((vw = SearchVendorShell(w)) && (ve = GetExtPart(vw))) {
 	XawVendorShellExtResize(vw);
