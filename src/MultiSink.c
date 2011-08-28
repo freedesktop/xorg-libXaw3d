@@ -88,13 +88,22 @@ SOFTWARE.
 
 #define GETLASTPOS XawTextSourceScan(source, (XawTextPosition) 0, XawstAll, XawsdRight, 1, TRUE)
 
-static void Initialize(), Destroy();
-static Boolean SetValues();
-static int MaxLines(), MaxHeight();
-static void SetTabs();
+static void Initialize(Widget, Widget, ArgList, Cardinal *);
+static void Destroy(Widget);
+static Boolean SetValues(Widget, Widget, Widget, ArgList, Cardinal *);
+static int MaxLines(Widget, Dimension);
+static int MaxHeight(Widget, int);
+static void SetTabs(Widget, int, short *);
 
-static void DisplayText(), InsertCursor(), FindPosition();
-static void FindDistance(), Resolve(), GetCursorBounds();
+static void DisplayText(Widget, Position, Position, XawTextPosition,
+                        XawTextPosition, Boolean);
+static void InsertCursor(Widget, Position, Position, XawTextInsertState);
+static void FindPosition(Widget, XawTextPosition, int, int, int,
+                         XawTextPosition *, int *, int *);
+static void FindDistance(Widget, XawTextPosition, int, XawTextPosition,
+                         int *, XawTextPosition *, int *);
+static void Resolve(Widget, XawTextPosition, int, int, XawTextPosition *, XawTextPosition *);
+static void GetCursorBounds(Widget, XRectangle *);
 
 #define offset(field) XtOffsetOf(MultiSinkRec, multi_sink.field)
 
@@ -232,12 +241,7 @@ CharWidth (
  */
 
 static Dimension
-PaintText(w, gc, x, y, buf, len)
-    Widget w;
-    GC gc;
-    Position x, y;
-    wchar_t* buf;
-    int len;
+PaintText(Widget w, GC gc, Position x, Position y, wchar_t* buf, int len)
 {
     MultiSinkObject sink = (MultiSinkObject) w;
     TextWidget ctx = (TextWidget) XtParent(w);
@@ -273,11 +277,8 @@ PaintText(w, gc, x, y, buf, len)
  */
 
 static void
-DisplayText(w, x, y, pos1, pos2, highlight)
-    Widget w;
-    Position x, y;
-    Boolean highlight;
-    XawTextPosition pos1, pos2;
+DisplayText(Widget w, Position x, Position y, XawTextPosition pos1,
+            XawTextPosition pos2, Boolean highlight)
 {
     MultiSinkObject sink = (MultiSinkObject) w;
     Widget source = XawTextGetSource(XtParent(w));
@@ -338,8 +339,7 @@ DisplayText(w, x, y, pos1, pos2, highlight)
 static char insertCursor_bits[] = {0x0c, 0x1e, 0x33};
 
 static Pixmap
-CreateInsertCursor(s)
-    Screen *s;
+CreateInsertCursor(Screen *s)
 {
     return (XCreateBitmapFromData (DisplayOfScreen(s), RootWindowOfScreen(s),
 		  insertCursor_bits, insertCursor_width, insertCursor_height));
@@ -353,9 +353,7 @@ CreateInsertCursor(s)
  */
 
 static void
-GetCursorBounds(w, rect)
-    Widget w;
-    XRectangle * rect;
+GetCursorBounds(Widget w, XRectangle * rect)
 {
     MultiSinkObject sink = (MultiSinkObject) w;
 
@@ -370,10 +368,7 @@ GetCursorBounds(w, rect)
  */
 
 static void
-InsertCursor (w, x, y, state)
-    Widget w;
-    Position x, y;
-    XawTextInsertState state;
+InsertCursor (Widget w, Position x, Position y, XawTextInsertState state)
 {
     MultiSinkObject sink = (MultiSinkObject) w;
     Widget text_widget = XtParent(w);
@@ -397,14 +392,8 @@ InsertCursor (w, x, y, state)
  */
 
 static void
-FindDistance (w, fromPos, fromx, toPos, resWidth, resPos, resHeight)
-    Widget w;
-    XawTextPosition fromPos;	/* First position. */
-    int fromx;			/* Horizontal location of first position. */
-    XawTextPosition toPos;	/* Second position. */
-    int* resWidth;		/* Distance between fromPos and resPos. */
-    XawTextPosition* resPos;	/* Actual second position used. */
-    int* resHeight;		/* Height required. */
+FindDistance (Widget w, XawTextPosition fromPos, int fromx, XawTextPosition toPos,
+              int *resWidth, XawTextPosition *resPos, int *resHeight)
 {
     MultiSinkObject sink = (MultiSinkObject) w;
     Widget source = XawTextGetSource(XtParent(w));
@@ -434,16 +423,8 @@ FindDistance (w, fromPos, fromx, toPos, resWidth, resPos, resHeight)
 
 
 static void
-FindPosition(w, fromPos, fromx, width, stopAtWordBreak, resPos, resWidth, resHeight)
-    Widget w;
-    XawTextPosition fromPos; 	/* Starting position. */
-    int fromx;			/* Horizontal location of starting position.*/
-    int width;			/* Desired width. */
-    int stopAtWordBreak;	/* Whether the resulting position should be at
-				   a word break. */
-    XawTextPosition *resPos;	/* Resulting position. */
-    int* resWidth;		/* Actual width used. */
-    int* resHeight;		/* Height required. */
+FindPosition(Widget w, XawTextPosition fromPos, int fromx, int width,
+             int stopAtWordBreak, XawTextPosition *resPos, int *resWidth, int *resHeight)
 {
     MultiSinkObject sink = (MultiSinkObject) w;
     Widget source = XawTextGetSource(XtParent(w));
@@ -493,11 +474,8 @@ FindPosition(w, fromPos, fromx, width, stopAtWordBreak, resPos, resWidth, resHei
 }
 
 static void
-Resolve (w, pos, fromx, width, leftPos, rightPos)
-    Widget w;
-    XawTextPosition pos;
-    int fromx, width;
-    XawTextPosition *leftPos, *rightPos;
+Resolve (Widget w, XawTextPosition pos, int fromx, int width,
+         XawTextPosition *leftPos, XawTextPosition *rightPos)
 {
     int resWidth, resHeight;
     Widget source = XawTextGetSource(XtParent(w));
@@ -509,8 +487,7 @@ Resolve (w, pos, fromx, width, leftPos, rightPos)
 }
 
 static void
-GetGC(sink)
-    MultiSinkObject sink;
+GetGC(MultiSinkObject sink)
 {
     XtGCMask valuemask = (GCGraphicsExposures | GCForeground | GCBackground );
     XGCValues values;
@@ -549,10 +526,7 @@ GetGC(sink)
 
 /* ARGSUSED */
 static void
-Initialize(request, new, args, num_args)
-    Widget request, new;
-    ArgList args;
-    Cardinal* num_args;
+Initialize(Widget request, Widget new, ArgList args, Cardinal *num_args)
 {
     MultiSinkObject sink = (MultiSinkObject) new;
 
@@ -571,8 +545,7 @@ Initialize(request, new, args, num_args)
  */
 
 static void
-Destroy(w)
-    Widget w;
+Destroy(Widget w)
 {
    MultiSinkObject sink = (MultiSinkObject) w;
 
@@ -593,10 +566,7 @@ Destroy(w)
 
 /* ARGSUSED */
 static Boolean
-SetValues(current, request, new, args, num_args)
-    Widget current, request, new;
-    ArgList args;
-    Cardinal* num_args;
+SetValues(Widget current, Widget request, Widget new, ArgList args, Cardinal *num_args)
 {
     MultiSinkObject w = (MultiSinkObject) new;
     MultiSinkObject old_w = (MultiSinkObject) current;
@@ -638,9 +608,7 @@ SetValues(current, request, new, args, num_args)
 
 /* ARGSUSED */
 static int
-MaxLines(w, height)
-    Widget w;
-    Dimension height;
+MaxLines(Widget w, Dimension height)
 {
   MultiSinkObject sink = (MultiSinkObject) w;
   int font_height;
