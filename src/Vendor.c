@@ -98,7 +98,7 @@ static XtResource resources[] = {
 
 static void XawVendorShellClassInitialize(void);
 static void XawVendorShellInitialize(Widget, Widget, ArgList, Cardinal *);
-static Boolean XawVendorShellSetValues(Widget, Widget, Widget);
+static Boolean XawVendorShellSetValues(Widget, Widget, Widget, ArgList, Cardinal *);
 static void Realize(Widget, Mask *, XSetWindowAttributes *);
 static void ChangeManaged(Widget);
 static XtGeometryResult GeometryManager(Widget, XtWidgetGeometry *, XtWidgetGeometry *);
@@ -253,9 +253,9 @@ static XtResource ext_resources[] = {
 };
 
 static void XawVendorShellExtClassInitialize(void);
-static void XawVendorShellExtInitialize(Widget, Widget);
+static void XawVendorShellExtInitialize(Widget, Widget, ArgList, Cardinal *);
 static void XawVendorShellExtDestroy(Widget);
-static Boolean XawVendorShellExtSetValues(Widget, Widget, Widget);
+static Boolean XawVendorShellExtSetValues(Widget, Widget, Widget, ArgList, Cardinal *);
 
 externaldef(vendorshellextclassrec) XawVendorShellExtClassRec
        xawvendorShellExtClassRec = {
@@ -499,7 +499,7 @@ XawVendorShellInitialize(Widget req, Widget new, ArgList args, Cardinal *num_arg
 
 /* ARGSUSED */
 static Boolean
-XawVendorShellSetValues(Widget old, Widget ref, Widget new)
+XawVendorShellSetValues(Widget old, Widget ref, Widget new, ArgList args, Cardinal *num_args)
 {
 	return FALSE;
 }
@@ -526,7 +526,7 @@ XawVendorShellExtClassInitialize(void)
 
 /* ARGSUSED */
 static void
-XawVendorShellExtInitialize(Widget req, Widget new)
+XawVendorShellExtInitialize(Widget req, Widget new, ArgList args, Cardinal *num_args)
 {
     _XawImInitialize(new->core.parent, new);
 }
@@ -540,7 +540,7 @@ XawVendorShellExtDestroy(Widget w)
 
 /* ARGSUSED */
 static Boolean
-XawVendorShellExtSetValues(Widget old, Widget ref, Widget new)
+XawVendorShellExtSetValues(Widget old, Widget ref, Widget new, ArgList args, Cardinal *num_args)
 {
 	return FALSE;
 }

@@ -82,7 +82,7 @@ static void Realize(Widget, XtValueMask *, XSetWindowAttributes *);
 static void Resize(Widget);
 static void ChangeManaged(Widget);
 static Boolean SetValues(Widget, Widget, Widget, ArgList, Cardinal *);
-static Boolean Layout(FormWidget, Dimension, Dimension);
+static Boolean Layout(FormWidget, Dimension, Dimension, Boolean);
 static XtGeometryResult GeometryManager(Widget, XtWidgetGeometry *, XtWidgetGeometry *);
 static XtGeometryResult PreferredGeometry(Widget, XtWidgetGeometry *, XtWidgetGeometry *);
 
@@ -846,7 +846,7 @@ Resize(Widget widget)
 
 /* ARGSUSED */
 static Boolean
-Layout(FormWidget w, Dimension width, Dimension height)
+Layout(FormWidget w, Dimension width, Dimension height, Boolean junk)
 {
     ComputeLayout( (Widget)w, /*query=*/True, /*destroy=*/True );
     w->form.preferred_width = w->core.width;

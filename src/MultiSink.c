@@ -98,11 +98,11 @@ static void SetTabs(Widget, int, short *);
 static void DisplayText(Widget, Position, Position, XawTextPosition,
                         XawTextPosition, Boolean);
 static void InsertCursor(Widget, Position, Position, XawTextInsertState);
-static void FindPosition(Widget, XawTextPosition, int, int, int,
+static void FindPosition(Widget, XawTextPosition, int, int, Boolean,
                          XawTextPosition *, int *, int *);
 static void FindDistance(Widget, XawTextPosition, int, XawTextPosition,
                          int *, XawTextPosition *, int *);
-static void Resolve(Widget, XawTextPosition, int, int, XawTextPosition *, XawTextPosition *);
+static void Resolve(Widget, XawTextPosition, int, int, XawTextPosition *);
 static void GetCursorBounds(Widget, XRectangle *);
 
 #define offset(field) XtOffsetOf(MultiSinkRec, multi_sink.field)
@@ -424,7 +424,8 @@ FindDistance (Widget w, XawTextPosition fromPos, int fromx, XawTextPosition toPo
 
 static void
 FindPosition(Widget w, XawTextPosition fromPos, int fromx, int width,
-             int stopAtWordBreak, XawTextPosition *resPos, int *resWidth, int *resHeight)
+             Boolean stopAtWordBreak, XawTextPosition *resPos, int *resWidth,
+             int *resHeight)
 {
     MultiSinkObject sink = (MultiSinkObject) w;
     Widget source = XawTextGetSource(XtParent(w));
@@ -475,15 +476,14 @@ FindPosition(Widget w, XawTextPosition fromPos, int fromx, int width,
 
 static void
 Resolve (Widget w, XawTextPosition pos, int fromx, int width,
-         XawTextPosition *leftPos, XawTextPosition *rightPos)
+         XawTextPosition *resPos)
 {
     int resWidth, resHeight;
     Widget source = XawTextGetSource(XtParent(w));
 
-    FindPosition(w, pos, fromx, width, FALSE, leftPos, &resWidth, &resHeight);
-    if (*leftPos > GETLASTPOS)
-      *leftPos = GETLASTPOS;
-    *rightPos = *leftPos;
+    FindPosition(w, pos, fromx, width, FALSE, resPos, &resWidth, &resHeight);
+    if (*resPos > GETLASTPOS)
+      *resPos = GETLASTPOS;
 }
 
 static void

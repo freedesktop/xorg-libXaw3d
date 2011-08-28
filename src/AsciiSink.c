@@ -69,13 +69,14 @@ static int MaxLines(Widget, Dimension);
 static int MaxHeight(Widget, int);
 static void SetTabs(Widget, int, short *);
 
-static void DisplayText(Widget, Position, Position, Boolean, XawTextPosition, XawTextPosition);
+static void DisplayText(Widget, Position, Position, XawTextPosition,
+                        XawTextPosition, Boolean);
 static void InsertCursor(Widget, Position, Position, XawTextInsertState);
-static void FindPosition(Widget, XawTextPosition, int, int, int,
+static void FindPosition(Widget, XawTextPosition, int, int, Boolean,
             XawTextPosition *, int *, int *);
 static void FindDistance(Widget, XawTextPosition, int, XawTextPosition, int *,
                          XawTextPosition *, int *);
-static void Resolve(Widget, XawTextPosition, int, int, XawTextPosition *, XawTextPosition *);
+static void Resolve(Widget, XawTextPosition, int, int, XawTextPosition *);
 static void GetCursorBounds(Widget, XRectangle *);
 
 #define offset(field) XtOffsetOf(AsciiSinkRec, ascii_sink.field)
@@ -246,8 +247,8 @@ PaintText(Widget w, GC gc, Position x, Position y, unsigned char * buf, int len)
  */
 
 static void
-DisplayText(Widget w, Position x, Position y, Boolean highlight,
-            XawTextPosition pos1, XawTextPosition pos2)
+DisplayText(Widget w, Position x, Position y, XawTextPosition pos1,
+            XawTextPosition pos2, Boolean highlight)
 {
     AsciiSinkObject sink = (AsciiSinkObject) w;
     Widget source = XawTextGetSource(XtParent(w));
@@ -403,7 +404,7 @@ FindPosition(Widget w,
              XawTextPosition fromPos, 	/* Starting position. */
              int fromx,			/* Horizontal location of starting position.*/
              int width,			/* Desired width. */
-             int stopAtWordBreak,	/* Whether the resulting position should
+             Boolean stopAtWordBreak,	/* Whether the resulting position should
 					   be at a word break. */
              XawTextPosition *resPos,	/* Resulting position. */
              int *resWidth,		/* Actual width used. */
@@ -455,16 +456,14 @@ FindPosition(Widget w,
 }
 
 static void
-Resolve (Widget w, XawTextPosition pos, int fromx, int width,
-         XawTextPosition *leftPos, XawTextPosition *rightPos)
+Resolve (Widget w, XawTextPosition pos, int fromx, int width, XawTextPosition *resPos)
 {
     int resWidth, resHeight;
     Widget source = XawTextGetSource(XtParent(w));
 
-    FindPosition(w, pos, fromx, width, FALSE, leftPos, &resWidth, &resHeight);
-    if (*leftPos > GETLASTPOS)
-      *leftPos = GETLASTPOS;
-    *rightPos = *leftPos;
+    FindPosition(w, pos, fromx, width, FALSE, resPos, &resWidth, &resHeight);
+    if (*resPos > GETLASTPOS)
+      *resPos = GETLASTPOS;
 }
 
 static void
