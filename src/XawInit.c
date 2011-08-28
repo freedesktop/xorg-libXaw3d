@@ -36,7 +36,7 @@ in this Software without prior written authorization from the X Consortium.
 #include <X11/Vendor.h>
 #include <X11/Xaw3d/XawInit.h>
 
-void XawInitializeWidgetSet ()
+void XawInitializeWidgetSet (void)
 {
     static int firsttime = 1;
 
