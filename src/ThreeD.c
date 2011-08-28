@@ -76,9 +76,14 @@ static XtResource resources[] = {
 
 #undef offset
 
-static void ClassInitialize(), ClassPartInitialize(), Initialize(), Destroy();
-static void Redisplay(), Realize(), _Xaw3dDrawShadows();
-static Boolean SetValues();
+static void ClassInitialize(void);
+static void ClassPartInitialize(WidgetClass);
+static void Initialize(Widget, Widget, ArgList, Cardinal *);
+static void Destroy(Widget);
+static void Redisplay(Widget, XEvent *, Region);
+static void Realize(Widget, XtValueMask *, XSetWindowAttributes *);
+static void _Xaw3dDrawShadows(Widget, XEvent *, Region, XtRelief, Boolean);
+static Boolean SetValues(Widget, Widget, Widget, ArgList, Cardinal *);
 
 ThreeDClassRec threeDClassRec = {
     { /* core fields */
@@ -141,8 +146,8 @@ static char mtshadowpm_bits[] = {0x02, 0x04, 0x01};
 static char shadowpm_bits[] = {0x02, 0x01};
 
 /* ARGSUSED */
-static void AllocTopShadowGC (w)
-    Widget w;
+static void
+AllocTopShadowGC (Widget w)
 {
     ThreeDWidget	tdw = (ThreeDWidget) w;
     Screen		*scn = XtScreen (w);
@@ -161,8 +166,8 @@ static void AllocTopShadowGC (w)
 }
 
 /* ARGSUSED */
-static void AllocBotShadowGC (w)
-    Widget w;
+static void
+AllocBotShadowGC (Widget w)
 {
     ThreeDWidget	tdw = (ThreeDWidget) w;
     Screen		*scn = XtScreen (w);
@@ -181,8 +186,8 @@ static void AllocBotShadowGC (w)
 }
 
 /* ARGSUSED */
-static void AllocTopShadowPixmap (new)
-    Widget new;
+static void
+AllocTopShadowPixmap (Widget new)
 {
     ThreeDWidget	tdw = (ThreeDWidget) new;
     Display		*dpy = XtDisplay (new);
@@ -244,8 +249,8 @@ static void AllocTopShadowPixmap (new)
 }
 
 /* ARGSUSED */
-static void AllocBotShadowPixmap (new)
-    Widget new;
+static void
+AllocBotShadowPixmap (Widget new)
 {
     ThreeDWidget	tdw = (ThreeDWidget) new;
     Display		*dpy = XtDisplay (new);
@@ -300,9 +305,8 @@ static void AllocBotShadowPixmap (new)
 }
 
 /* ARGSUSED */
-void Xaw3dComputeTopShadowRGB (new, xcol_out)
-    Widget new;
-    XColor *xcol_out;
+void
+Xaw3dComputeTopShadowRGB (Widget new, XColor *xcol_out)
 {
     if (XtIsSubclass (new, threeDWidgetClass)) {
 	ThreeDWidget tdw = (ThreeDWidget) new;
@@ -333,8 +337,8 @@ void Xaw3dComputeTopShadowRGB (new, xcol_out)
 }
 
 /* ARGSUSED */
-static void AllocTopShadowPixel (new)
-    Widget new;
+static void
+AllocTopShadowPixel (Widget new)
 {
     XColor set_c;
     ThreeDWidget tdw = (ThreeDWidget) new;
@@ -348,9 +352,8 @@ static void AllocTopShadowPixel (new)
 }
 
 /* ARGSUSED */
-void Xaw3dComputeBottomShadowRGB (new, xcol_out)
-    Widget new;
-    XColor *xcol_out;
+void
+Xaw3dComputeBottomShadowRGB (Widget new, XColor *xcol_out)
 {
     if (XtIsSubclass (new, threeDWidgetClass)) {
 	ThreeDWidget tdw = (ThreeDWidget) new;
@@ -379,8 +382,8 @@ void Xaw3dComputeBottomShadowRGB (new, xcol_out)
 }
 
 /* ARGSUSED */
-static void AllocBotShadowPixel (new)
-    Widget new;
+static void
+AllocBotShadowPixel (Widget new)
 {
     XColor set_c;
     ThreeDWidget tdw = (ThreeDWidget) new;
@@ -404,11 +407,8 @@ static XrmQuark	XtQReliefNone, XtQReliefRaised, XtQReliefSunken,
 	}
 
 /* ARGSUSED */
-static void _CvtStringToRelief(args, num_args, fromVal, toVal)
-    XrmValuePtr args;          /* unused */
-    Cardinal    *num_args;      /* unused */
-    XrmValuePtr fromVal;
-    XrmValuePtr toVal;
+static void
+_CvtStringToRelief(XrmValuePtr args, Cardinal *num_args, XrmValuePtr fromVal, XrmValuePtr toVal)
 {
     static XtRelief relief;
     XrmQuark q;
@@ -441,7 +441,8 @@ static void _CvtStringToRelief(args, num_args, fromVal, toVal)
     toVal->size = 0;
 }
 
-static void ClassInitialize()
+static void
+ClassInitialize(void)
 {
     XawInitializeWidgetSet();
     XtQReliefNone   = XrmPermStringToQuark("none");
@@ -456,8 +457,8 @@ static void ClassInitialize()
 
 
 /* ARGSUSED */
-static void ClassPartInitialize (wc)
-    WidgetClass	wc;
+static void
+ClassPartInitialize (WidgetClass wc)
 
 {
     ThreeDClassRec *tdwc = (ThreeDClassRec*) wc;
@@ -469,10 +470,8 @@ static void ClassPartInitialize (wc)
 
 
 /* ARGSUSED */
-static void Initialize (request, new, args, num_args)
-    Widget request, new;
-    ArgList args;
-    Cardinal *num_args;
+static void
+Initialize (Widget request, Widget new, ArgList args, Cardinal *num_args)
 {
     ThreeDWidget 	tdw = (ThreeDWidget) new;
     Screen		*scr = XtScreen (new);
@@ -497,10 +496,8 @@ static void Initialize (request, new, args, num_args)
     AllocBotShadowGC (new);
 }
 
-static void Realize (gw, valueMask, attrs)
-    Widget gw;
-    XtValueMask *valueMask;
-    XSetWindowAttributes *attrs;
+static void
+Realize (Widget gw, XtValueMask *valueMask, XSetWindowAttributes *attrs)
 {
  /*
   * This is necessary because Simple doesn't have a realize method
@@ -511,8 +508,8 @@ static void Realize (gw, valueMask, attrs)
 	 (gw, valueMask, attrs);
 }
 
-static void Destroy (w)
-     Widget w;
+static void
+Destroy (Widget w)
 {
     ThreeDWidget tdw = (ThreeDWidget) w;
     XtReleaseGC (w, tdw->threeD.top_shadow_GC);
@@ -524,10 +521,8 @@ static void Destroy (w)
 }
 
 /* ARGSUSED */
-static void Redisplay (w, event, region)
-    Widget w;
-    XEvent *event;		/* unused */
-    Region region;		/* unused */
+static void
+Redisplay (Widget w, XEvent *event, Region region)
 {
     ThreeDWidget tdw = (ThreeDWidget) w;
 
@@ -535,10 +530,8 @@ static void Redisplay (w, event, region)
 }
 
 /* ARGSUSED */
-static Boolean SetValues (gcurrent, grequest, gnew, args, num_args)
-    Widget gcurrent, grequest, gnew;
-    ArgList args;
-    Cardinal *num_args;
+static Boolean
+SetValues (Widget gcurrent, Widget grequest, Widget gnew, ArgList args, Cardinal *num_args)
 {
     ThreeDWidget current = (ThreeDWidget) gcurrent;
     ThreeDWidget new = (ThreeDWidget) gnew;
@@ -620,12 +613,7 @@ static Boolean SetValues (gcurrent, grequest, gnew, args, num_args)
 
 /* ARGSUSED */
 static void
-_Xaw3dDrawShadows (gw, event, region, relief, out)
-    Widget gw;
-    XEvent *event;
-    Region region;
-    XtRelief relief;
-    Boolean out;
+_Xaw3dDrawShadows (Widget gw, XEvent *event, Region region, XtRelief relief, Boolean out)
 {
     XPoint	pt[6];
     ThreeDWidget tdw = (ThreeDWidget) gw;
@@ -760,12 +748,8 @@ _Xaw3dDrawShadows (gw, event, region, relief, out)
 
 /* ARGSUSED */
 void
-_ShadowSurroundedBox(gw, tdw, x0, y0, x1, y1, relief, out)
-Widget gw;
-ThreeDWidget tdw;
-Position x0, y0, x1, y1;
-XtRelief relief;	/* unused */
-Boolean out;
+_ShadowSurroundedBox(Widget gw, ThreeDWidget tdw, Position x0, Position y0,
+                     Position x1, Position y1, XtRelief relief, Boolean out)
 {
     XPoint pt[6];
     Dimension s = tdw->threeD.shadow_width;
