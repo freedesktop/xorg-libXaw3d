@@ -63,11 +63,18 @@ static XtResource resources[] = {
         offset(edit_mode), XtRString, "read"},
 };
 
-static void ClassInitialize(), ClassPartInitialize(), SetSelection();
-static void CvtStringToEditMode();
-static Boolean ConvertSelection();
-static XawTextPosition Search(), Scan(), Read();
-static int Replace();
+static void ClassInitialize(void);
+static void ClassPartInitialize(WidgetClass);
+static void SetSelection(Widget, XawTextPosition, XawTextPosition, Atom);
+static void CvtStringToEditMode(XrmValuePtr, Cardinal *, XrmValuePtr, XrmValuePtr);
+static Boolean ConvertSelection(Widget, Atom *, Atom *, Atom *, XtPointer *,
+                                unsigned long *, int *);
+static XawTextPosition Search(Widget, XawTextPosition, XawTextScanDirection,
+                       XawTextBlock *);
+static XawTextPosition Scan(Widget, XawTextPosition, XawTextScanType,
+                            XawTextScanDirection, int, Boolean);
+static XawTextPosition Read(Widget, XawTextPosition, XawTextBlock *, int);
+static int Replace(Widget, XawTextPosition, XawTextPosition, XawTextBlock *);
 
 #define SuperClass		(&objectClassRec)
 TextSrcClassRec textSrcClassRec = {
@@ -120,7 +127,7 @@ TextSrcClassRec textSrcClassRec = {
 WidgetClass textSrcObjectClass = (WidgetClass)&textSrcClassRec;
 
 static void
-ClassInitialize ()
+ClassInitialize(void)
 {
     XawInitializeWidgetSet ();
     XtAddConverter(XtRString, XtREditMode,   CvtStringToEditMode,   NULL, 0);
@@ -128,8 +135,7 @@ ClassInitialize ()
 
 
 static void
-ClassPartInitialize(wc)
-WidgetClass wc;
+ClassPartInitialize(WidgetClass wc)
 {
   TextSrcObjectClass t_src, superC;
 
@@ -177,11 +183,7 @@ WidgetClass wc;
 
 /* ARGSUSED */
 static XawTextPosition
-Read(w, pos, text, length)
-Widget w;
-XawTextPosition pos;
-XawTextBlock *text;
-int length;
+Read(Widget w, XawTextPosition pos, XawTextBlock *text, int length)
 {
   XtAppError(XtWidgetToApplicationContext(w),
 	     "TextSrc Object: No read function is defined.");
@@ -199,10 +201,7 @@ int length;
 
 /*ARGSUSED*/
 static int
-Replace (w, startPos, endPos, text)
-Widget w;
-XawTextPosition startPos, endPos;
-XawTextBlock *text;
+Replace (Widget w, XawTextPosition startPos, XawTextPosition endPos, XawTextBlock *text)
 {
   return(XawEditError);
 }
@@ -224,13 +223,8 @@ XawTextBlock *text;
 /* ARGSUSED */
 static
 XawTextPosition
-Scan (w, position, type, dir, count, include)
-Widget                w;
-XawTextPosition       position;
-XawTextScanType       type;
-XawTextScanDirection  dir;
-int     	      count;
-Boolean	              include;
+Scan(Widget w, XawTextPosition position, XawTextScanType type,
+     XawTextScanDirection dir, int count, Boolean include)
 {
   XtAppError(XtWidgetToApplicationContext(w),
 	     "TextSrc Object: No SCAN function is defined.");
@@ -249,11 +243,7 @@ Boolean	              include;
 
 /* ARGSUSED */
 static XawTextPosition
-Search(w, position, dir, text)
-Widget                w;
-XawTextPosition       position;
-XawTextScanDirection  dir;
-XawTextBlock *        text;
+Search(Widget w, XawTextPosition position, XawTextScanDirection dir, XawTextBlock *text)
 {
   return(XawTextSearchError);
 }
@@ -272,12 +262,8 @@ XawTextBlock *        text;
 
 /* ARGSUSED */
 static Boolean
-ConvertSelection(w, selection, target, type, value, length, format)
-Widget w;
-Atom * selection, * target, * type;
-XtPointer * value;
-unsigned long * length;
-int * format;
+ConvertSelection(Widget w, Atom *selection, Atom *target, Atom *type,
+                 XtPointer *value, unsigned long *length, int *format)
 {
   return(FALSE);
 }
@@ -292,10 +278,7 @@ int * format;
 
 /* ARGSUSED */
 static void
-SetSelection(w, left, right, selection)
-Widget w;
-XawTextPosition left, right;
-Atom selection;
+SetSelection(Widget w, XawTextPosition left, XawTextPosition right, Atom selection)
 {
   /* This space intentionally left blank. */
 }
@@ -303,11 +286,7 @@ Atom selection;
 
 /* ARGSUSED */
 static void
-CvtStringToEditMode(args, num_args, fromVal, toVal)
-XrmValuePtr args;		/* unused */
-Cardinal	*num_args;	/* unused */
-XrmValuePtr	fromVal;
-XrmValuePtr	toVal;
+CvtStringToEditMode(XrmValuePtr args, Cardinal *num_args, XrmValuePtr fromVal, XrmValuePtr toVal)
 {
   static XawTextEditType editType;
   static  XrmQuark  QRead, QAppend, QEdit;
@@ -544,11 +523,7 @@ _XawTextFormat(TextWidget tw)
 
 
 char *
-_XawTextWCToMB( d, wstr, len_in_out )
-    Display*	d;
-    wchar_t*	wstr;
-    int*	len_in_out;
-
+_XawTextWCToMB(Display *d, wchar_t *wstr, int *len_in_out)
 {
     XTextProperty textprop;
     if (XwcTextListToTextProperty(d, (wchar_t**)&wstr, 1,
@@ -573,10 +548,8 @@ _XawTextWCToMB( d, wstr, len_in_out )
  *              As Out, it is length of returned string, measured in wchar.
  */
 
-wchar_t* _XawTextMBToWC( d, str, len_in_out )
-Display		*d;
-char		*str;
-int		*len_in_out;
+wchar_t *
+_XawTextMBToWC(Display *d, char *str, int *len_in_out)
 {
   if (*len_in_out == 0) {
     return(NULL);
