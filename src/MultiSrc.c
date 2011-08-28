@@ -105,15 +105,28 @@ static XtResource resources[] = {
 };
 #undef offset
 
-static XawTextPosition Scan(), Search(), ReadText();
-static int ReplaceText();
-static MultiPiece * FindPiece(), * AllocNewPiece();
-static FILE * InitStringOrFile();
-static void FreeAllPieces(), RemovePiece(), BreakPiece(), LoadPieces();
-static void RemoveOldStringOrFile(),  CvtStringToMultiType();
-static void ClassInitialize(), Initialize(), Destroy(), GetValuesHook();
-static String StorePiecesInString();
-static Boolean SetValues(), WriteToFile();
+static XawTextPosition Scan(Widget, XawTextPosition, XawTextScanType,
+                            XawTextScanDirection, int, Boolean);
+static XawTextPosition Search(Widget, XawTextPosition, XawTextScanDirection,
+                              XawTextBlock *);
+static XawTextPosition ReadText(Widget, XawTextPosition, XawTextBlock *, int);
+static int ReplaceText(Widget, XawTextPosition, XawTextPosition, XawTextBlock *);
+static MultiPiece * FindPiece(MultiSrcObject, XawTextPosition, XawTextPosition *);
+static MultiPiece * AllocNewPiece(MultiSrcObject, MultiPiece *);
+static FILE * InitStringOrFile(MultiSrcObject, Boolean);
+static void FreeAllPieces(MultiSrcObject);
+static void RemovePiece(MultiSrcObject, MultiPiece *);
+static void BreakPiece(MultiSrcObject, MultiPiece *);
+static void LoadPieces(MultiSrcObject, FILE *, char *);
+static void RemoveOldStringOrFile(MultiSrcObject, Boolean);
+static void  CvtStringToMultiType(XrmValuePtr, Cardinal *, XrmValuePtr, XrmValuePtr);
+static void ClassInitialize(void);
+static void Initialize(Widget, Widget, ArgList, Cardinal *);
+static void Destroy(Widget);
+static void GetValuesHook(Widget, ArgList, Cardinal *);
+static String StorePiecesInString(MultiSrcObject);
+static Boolean SetValues(Widget, Widget, Widget, ArgList, Cardinal *);
+static Boolean WriteToFile(String, String);
 
 #define MyWStrncpy( t,s,wcnt ) (void) memmove( (t), (s), (wcnt)*sizeof(wchar_t))
 
@@ -121,7 +134,7 @@ static Boolean SetValues(), WriteToFile();
 static void (MyWStrncpy)();
 #endif
 
-extern char *tmpnam();
+extern char *tmpnam(String);
 #ifdef X_NOT_STDC_ENV
 extern int errno;
 #endif
@@ -134,8 +147,8 @@ extern int errno;
 #define Size_t size_t
 #endif
 
-extern wchar_t* _XawTextMBToWC();
-extern char *_XawTextWCToMB();
+extern wchar_t* _XawTextMBToWC(Display *, char *, int *);
+extern char *_XawTextWCToMB(Display *, wchar_t *, int *);
 
 #define superclass		(&textSrcClassRec)
 MultiSrcClassRec multiSrcClassRec = {
@@ -201,7 +214,7 @@ WidgetClass multiSrcObjectClass = (WidgetClass)&multiSrcClassRec;
  */
 
 static void
-ClassInitialize()
+ClassInitialize(void)
 {
   XawInitializeWidgetSet();
   XtAddConverter( XtRString, XtRMultiType, CvtStringToMultiType,
@@ -218,10 +231,7 @@ ClassInitialize()
 
 /* ARGSUSED */
 static void
-Initialize(request, new, args, num_args)
-    Widget request, new;
-    ArgList args;
-    Cardinal* num_args;
+Initialize(Widget request, Widget new, ArgList args, Cardinal *num_args)
 {
   MultiSrcObject src = (MultiSrcObject) new;
   FILE * file;
@@ -251,11 +261,7 @@ Initialize(request, new, args, num_args)
  */
 
 static XawTextPosition
-ReadText(w, pos, text, length)
-    Widget w;
-    XawTextPosition pos;
-    XawTextBlock* text;
-    int length;
+ReadText(Widget w, XawTextPosition pos, XawTextBlock *text, int length)
 {
   MultiSrcObject src = (MultiSrcObject) w;
   XawTextPosition count, start;
@@ -279,10 +285,7 @@ ReadText(w, pos, text, length)
 
 /*ARGSUSED*/
 static int
-ReplaceText( w, startPos, endPos, u_text_p)
-    Widget w;
-    XawTextPosition startPos, endPos;
-    XawTextBlock* u_text_p;
+ReplaceText(Widget w, XawTextPosition startPos, XawTextPosition endPos, XawTextBlock *u_text_p)
 {
   MultiSrcObject src = (MultiSrcObject) w;
   MultiPiece *start_piece, *end_piece, *temp_piece;
@@ -460,13 +463,8 @@ ReplaceText( w, startPos, endPos, u_text_p)
 
 static
 XawTextPosition
-Scan( w, position, type, dir, count, include )
-    Widget w;
-    XawTextPosition position;
-    XawTextScanType type;
-    XawTextScanDirection dir;
-    int count;
-    Boolean include;
+Scan(Widget w, XawTextPosition position, XawTextScanType type,
+     XawTextScanDirection dir, int count, Boolean include)
 {
   MultiSrcObject src = (MultiSrcObject) w;
   int inc;
@@ -593,11 +591,7 @@ Scan( w, position, type, dir, count, include )
  */
 
 static XawTextPosition
-Search(w, position, dir, text )
-    Widget w;
-    XawTextPosition position;
-    XawTextScanDirection dir;
-    XawTextBlock* text;
+Search(Widget w, XawTextPosition position, XawTextScanDirection dir, XawTextBlock *text)
 {
   MultiSrcObject src = (MultiSrcObject) w;
   int inc, count = 0;
@@ -706,10 +700,7 @@ Search(w, position, dir, text )
 
 /* ARGSUSED */
 static Boolean
-SetValues(current, request, new, args, num_args)
-    Widget current, request, new;
-    ArgList args;
-    Cardinal* num_args;
+SetValues(Widget current, Widget request, Widget new, ArgList args, Cardinal *num_args)
 {
   MultiSrcObject src =      (MultiSrcObject) new;
   MultiSrcObject old_src = (MultiSrcObject) current;
@@ -782,10 +773,7 @@ SetValues(current, request, new, args, num_args)
  */
 
 static void
-GetValuesHook(w, args, num_args)
-    Widget w;
-    ArgList args;
-    Cardinal* num_args;
+GetValuesHook(Widget w, ArgList args, Cardinal *num_args)
 {
   MultiSrcObject src = (MultiSrcObject) w;
   int i;
@@ -813,8 +801,7 @@ GetValuesHook(w, args, num_args)
  */
 
 static void
-Destroy (w)
-    Widget w;
+Destroy(Widget w)
 {
     RemoveOldStringOrFile((MultiSrcObject) w, True);
 }
@@ -963,9 +950,7 @@ _XawMultiSaveAsFile(
  ************************************************************/
 
 static void
-RemoveOldStringOrFile(src, checkString)
-    MultiSrcObject src;
-    Boolean checkString;
+RemoveOldStringOrFile(MultiSrcObject src, Boolean checkString)
 {
   FreeAllPieces(src);
 
@@ -985,8 +970,7 @@ RemoveOldStringOrFile(src, checkString)
  */
 
 static Boolean
-WriteToFile(string, name)
-    String string, name;
+WriteToFile(String string, String name)
 {
   int fd;
 
@@ -1009,8 +993,7 @@ WriteToFile(string, name)
  */
 
 static String
-StorePiecesInString(src)
-    MultiSrcObject src;
+StorePiecesInString(MultiSrcObject src)
 {
   wchar_t* wc_string;
   char *mb_string;
@@ -1054,9 +1037,7 @@ StorePiecesInString(src)
  */
 
 static FILE *
-InitStringOrFile(src, newString)
-    MultiSrcObject src;
-    Boolean newString;
+InitStringOrFile(MultiSrcObject src, Boolean newString)
 {
     char * open_mode = NULL;
     FILE * file;
@@ -1172,10 +1153,7 @@ when src->multi_src.type == XawAsciiFile.  src->multi_src.length must be
 the length of the parameter string if string is non-NULL.		*/
 
 static void
-LoadPieces(src, file, string)
-    MultiSrcObject src;
-    FILE* file;
-    char* string;
+LoadPieces(MultiSrcObject src, FILE *file, char *string)
 {
   Display *d = XtDisplayOfObject((Widget)src);
   wchar_t* local_str, *ptr;
@@ -1284,9 +1262,7 @@ LoadPieces(src, file, string)
  */
 
 static MultiPiece *
-AllocNewPiece(src, prev)
-    MultiSrcObject src;
-    MultiPiece * prev;
+AllocNewPiece(MultiSrcObject src, MultiPiece *prev)
 {
   MultiPiece * piece = XtNew(MultiPiece);
 
@@ -1313,8 +1289,7 @@ AllocNewPiece(src, prev)
  */
 
 static void
-FreeAllPieces(src)
-    MultiSrcObject src;
+FreeAllPieces(MultiSrcObject src)
 {
   MultiPiece * next, * first = src->multi_src.first_piece;
 
@@ -1335,9 +1310,7 @@ FreeAllPieces(src)
  */
 
 static void
-RemovePiece(src, piece)
-    MultiSrcObject src;
-    MultiPiece* piece;
+RemovePiece(MultiSrcObject src, MultiPiece *piece)
 {
   if (piece->prev == NULL)
     src->multi_src.first_piece = piece->next;
@@ -1362,9 +1335,7 @@ RemovePiece(src, piece)
  */
 
 static MultiPiece *
-FindPiece(src, position, first)
-    MultiSrcObject src;
-    XawTextPosition position, *first;
+FindPiece(MultiSrcObject src, XawTextPosition position, XawTextPosition *first)
 {
   MultiPiece * old_piece = NULL, * piece = src->multi_src.first_piece;
   XawTextPosition temp;
@@ -1389,9 +1360,7 @@ FindPiece(src, position, first)
 #define HALF_PIECE (src->multi_src.piece_size/2)
 
 static void
-BreakPiece(src, piece)
-    MultiSrcObject src;
-    MultiPiece* piece;
+BreakPiece(MultiSrcObject src, MultiPiece *piece)
 {
   MultiPiece * new = AllocNewPiece(src, piece);
 
@@ -1406,11 +1375,8 @@ BreakPiece(src, piece)
 
 /* ARGSUSED */
 static void
-CvtStringToMultiType(args, num_args, fromVal, toVal)
-    XrmValuePtr args;		/* unused */
-    Cardinal*	num_args;	/* unused */
-    XrmValuePtr	fromVal;
-    XrmValuePtr	toVal;
+CvtStringToMultiType(XrmValuePtr args, Cardinal *num_args, XrmValuePtr fromVal,
+                     XrmValuePtr toVal)
 {
   static XawAsciiType type;
   static XrmQuark  XtQEstring = NULLQUARK;
