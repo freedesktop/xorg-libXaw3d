@@ -36,10 +36,7 @@ CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #ifdef XAW_GRAY_BLKWHT_STIPPLES
 /* ARGSUSED */
 unsigned long
-grayPixel(p, dpy, scn)
-unsigned long p;	/* unused */
-Display *dpy;
-Screen	*scn;
+grayPixel(unsigned long p, Display *dpy, Screen *scn)
 {
     static XColor Gray =
     {
@@ -67,12 +64,7 @@ Screen	*scn;
 
 /* ARGSUSED */
 Pixmap
-stipplePixmap(w, pm, cm, bg, d)
-Widget w;
-Pixmap pm;
-Colormap cm;
-Pixel bg;
-unsigned int d;
+stipplePixmap(Widget w, Pixmap pm, Colormap cm, Pixel bg, unsigned int d)
 {
     static Pixmap pixmap;
     Display *dpy;
