@@ -77,15 +77,21 @@ static XtResource resources[] = {
 #undef offset
 
 
-static void Toggle(), Initialize(), Notify(), ToggleSet();
-static void ToggleDestroy(), ClassInit();
-static Boolean SetValues();
+static void Initialize(Widget, Widget, ArgList, Cardinal *);
+static void Toggle(Widget, XEvent *, String *, Cardinal *);
+static void Notify(Widget, XEvent *, String *, Cardinal *);
+static void ToggleSet(Widget, XEvent *, String *, Cardinal *);
+static void ToggleDestroy(Widget, XtPointer, XtPointer);
+static void ClassInit(void);
+static Boolean SetValues(Widget, Widget, Widget, ArgList, Cardinal *);
 
 /* Functions for handling the Radio Group. */
 
-static RadioGroup * GetRadioGroup();
-static void CreateRadioGroup(), AddToRadioGroup(), TurnOffRadioSiblings();
-static void RemoveFromRadioGroup();
+static RadioGroup * GetRadioGroup(Widget);
+static void CreateRadioGroup(Widget, Widget);
+static void AddToRadioGroup(RadioGroup *, Widget);
+static void TurnOffRadioSiblings(Widget);
+static void RemoveFromRadioGroup(Widget);
 
 static XtActionsRec actionsList[] =
 {
@@ -160,7 +166,7 @@ WidgetClass toggleWidgetClass = (WidgetClass) &toggleClassRec;
  ****************************************************************/
 
 static void
-ClassInit()
+ClassInit(void)
 {
   XtActionList actions;
   Cardinal num_actions;
@@ -199,10 +205,8 @@ ClassInit()
 }
 
 /*ARGSUSED*/
-static void Initialize(request, new, args, num_args)
- Widget request, new;
- ArgList args;
- Cardinal *num_args;
+static void
+Initialize(Widget request, Widget new, ArgList args, Cardinal *num_args)
 {
     ToggleWidget tw = (ToggleWidget) new;
     ToggleWidget tw_req = (ToggleWidget) request;
@@ -243,11 +247,7 @@ static void Initialize(request, new, args, num_args)
 
 /* ARGSUSED */
 static void
-ToggleSet(w,event,params,num_params)
-Widget w;
-XEvent *event;
-String *params;		/* unused */
-Cardinal *num_params;	/* unused */
+ToggleSet(Widget w, XEvent *event, String *params, Cardinal *num_params)
 {
     ToggleWidgetClass class = (ToggleWidgetClass) w->core.widget_class;
 
@@ -257,11 +257,7 @@ Cardinal *num_params;	/* unused */
 
 /* ARGSUSED */
 static void
-Toggle(w,event,params,num_params)
-Widget w;
-XEvent *event;
-String *params;		/* unused */
-Cardinal *num_params;	/* unused */
+Toggle(Widget w, XEvent *event, String *params, Cardinal *num_params)
 {
   ToggleWidget tw = (ToggleWidget)w;
   ToggleWidgetClass class = (ToggleWidgetClass) w->core.widget_class;
@@ -273,11 +269,7 @@ Cardinal *num_params;	/* unused */
 }
 
 /* ARGSUSED */
-static void Notify(w,event,params,num_params)
-Widget w;
-XEvent *event;
-String *params;		/* unused */
-Cardinal *num_params;	/* unused */
+static void Notify(Widget w, XEvent *event, String *params, Cardinal *num_params)
 {
   ToggleWidget tw = (ToggleWidget) w;
   long antilint = tw->command.set;
@@ -293,10 +285,7 @@ Cardinal *num_params;	/* unused */
 
 /* ARGSUSED */
 static Boolean
-SetValues (current, request, new, args, num_args)
-Widget current, request, new;
-ArgList args;
-Cardinal *num_args;
+SetValues (Widget current, Widget request, Widget new, ArgList args, Cardinal *num_args)
 {
     ToggleWidget oldtw = (ToggleWidget) current;
     ToggleWidget tw = (ToggleWidget) new;
@@ -324,9 +313,7 @@ Cardinal *num_args;
 
 /* ARGSUSED */
 static void
-ToggleDestroy(w, junk, garbage)
-Widget w;
-XtPointer junk, garbage;
+ToggleDestroy(Widget w, XtPointer junk, XtPointer garbage)
 {
   RemoveFromRadioGroup(w);
 }
@@ -346,8 +333,7 @@ XtPointer junk, garbage;
  */
 
 static RadioGroup *
-GetRadioGroup(w)
-Widget w;
+GetRadioGroup(Widget w)
 {
   ToggleWidget tw = (ToggleWidget) w;
 
@@ -365,8 +351,7 @@ Widget w;
  */
 
 static void
-CreateRadioGroup(w1, w2)
-Widget w1, w2;
+CreateRadioGroup(Widget w1, Widget w2)
 {
   char error_buf[BUFSIZ];
   ToggleWidget tw1 = (ToggleWidget) w1;
@@ -390,9 +375,7 @@ Widget w1, w2;
  */
 
 static void
-AddToRadioGroup(group, w)
-RadioGroup * group;
-Widget w;
+AddToRadioGroup(RadioGroup *group, Widget w)
 {
   ToggleWidget tw = (ToggleWidget) w;
   RadioGroup * local;
@@ -420,8 +403,7 @@ Widget w;
  */
 
 static void
-TurnOffRadioSiblings(w)
-Widget w;
+TurnOffRadioSiblings(Widget w)
 {
   RadioGroup * group;
   ToggleWidgetClass class = (ToggleWidgetClass) w->core.widget_class;
@@ -450,8 +432,7 @@ Widget w;
  */
 
 static void
-RemoveFromRadioGroup(w)
-Widget w;
+RemoveFromRadioGroup(Widget w)
 {
   RadioGroup * group = GetRadioGroup(w);
   if (group != NULL) {
