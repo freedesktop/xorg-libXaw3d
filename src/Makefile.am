@@ -1,15 +1,15 @@
 lib_LTLIBRARIES = libXaw3d.la
 
 AM_YFLAGS = -d
-AM_CFLAGS = \
-	$(CWARNFLAGS) \
-	$(XAW3D_CFLAGS) \
-	$(X11_CFLAGS) \
+AM_CFLAGS =		\
+	$(CWARNFLAGS)	\
+	$(X11_CFLAGS)	\
 	$(XPM_CFLAGS)
 
 AM_CPPFLAGS = \
-	-I${top_srcdir}/include \
-	-I${top_srcdir}/include/X11/Xaw3d
+	-I${top_srcdir}/include			\
+	-I${top_srcdir}/include/X11/Xaw3d	\
+	$(XAW3D_CPPFLAGS)
 
 #
 # This doesn't appear to be used on any
