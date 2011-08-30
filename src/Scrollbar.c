@@ -56,7 +56,7 @@ SOFTWARE.
 /* created by weissman, Mon Jul  7 13:20:03 1986 */
 /* converted by swick, Thu Aug 27 1987 */
 
-#include "Xaw3dP.h"
+#include <X11/Xaw3d/Xaw3dP.h>
 
 #include <X11/IntrinsicP.h>
 #include <X11/StringDefs.h>

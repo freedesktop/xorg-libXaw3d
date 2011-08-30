@@ -46,7 +46,7 @@ in this Software without prior written authorization from the X Consortium.
  *
  *************************************************************/
 
-#include "Xaw3dP.h"
+#include <X11/Xaw3d/Xaw3dP.h>
 #include <X11/IntrinsicP.h>
 #include <X11/StringDefs.h>
 #include <X11/Shell.h>

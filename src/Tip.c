@@ -32,7 +32,7 @@
  * Rights, permissions, and disclaimer per the above XFree86 license.
  */
 
-#include "Xaw3dP.h"
+#include <X11/Xaw3d/Xaw3dP.h>
 #include <X11/IntrinsicP.h>
 #include <X11/StringDefs.h>
 #include <X11/Xos.h>

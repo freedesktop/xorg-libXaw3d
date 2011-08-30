@@ -58,7 +58,7 @@ SOFTWARE.
  *          kit@expo.lcs.mit.edu
  */
 
-#include "Xaw3dP.h"
+#include <X11/Xaw3d/Xaw3dP.h>
 #include <X11/IntrinsicP.h>
 #include <X11/cursorfont.h>
 #include <X11/StringDefs.h>

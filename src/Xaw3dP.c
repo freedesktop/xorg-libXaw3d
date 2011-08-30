@@ -27,7 +27,7 @@ CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
 CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 *********************************************************************/
 
-#include "Xaw3dP.h"
+#include <X11/Xaw3d/Xaw3dP.h>
 #ifdef XAW_MULTIPLANE_PIXMAPS
 #include <stdio.h>
 #include <X11/xpm.h>

@@ -28,7 +28,7 @@ SOFTWARE.
  * Rights, permissions, and disclaimer per the above DEC/MIT license.
  */
 
-#include "Xaw3dP.h"
+#include <X11/Xaw3d/Xaw3dP.h>
 #include <X11/Xlib.h>
 #include <X11/StringDefs.h>
 #include <X11/IntrinsicP.h>

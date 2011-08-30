@@ -60,7 +60,7 @@ SOFTWARE.
 
 /* Make sure all wm properties can make it out of the resource manager */
 
-#include "Xaw3dP.h"
+#include <X11/Xaw3d/Xaw3dP.h>
 #include <stdio.h>
 #include <X11/IntrinsicP.h>
 #include <X11/StringDefs.h>

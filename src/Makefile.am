@@ -7,8 +7,7 @@ AM_CFLAGS =		\
 	$(XPM_CFLAGS)
 
 AM_CPPFLAGS = \
-	-I${top_srcdir}/include			\
-	-I${top_srcdir}/include/X11/Xaw3d	\
+	-I${top_srcdir}/include	\
 	$(XAW3D_CPPFLAGS)
 
 #
