@@ -56,6 +56,7 @@ SOFTWARE.
 #include <X11/StringDefs.h>
 #include <X11/Xos.h>
 #include <X11/Xaw3d/XawInit.h>
+#include <X11/Xaw3d/Command.h>
 #include <X11/Xaw3d/LabelP.h>
 #include <X11/Xmu/Converters.h>
 #include <X11/Xmu/Drawing.h>
@@ -438,7 +439,6 @@ set_bitmap_info (LabelWidget lw)
 static void
 Initialize(Widget request, Widget new, ArgList args, Cardinal *num_args)
 {
-    extern WidgetClass commandWidgetClass;
     LabelWidget lw = (LabelWidget) new;
 
     /* disable shadows if we're not a subclass of Command */
@@ -484,7 +484,6 @@ Initialize(Widget request, Widget new, ArgList args, Cardinal *num_args)
 static void
 Redisplay(Widget gw, XEvent *event, Region region)
 {
-    extern WidgetClass commandWidgetClass;
     LabelWidget w = (LabelWidget) gw;
     LabelWidgetClass lwclass = (LabelWidgetClass) XtClass (gw);
     Pixmap pm;
