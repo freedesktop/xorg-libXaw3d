@@ -28,6 +28,9 @@ in this Software without prior written authorization from the X Consortium.
  * panner or scrollbar to navigate.
  */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 #include <X11/IntrinsicP.h>
 #include <X11/StringDefs.h>		/* get XtN and XtC defines */
 #include <X11/Xaw3d/XawInit.h>		/* get Xaw initialize stuff */

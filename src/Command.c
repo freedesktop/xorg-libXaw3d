@@ -46,6 +46,9 @@ SOFTWARE.
 
 ******************************************************************/
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 /*
  * Command.c - Command button widget
  */

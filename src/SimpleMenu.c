@@ -33,6 +33,9 @@ in this Software without prior written authorization from the X Consortium.
  *          kit@expo.lcs.mit.edu
  */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 #include <stdio.h>
 #include <limits.h>
 #include <X11/IntrinsicP.h>

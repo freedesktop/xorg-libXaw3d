@@ -25,6 +25,9 @@ in this Software without prior written authorization from the X Consortium.
  * Author:  Jim Fulton, MIT X Consortium
  */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 #include <X11/IntrinsicP.h>
 #include <X11/StringDefs.h>		/* for XtN and XtC defines */
 #include <X11/Xmu/CharSet.h>		/* for XmuCompareISOLatin1() */

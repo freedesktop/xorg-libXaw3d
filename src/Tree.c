@@ -48,6 +48,9 @@ in this Software without prior written authorization from the X Consortium.
  * as well as to support vertical trees.
  */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 #include <X11/IntrinsicP.h>
 #include <X11/StringDefs.h>
 #include <X11/Xaw3d/XawInit.h>

@@ -28,6 +28,9 @@ SOFTWARE.
  * Rights, permissions, and disclaimer per the above DEC/MIT license.
  */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 #include <X11/Xaw3d/Xaw3dP.h>
 #include <X11/Xlib.h>
 #include <X11/StringDefs.h>

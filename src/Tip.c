@@ -32,6 +32,9 @@
  * Rights, permissions, and disclaimer per the above XFree86 license.
  */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 #include <X11/Xaw3d/Xaw3dP.h>
 #include <X11/IntrinsicP.h>
 #include <X11/StringDefs.h>

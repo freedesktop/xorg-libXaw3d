@@ -34,6 +34,9 @@ in this Software without prior written authorization from the X Consortium.
  *                      MIT X Consortium
  */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 #include <X11/Xaw3d/Xaw3dP.h>
 #include <stdio.h>
 #include <ctype.h>

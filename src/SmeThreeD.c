@@ -23,6 +23,9 @@ SOFTWARE.
 
 ******************************************************************/
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 #include <X11/Xaw3d/Xaw3dP.h>
 #include <X11/Xlib.h>
 #include <X11/StringDefs.h>

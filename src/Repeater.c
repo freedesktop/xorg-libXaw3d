@@ -27,6 +27,9 @@ in this Software without prior written authorization from the X Consortium.
  * This widget is used for press-and-hold style buttons.
  */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 #include <X11/IntrinsicP.h>
 #include <X11/StringDefs.h>		/* for XtN and XtC defines */
 #include <X11/Xaw3d/XawInit.h>		/* for XawInitializeWidgetSet() */

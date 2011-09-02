@@ -46,6 +46,9 @@ SOFTWARE.
 
 ******************************************************************/
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 /*
  * Portions Copyright (c) 1996 Alfredo Kojima
  * Rights, permissions, and disclaimer per the above X Consortium license.
