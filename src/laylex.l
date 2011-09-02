@@ -11,7 +11,7 @@
 #include    <X11/IntrinsicP.h>
 #include    <X11/StringDefs.h>
 
-#include    "LayoutP.h"
+#include    <X11/Xaw3d/LayoutP.h>
 #include    "laygram.h"
 
 #define yylval LayYYlval

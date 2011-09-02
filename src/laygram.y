@@ -10,7 +10,7 @@
 
 #include    <X11/Xmu/Misc.h>
 #include    <X11/Xmu/Converters.h>
-#include    "LayoutP.h"
+#include    <X11/Xaw3d/LayoutP.h>
 
 #define yysetdest LayYYsetdest
 #define yywrap LayYYwrap
