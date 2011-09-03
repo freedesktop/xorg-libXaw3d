@@ -1,6 +1,7 @@
 lib_LTLIBRARIES = libXaw3d.la
 
-AM_YFLAGS = -d
+AM_YFLAGS = -d -p LayYY
+
 AM_CFLAGS =		\
 	$(CWARNFLAGS)	\
 	$(X11_CFLAGS)	\

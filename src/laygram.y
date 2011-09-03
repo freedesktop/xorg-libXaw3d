@@ -1,4 +1,3 @@
-%name-prefix "LayYY"
 %defines
 %{
 #include    <X11/Xlib.h>
