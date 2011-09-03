@@ -30,7 +30,7 @@ fi
 AC_PROG_LEX
 
 # Checks for header files.
-PKG_CHECK_MODULES(X11, [x11 xt xmu])
+PKG_CHECK_MODULES(X11, [x11 xt xmu xext])
 AC_CHECK_HEADERS([wctype.h wchar.h widec.h])
 AC_CHECK_FUNCS([iswspace])
 
