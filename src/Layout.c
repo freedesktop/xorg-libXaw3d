@@ -43,6 +43,8 @@
 #include <ctype.h>
 #include <stdio.h>
 
+#include "LayYY.h"
+
 #undef DEBUG
 #ifdef DEBUG
 static char *DBUG_currentproc, *DBUG_lastproc;
@@ -100,10 +102,6 @@ static void Redisplay (Widget, XEvent *, Region);
 static void LayoutLayout (LayoutWidget, Bool);
 static void LayoutGetNaturalSize (LayoutWidget, Dimension *, Dimension *);
 static void LayoutFreeLayout (BoxPtr);
-
-extern void LayYYsetsource(char *);
-extern void LayYYsetdest(LayoutPtr *);
-extern int LayYYparse(void);
 
 #ifdef MOTIF
 #define SuperClass ((ConstraintWidgetClass)&xmManagerClassRec)

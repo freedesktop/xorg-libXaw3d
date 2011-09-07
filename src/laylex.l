@@ -13,6 +13,7 @@
 
 #include    <X11/Xaw3d/LayoutP.h>
 #include    "laygram.h"
+#include    "LayYY.h"
 
 #define yylval LayYYlval
 #define yyerror LayYYerror

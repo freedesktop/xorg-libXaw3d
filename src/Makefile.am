@@ -35,6 +35,7 @@ libXaw3d_la_SOURCES = \
 	Grip.c \
 	Label.c \
 	Layout.c \
+	LayYY.h \
 	List.c \
 	MenuButton.c \
 	Paned.c \

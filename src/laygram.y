@@ -11,6 +11,8 @@
 #include    <X11/Xmu/Converters.h>
 #include    <X11/Xaw3d/LayoutP.h>
 
+#include    "LayYY.h"
+
 #define yysetdest LayYYsetdest
 #define yywrap LayYYwrap
 
