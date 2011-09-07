@@ -74,4 +74,6 @@ libXaw3d_la_LDFLAGS = -version-info 8:0:0 -no-undefined
 
 BUILT_SOURCES = laygram.h
 
+doc_DATA = README.XAW3D
+
 EXTRA_DIST = sharedlib.c Template.c
