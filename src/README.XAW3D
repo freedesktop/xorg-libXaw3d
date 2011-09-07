@@ -2,27 +2,21 @@
    The Three-D Athena Toolkit (Xaw3d)
    ----------------------------------
 
-   This is Release 1.5E of the Xaw3d toolkit (dated March 8, 2003), an
-   update that fixes some bugs, and adds many features. There were no
-   public releases of 1.5A through 1.5D.
+   This is a new release of the Xaw3d toolkit, an update from 1.5E.
 
-   I am not Kaleb Keithley. Kaleb has moved on, and no longer supports
-   Xaw3d; it's my baby now. This distribution is not a fork - it is the
-   latest update of the One True Xaw3d.
+   X.Org has now picked up the mantle of Xaw3d maintenance, previously
+   carried by Xaw3d creator Kaleb Keithley, and then by D. J. Hawkey Jr.
 
-   While not as insistant as Kaleb was, I do suggest you include this
+   While not as insistant as Kaleb was, we do suggest you include this
    file, as is, with any product that includes Xaw3d, in whole or in
    part, in any form. This file is the authoritative documentation for
    Xaw3d.
 
-   If you discover bugs not already known, do not contact Kaleb; he's had
-   no part in this effort. Feel free to contact me; I'll try to respond
-   in kind. If you're new to the Athena toolkit, understand that it is
+   If you're new to the Athena toolkit, please understand that it is
    highly configurable, and some resources will interact (or not) with
    undesirable results. Some of these are bugs, but many are just the
    nature of the beast.
 
-   D. J. Hawkey Jr.
      _________________________________________________________________
 
    Usage:
@@ -103,120 +97,35 @@
    --------------------
 
    Like Xaw, the default Xaw3d does not accomodate multi-plane pixmaps.
-   However, at the top of this distribution's Imakefile are the lines:
-
-       XCOMM For color pixmaps, define MULTIPLANE_PIXMAPS:
-       #undef MULTIPLANE_PIXMAPS
-
-   If you want color pixmaps, and have Arnaud Le Hors's XPM library
-   installed, change the "#undef" to "#define". You may then specify
+   If you want color pixmaps, and have the XPM library installed, pass
+   the --enable-multiplane-bitmaps flag to configure.  You may then specify
    either XPM or XBM files for any Xaw3d bitmap resource, whether by
    resource files, with editres, programmatically, etc.. And yes, the
    transparency of XPM files is honored.
 
    Note that this enables the use of structures and functions in the XPM
    library; the XPM library include file (xpm.h) must be available when
-   building Xaw3d, and the XPM library must then be linked to any and all
+   building Xaw3d, and the XPM library must then be availble when running
    applications that use Xaw3d. This makes Xaw3d dependant on the XPM
    library, so think twice about it.
 
    The default stippled shadows used when the beNiceToColormap resource
    is True work well enough, except for widgets that have black or white
-   backgrounds. So, at the top of this distribution's Imakefile, are the
-   lines:
-
-       XCOMM For grayed stipple shadows, define GRAY_BLKWHT_STIPPLES:
-       #define GRAY_BLKWHT_STIPPLES
+   backgrounds.  This can be changed by passing the --enable-gray-stipples
+   flag to configure when building.
 
    This makes Xaw3d allocate a gray colorcell, and use it in stippled
    shadows when 1) widgets have black or white backgrounds and 2) the
    beNiceToColormap resource is True and 3) the display allows it. This
    option was disabled in previous Xaw3d releases.
 
-   The default Xaw3d does not use arrow scrollbars. At the top of this
-   distribution's Imakefile are the lines:
+   The default Xaw3d does not use arrow scrollbars.  If you want
+   arrow-style scrollbars, pass the --enable-arrow-scrollbars flag to
+   configure when building.
 
-       XCOMM For scrollbars with arrows, define ARROW_SCROLLBARS:
-       #undef ARROW_SCROLLBARS
-
-   If you want arrow-style scrollbars, change the "#undef" to "#define".
    Note that the Scrollbar widget's translations and actions will change
    accordingly.
 
-   Building Xaw3d within an X11 source tree:
-   -----------------------------------------
-
-   This distribution expects a configured X11R6.[1-6] source tree (by
-   "configured", I mean that the imake infrastructure has been built).
-   You can use the source from X.Org, XFree86, or the X Project Team.
-
-   Change to the directory containing /xc, and issue these commands:
-
-       # gunzip -c Xaw3d-1.5E.tar.gz | tar -xpf -
-       # cd xc/lib/Xaw3d
-       # ../../config/imake/imake -I../../config/cf \
-         -DTOPDIR=../.. -DCURDIR=lib/Xaw3d
-       # make includes; make depend; make; make install
-
-   The Imakefile uses the Xaw symbols in /xc/config/cf, so if you have
-   debug, shared, profile, etc. libraries specified for Xaw, Xaw3d will
-   have them as well.
-
-   Building Xaw3d without an X11 source tree:
-   ------------------------------------------
-
-   Near the top of this distribution's Imakefile are the lines:
-
-       XCOMM When building outside an X11 source tree:
-       XCOMM EXTRA_INCLUDES = -I.
-
-   Uncomment the second line by deleting the "XCOMM ". Then, while still
-   in /xc/lib/Xaw3d, issue these commands:
-
-       # mkdir X11; cd X11; ln -fs .. Xaw3d; cd ..
-       # xmkmf; make depend; make; make install
-
-   If this works for you, great. If not, well, happy hacking.
-
-   Building Xaw3d under X11R5:
-   ---------------------------
-
-   I don't know that Xaw3d will build within an X11R5 source tree, so try
-   the "Building Xaw3d without an X11 source tree" instructions. If the
-   "make" command results in nothing being built, find these lines about
-   half-way into this distribution's Imakefile:
-
-       XCOMM At least one X11R5 distribution needs this:
-       XCOMM #include "Imakefrag.X11R5"
-
-   Uncomment the second line by deleting the "XCOMM ", and re-issue the
-   "xmkmf; make depend; make; make install" commands. This line will
-   insert the quoted file into the Makefile, and is for when the imake
-   configuration files don't create the appropriate rules.
-
-   Xaw3d and Internationalization:
-   -------------------------------
-
-   The Imakefile depends on a conventional system-wide definition for
-   including or omitting I18n support (i.e., "XawI18nDefines"). If the
-   Imakefile erroneously disables support for I18n (see the generated
-   Xaw3dP.h file), I can only suggest searching your imake configuration
-   files for a definition that enables support for "wide characters" (try
-   `egrep 'WCHAR|WCTYPE|XMBTOWC|ISW_FUNCS' *`), and then, about half-way
-   into this distribution's Imakefile, find these lines:
-
-       #ifdef XawI18nDefines
-       #define INTERNATIONALIZATION
-       HEADERS = $(BASE_HDRS) $(I18N_HDRS)
-       SRCS = $(BASE_SRCS) $(I18N_SRCS)
-       OBJS = $(BASE_OBJS) $(I18N_OBJS)
-       ...
-
-   Change the label in the first line to the label of the definition you
-   found. If no suitable definition is found, and I18n really is
-   supported, it's likely implemented in such a way that Xaw3d probably
-   won't include I18n support without some hacking at the Imakefile or
-   Makefile.
      _________________________________________________________________
 
    New in 1.5A:
