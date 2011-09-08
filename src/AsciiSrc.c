@@ -115,7 +115,7 @@ static void GetValuesHook(Widget, ArgList, Cardinal *);
 static String MyStrncpy(char *, char *, int);
 static String StorePiecesInString(AsciiSrcObject);
 static Boolean SetValues(Widget, Widget, Widget, ArgList, Cardinal *);
-static Boolean WriteToFile(String, String);
+static Boolean WriteToFile(_Xconst _XtString, _Xconst _XtString);
 #ifdef X_NOT_STDC_ENV
 extern int errno;
 #endif
@@ -915,7 +915,7 @@ RemoveOldStringOrFile(AsciiSrcObject src, Boolean checkString)
  */
 
 static Boolean
-WriteToFile(String string, String name)
+WriteToFile(_Xconst _XtString string, _Xconst _XtString name)
 {
   int fd;
 
