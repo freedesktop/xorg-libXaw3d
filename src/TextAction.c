@@ -93,6 +93,7 @@ extern int _XawTextReplace(TextWidget, XawTextPosition, XawTextPosition, XawText
 static void GetSelection(Widget, Time, String *, Cardinal);
 void _XawTextZapSelection(TextWidget, XEvent *, Boolean);
 
+#ifdef XAW_INTERNATIONALIZATION
 static void
 ParameterError(Widget w, String param)
 {
@@ -107,6 +108,7 @@ ParameterError(Widget w, String param)
 	params, &num_params);
     XBell( XtDisplay( w ), 50 );
 }
+#endif
 
 static void
 StartAction(TextWidget ctx, XEvent *event)
@@ -178,6 +180,7 @@ struct _SelectionList {
     Atom selection;	/* selection atom when asking XA_COMPOUND_TEXT */
 };
 
+#ifdef XAW_INTERNATIONALIZATION
 static int
 ProbablyMB(char *s)
 {
@@ -197,6 +200,7 @@ ProbablyMB(char *s)
     }
     return( has_hi_bit );
 }
+#endif
 
 /* ARGSUSED */
 static void
