@@ -1278,9 +1278,9 @@ TextFocusOut(Widget w, XEvent *event, String *p, Cardinal *n)
 static void
 TextEnterWindow(Widget w, XEvent *event, String *params, Cardinal *num_params)
 {
+#ifdef XAW_INTERNATIONALIZATION
   TextWidget ctx = (TextWidget) w;
 
-#ifdef XAW_INTERNATIONALIZATION
   if ((event->xcrossing.detail != NotifyInferior) && event->xcrossing.focus &&
       !ctx->text.hasfocus) {
 	_XawImSetFocusValues(w, NULL, 0);
@@ -1292,9 +1292,9 @@ TextEnterWindow(Widget w, XEvent *event, String *params, Cardinal *num_params)
 static void
 TextLeaveWindow(Widget w, XEvent *event, String *params, Cardinal *num_params)
 {
+#ifdef XAW_INTERNATIONALIZATION
   TextWidget ctx = (TextWidget) w;
 
-#ifdef XAW_INTERNATIONALIZATION
   if ((event->xcrossing.detail != NotifyInferior) && event->xcrossing.focus &&
       !ctx->text.hasfocus) {
 	_XawImUnsetFocus(w);
@@ -1509,7 +1509,9 @@ static void
 InsertString(Widget w, XEvent *event, String *params, Cardinal *num_params)
 {
   TextWidget ctx = (TextWidget) w;
+#ifdef XAW_INTERNATIONALIZATION
   XtAppContext app_con = XtWidgetToApplicationContext(w);
+#endif
   XawTextBlock text;
   int	   i;
 
@@ -1663,7 +1665,6 @@ StripOutOldCRs(TextWidget ctx, XawTextPosition from, XawTextPosition to)
   Widget src = ctx->text.source;
   XawTextBlock text;
   char *buf;
-  static wchar_t wc_two_spaces[ 3 ];
 
   /* Initialize our TextBlock with two spaces. */
 
@@ -1673,6 +1674,7 @@ StripOutOldCRs(TextWidget ctx, XawTextPosition from, XawTextPosition to)
       text.ptr= "  ";
 #ifdef XAW_INTERNATIONALIZATION
   else {
+      static wchar_t wc_two_spaces[ 3 ];
       wc_two_spaces[0] = _Xaw_atowc(XawSP);
       wc_two_spaces[1] = _Xaw_atowc(XawSP);
       wc_two_spaces[2] = 0;
@@ -1761,7 +1763,6 @@ InsertNewCRs(TextWidget ctx, XawTextPosition from, XawTextPosition to)
   XawTextBlock text;
   int i, width, height, len;
   char * buf;
-  static wchar_t wide_CR[ 2 ];
 
   text.firstPos = 0;
   text.length = 1;
@@ -1771,6 +1772,7 @@ InsertNewCRs(TextWidget ctx, XawTextPosition from, XawTextPosition to)
       text.ptr = "\n";
 #ifdef XAW_INTERNATIONALIZATION
   else {
+      static wchar_t wide_CR[ 2 ];
       wide_CR[0] = _Xaw_atowc(XawLF);
       wide_CR[1] = 0;
       text.ptr = (char*) wide_CR;

@@ -528,7 +528,9 @@ Redisplay(Widget gw, XEvent *event, Region region)
 	int len = w->label.label_len;
 	char *label = w->label.label;
 	Position y = w->label.label_y + w->label.font->max_bounds.ascent;
+#ifdef XAW_INTERNATIONALIZATION
         Position ksy = w->label.label_y;
+#endif
 
 	/* display left bitmap */
 	if (w->label.left_bitmap && w->label.lbm_width != 0) {

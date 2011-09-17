@@ -475,7 +475,7 @@ static XtGeometryResult
 QueryGeometry(Widget w, XtWidgetGeometry *intended, XtWidgetGeometry *return_val)
 {
     SmeBSBObject entry = (SmeBSBObject) w;
-    Dimension width, height, h;
+    Dimension width, height;
     XtGeometryResult ret_val = XtGeometryYes;
     XtGeometryMask mode = intended->request_mode;
 

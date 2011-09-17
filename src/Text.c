@@ -804,12 +804,12 @@ _XawTextGetSTRING(TextWidget ctx, XawTextPosition left, XawTextPosition right)
   unsigned char *s;
   unsigned char c;
   long i, j, n;
-  wchar_t *ws, wc;
 
   /* allow ESC in accordance with ICCCM */
 #ifdef XAW_INTERNATIONALIZATION
   if (_XawTextFormat(ctx) == XawFmtWide) {
      MultiSinkObject sink = (MultiSinkObject) ctx->text.sink;
+     wchar_t *ws, wc;
      ws = (wchar_t *)_XawTextGetText(ctx, left, right);
      n = wcslen(ws);
      for (j = 0, i = 0; j < n; j++) {
