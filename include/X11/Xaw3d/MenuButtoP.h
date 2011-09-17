@@ -38,7 +38,7 @@ in this Software without prior written authorization from the X Consortium.
  * Date:    May 2, 1989
  *
  * By:      Chris D. Peterson
- *          MIT X Consortium 
+ *          MIT X Consortium
  *          kit@expo.lcs.mit.edu
  */
 
@@ -56,7 +56,7 @@ in this Software without prior written authorization from the X Consortium.
 
 
    /* New fields for the MenuButton widget class record */
-typedef struct _MenuButtonClass 
+typedef struct _MenuButtonClass
 {
   int makes_compiler_happy;  /* not used */
 } MenuButtonClassPart;
@@ -75,7 +75,7 @@ extern MenuButtonClassRec menuButtonClassRec;
 
 /***************************************
  *
- *  Instance (widget) structure 
+ *  Instance (widget) structure
  *
  **************************************/
 

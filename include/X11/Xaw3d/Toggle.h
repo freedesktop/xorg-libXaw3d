@@ -29,7 +29,7 @@ in this Software without prior written authorization from the X Consortium.
  * Author: Chris D. Peterson
  *         MIT X Consortium
  *         kit@expo.lcs.mit.edu
- *  
+ *
  * Date:   January 12, 1989
  */
 
@@ -109,13 +109,13 @@ typedef struct _ToggleRec        *ToggleWidget;
 
 
 /************************************************************
- * 
+ *
  * Public Functions
  *
  ************************************************************/
 
 _XFUNCPROTOBEGIN
-   
+
 /*	Function Name: XawToggleChangeRadioGroup
  *	Description: Allows a toggle widget to change radio lists.
  *	Arguments: w - The toggle widget to change lists.
@@ -151,7 +151,7 @@ extern void XawToggleSetCurrent(
     Widget		/* radio_group */,
     XtPointer		/* radio_data */
 );
- 
+
 /*	Function Name: XawToggleUnsetCurrent
  *	Description: Unsets all Toggles in the radio_group specified.
  *	Arguments: radio_group - any toggle widget in the toggle list.

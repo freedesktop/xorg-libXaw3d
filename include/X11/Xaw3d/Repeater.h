@@ -31,16 +31,16 @@ in this Software without prior written authorization from the X Consortium.
 #include <X11/Xaw3d/Command.h>
 
 /*****************************************************************************
- * 
+ *
  * Repeater Widget (subclass of Command)
- * 
+ *
  * This widget is a push button that repeatedly fires when held down.
- * 
+ *
  * Parameters:
- * 
+ *
  *  Name		Class		Type		Default
  *  ----		-----		----		-------
- * 
+ *
  *  decay		Decay		int		5 milliseconds
  *  flash		Boolean		Boolean		FALSE
  *  initialDelay	Delay		int		200 milliseconds
@@ -48,7 +48,7 @@ in this Software without prior written authorization from the X Consortium.
  *  repeatDelay		Delay		int		50 milliseconds
  *  startCallback	StartCallback	XtCallbackList	NULL
  *  stopCallback	StopCallback	XtCallbackList	NULL
- * 
+ *
  *****************************************************************************/
 
 					/* new instance and class names */

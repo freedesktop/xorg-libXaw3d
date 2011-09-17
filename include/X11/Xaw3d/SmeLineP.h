@@ -25,9 +25,9 @@ in this Software without prior written authorization from the X Consortium.
  * Author:  Chris D. Peterson, MIT X Consortium
  */
 
-/* 
+/*
  * SmeLineP.h - Private definitions for SmeLine widget
- * 
+ *
  */
 
 #ifndef _XawSmeLineP_h

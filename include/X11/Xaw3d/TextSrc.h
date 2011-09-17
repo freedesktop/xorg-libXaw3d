@@ -28,13 +28,13 @@ Copyright 1987, 1988 by Digital Equipment Corporation, Maynard, Massachusetts.
 
                         All Rights Reserved
 
-Permission to use, copy, modify, and distribute this software and its 
-documentation for any purpose and without fee is hereby granted, 
+Permission to use, copy, modify, and distribute this software and its
+documentation for any purpose and without fee is hereby granted,
 provided that the above copyright notice appear in all copies and that
-both that copyright notice and this permission notice appear in 
+both that copyright notice and this permission notice appear in
 supporting documentation, and that the name of Digital not be
 used in advertising or publicity pertaining to distribution of the
-software without specific, written prior permission.  
+software without specific, written prior permission.
 
 DIGITAL DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING
 ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL
@@ -64,7 +64,7 @@ SOFTWARE.
  editType	     EditType		XawTextEditType	XawtextRead
 
 */
- 
+
 /* Class record constants */
 
 extern WidgetClass textSrcObjectClass;
@@ -134,7 +134,7 @@ extern int XawTextSourceReplace (
  *                 dir - direction to scan.
  *                 count - which occurance if this thing to search for.
  *                 include - whether or not to include the character found in
- *                           the position that is returned. 
+ *                           the position that is returned.
  *	Returns: The position of the text.
  *
  */

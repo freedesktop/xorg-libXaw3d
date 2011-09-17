@@ -106,8 +106,8 @@ SOFTWARE.
 
 */
 
-/* 
- * Most things we need are in StringDefs.h 
+/*
+ * Most things we need are in StringDefs.h
  */
 
 #define XtCMinimumThumb "MinimumThumb"

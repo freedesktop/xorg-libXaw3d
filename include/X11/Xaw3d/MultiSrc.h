@@ -74,7 +74,7 @@ in this Software without prior written authorization from the X Consortium.
  useStringInPlace    UseStringInPlace	Boolean		False
 
 */
- 
+
 /* Class record constants */
 
 extern WidgetClass multiSrcObjectClass;

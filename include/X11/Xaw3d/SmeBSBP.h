@@ -25,9 +25,9 @@ in this Software without prior written authorization from the X Consortium.
  * Author:  Chris D. Peterson, MIT X Consortium
  */
 
-/* 
+/*
  * SmeP.h - Private definitions for Sme object
- * 
+ *
  */
 
 #ifndef _XawSmeBSBP_h

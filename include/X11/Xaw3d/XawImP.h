@@ -17,12 +17,12 @@
  * ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,
  * WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION,
  * ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
- * SOFTWARE. 
+ * SOFTWARE.
  *
  *	Author:	Seiji Kuwari	OMRON Corporation
  *				kuwa@omron.co.jp
  *				kuwa%omron.co.jp@uunet.uu.net
- */				
+ */
 
 /*
 
@@ -124,64 +124,64 @@ typedef	struct _contextErrDataRec
     XIM			xim;
 } contextErrDataRec;
 
-void _XawImResizeVendorShell( 
+void _XawImResizeVendorShell(
     Widget /* w */
 );
 
-Dimension _XawImGetShellHeight( 
+Dimension _XawImGetShellHeight(
     Widget /* w */
 );
 
-void _XawImRealize( 
+void _XawImRealize(
     Widget /* w */
 );
 
-void _XawImInitialize( 
+void _XawImInitialize(
     Widget, /* w */
     Widget  /* ext */
 );
 
-void _XawImReconnect( 
+void _XawImReconnect(
     Widget  /* w */
 );
 
-void _XawImRegister( 
+void _XawImRegister(
     Widget  /* w */
 );
 
-void _XawImUnregister( 
+void _XawImUnregister(
     Widget  /* w */
 );
 
-void _XawImSetValues( 
+void _XawImSetValues(
     Widget,  /* w */
     ArgList, /* args */
     Cardinal /* num_args */
 );
 
 /* DON'T USE THIS FUNCTION -- it's going away in the next release */
-void _XawImVASetValues( 
+void _XawImVASetValues(
     Widget,  /* w */
-    ... 
+    ...
 );
 
-void _XawImSetFocusValues( 
+void _XawImSetFocusValues(
     Widget,  /* w */
     ArgList, /* args */
     Cardinal /* num_args */
 );
 
 /* DON'T USE THIS FUNCTION -- it's going away in the next release */
-void _XawImVASetFocusValues( 
+void _XawImVASetFocusValues(
     Widget,  /* w */
-    ... 
+    ...
 );
 
-void _XawImUnsetFocus( 
+void _XawImUnsetFocus(
     Widget  /* w */
 );
 
-int  _XawImWcLookupString( 
+int  _XawImWcLookupString(
     Widget,   /* w */
     XKeyPressedEvent*, /* event */
     wchar_t*, /* buffer_return */
@@ -190,15 +190,15 @@ int  _XawImWcLookupString(
     Status*   /* status return */
 );
 
-int  _XawImGetImAreaHeight( 
+int  _XawImGetImAreaHeight(
     Widget  /* w */
 );
 
-void _XawImCallVendorShellExtResize( 
+void _XawImCallVendorShellExtResize(
     Widget  /* w */
 );
 
-void _XawImDestroy( 
+void _XawImDestroy(
     Widget,  /* w */
     Widget   /* ext */
 );

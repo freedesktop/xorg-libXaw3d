@@ -36,7 +36,7 @@ in this Software without prior written authorization from the X Consortium.
  * Date:    June 29, 1989
  *
  * By:      Chris D. Peterson
- *          MIT X Consortium 
+ *          MIT X Consortium
  *          kit@expo.lcs.mit.edu
  */
 
@@ -59,7 +59,7 @@ in this Software without prior written authorization from the X Consortium.
  useStringInPlace    UseStringInPlace	Boolean		False
 
 */
- 
+
 /* Class record constants */
 
 extern WidgetClass asciiSrcObjectClass;
@@ -97,7 +97,7 @@ typedef enum {XawAsciiFile, XawAsciiString} XawAsciiType;
 
 /************************************************************
  *
- * Public routines 
+ * Public routines
  *
  ************************************************************/
 

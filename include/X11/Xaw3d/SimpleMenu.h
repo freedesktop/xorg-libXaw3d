@@ -38,7 +38,7 @@ in this Software without prior written authorization from the X Consortium.
  * Date:    April 3, 1989
  *
  * By:      Chris D. Peterson
- *          MIT X Consortium 
+ *          MIT X Consortium
  *          kit@expo.lcs.mit.edu
  */
 
@@ -125,7 +125,7 @@ _XFUNCPROTOBEGIN
 extern void XawSimpleMenuAddGlobalActions(
     XtAppContext	/* app_con */
 );
- 
+
 /*	Function Name: XawSimpleMenuGetActiveEntry
  *	Description: Gets the currently active (set) entry.
  *	Arguments: w - the smw widget.

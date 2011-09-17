@@ -25,13 +25,13 @@ in this Software without prior written authorization from the X Consortium.
 
 */
 
-/* 
+/*
  * ToggleP.h - Private definitions for Toggle widget
- * 
+ *
  * Author: Chris D. Peterson
  *         MIT X Consortium
  *         kit@expo.lcs.mit.edu
- *  
+ *
  * Date:   January 12, 1989
  *
  */
@@ -82,7 +82,7 @@ extern ToggleClassRec toggleClassRec;
 
 /***************************************
  *
- *  Instance (widget) structure 
+ *  Instance (widget) structure
  *
  **************************************/
 

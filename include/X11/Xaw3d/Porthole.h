@@ -31,17 +31,17 @@ in this Software without prior written authorization from the X Consortium.
 #include <X11/Xaw3d/Reports.h>
 
 /*****************************************************************************
- * 
+ *
  * Porthole Widget (subclass of Composite)
- * 
+ *
  * This widget is similar to a viewport without scrollbars.  Child movement
  * is done by external panners or scrollbars.
- * 
+ *
  * Parameters:
- * 
+ *
  *  Name		Class		Type		Default
  *  ----		-----		----		-------
- * 
+ *
  *  background		Background	Pixel		XtDefaultBackground
  *  border	        BorderColor	Pixel		XtDefaultForeground
  *  borderWidth		BorderWidth	Dimension	1
@@ -50,7 +50,7 @@ in this Software without prior written authorization from the X Consortium.
  *  width		Width		Dimension	0
  *  x 			Position	Position	0
  *  y			Position	Position	0
- * 
+ *
  *****************************************************************************/
 
 					/* external declarations */

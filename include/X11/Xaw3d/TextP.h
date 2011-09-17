@@ -28,13 +28,13 @@ Copyright 1987, 1988 by Digital Equipment Corporation, Maynard, Massachusetts.
 
                         All Rights Reserved
 
-Permission to use, copy, modify, and distribute this software and its 
-documentation for any purpose and without fee is hereby granted, 
+Permission to use, copy, modify, and distribute this software and its
+documentation for any purpose and without fee is hereby granted,
 provided that the above copyright notice appear in all copies and that
-both that copyright notice and this permission notice appear in 
+both that copyright notice and this permission notice appear in
 supporting documentation, and that the name of Digital not be
 used in advertising or publicity pertaining to distribution of the
-software without specific, written prior permission.  
+software without specific, written prior permission.
 
 DIGITAL DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING
 ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL
@@ -98,10 +98,10 @@ typedef struct {
 typedef struct _XawTextSelectionSalt {
     struct _XawTextSelectionSalt    *next;
     XawTextSelection	s;
-    /* 
+    /*
      * The element "contents" stores the CT string which is gotten in the
      * function _XawTextSaltAwaySelection().
-    */ 
+    */
     char		*contents;
     int			length;
 } XawTextSelectionSalt;
@@ -143,7 +143,7 @@ struct SearchAndReplace {
   Widget rep_one;		/* The Replace one button. */
   Widget rep_all;		/* The Replace all button. */
 };
-    
+
 /* Private Text Definitions */
 
 /* New fields for the Text widget class record */
@@ -183,7 +183,7 @@ typedef struct _TextPart {
     XawTextResizeMode   resize;	             /* what to resize */
     XawTextMargin       r_margin;            /* The real margins. */
     XtCallbackList	unrealize_callbacks; /* used for scrollbars */
-    
+
     /* private state */
 
     XawTextMargin       margin;            /* The current margins. */
@@ -191,7 +191,7 @@ typedef struct _TextPart {
     XawTextScanDirection extendDir;
     XawTextSelection	origSel;    /* the selection being modified */
     Time	    lasttime;	    /* timestamp of last processed action */
-    Time	    time;	    /* time of last key or button action */ 
+    Time	    time;	    /* time of last key or button action */
     Position	    ev_x, ev_y;	    /* x, y coords for key or button action */
     Widget	    vbar, hbar;	    /* The scroll bars (none = NULL). */
     struct SearchAndReplace * search;/* Search and replace structure. */
@@ -246,22 +246,22 @@ typedef struct _TextRec {
  *******************************************/
 
 extern void _XawTextBuildLineTable (
-    TextWidget /*ctx*/, 
-    XawTextPosition /*top pos*/, 
+    TextWidget /*ctx*/,
+    XawTextPosition /*top pos*/,
     _XtBoolean /* force_rebuild */
 );
 
 extern char* _XawTextGetSTRING(
-    TextWidget /*ctx*/, 
-    XawTextPosition /*left*/, 
+    TextWidget /*ctx*/,
+    XawTextPosition /*left*/,
     XawTextPosition /*right*/
-); 
+);
 
 extern void _XawTextSaltAwaySelection(
-    TextWidget /*ctx*/, 
-    Atom* /*selections*/, 
+    TextWidget /*ctx*/,
+    Atom* /*selections*/,
     int /*num_atoms*/
-); 
+);
 
 extern void _XawTextPosToXY(
     Widget			/* w */,

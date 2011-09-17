@@ -80,7 +80,7 @@ typedef struct _SimpleMenuPart {
 
   Boolean recursive_set_values;	/* contain a possible infinite loop. */
 
-  Boolean menu_width;		/* If true then force width to remain 
+  Boolean menu_width;		/* If true then force width to remain
 				   core.width */
   Boolean menu_height;		/* Just like menu_width, but for height. */
 
@@ -90,8 +90,8 @@ typedef struct _SimpleMenuPart {
   Widget threeD;                /* 3d drawing stuff */
 
   SmeObject *first_entry;       /* the first entry */
-  SmeObject *current_first;     /* the first entry displayed */    
-  Dimension last_y; 
+  SmeObject *current_first;     /* the first entry displayed */
+  Dimension last_y;
   int first_y;                  /* Dimension doesn't do negatives! */
   int jump_val;                 /* number of entries to scroll by */
   Boolean too_tall;             /* menu doesn't fit on screen */

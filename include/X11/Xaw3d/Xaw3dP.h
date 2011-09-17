@@ -66,7 +66,7 @@ grayPixel(
 #endif
 
 #ifdef XAW_MULTIPLANE_PIXMAPS
-extern Pixmap 
+extern Pixmap
 stipplePixmap(
     Widget,
     Pixmap,

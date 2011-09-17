@@ -24,9 +24,9 @@ in this Software without prior written authorization from the X Consortium.
 */
 
 
-/* 
+/*
  * ListP.h - Private definitions for List widget
- * 
+ *
  * This is a List widget.  It allows the user to select an item in a list and
  * notifies the application through a callback function.
  *

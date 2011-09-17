@@ -15,7 +15,7 @@
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL M.I.T.
  * BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
  * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION
- * OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN 
+ * OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
  * CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *
  * Author:  Keith Packard, MIT X Consortium
@@ -78,9 +78,9 @@
 
 #define QuarkToWidget(l,q)  XtNameToWidget((Widget) l, \
 					   (char *) XrmQuarkToString(q));
-					   
+
 typedef enum _BoxType { BoxBox, WidgetBox, GlueBox, VariableBox } BoxType;
-    
+
 typedef enum _LayoutDirection {
     LayoutHorizontal = 0, LayoutVertical = 1
 } LayoutDirection;
@@ -224,7 +224,7 @@ typedef struct _LayoutRec {
     ConstraintPart constraint;
 #ifdef MOTIF
     XmManagerPart  manager;
-#endif    
+#endif
     LayoutPart     layout;
 } LayoutRec;
 #endif
