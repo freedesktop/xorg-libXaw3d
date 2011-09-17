@@ -346,7 +346,6 @@ AllocTopShadowPixel (Widget new)
     XColor set_c;
     ThreeDWidget tdw = (ThreeDWidget) new;
     Display *dpy = XtDisplay (new);
-    Screen *scn = XtScreen (new);
     Colormap cmap = new->core.colormap;
 
     Xaw3dComputeTopShadowRGB (new, &set_c);
@@ -391,7 +390,6 @@ AllocBotShadowPixel (Widget new)
     XColor set_c;
     ThreeDWidget tdw = (ThreeDWidget) new;
     Display *dpy = XtDisplay (new);
-    Screen *scn = XtScreen (new);
     Colormap cmap = new->core.colormap;
 
     Xaw3dComputeBottomShadowRGB (new, &set_c);
