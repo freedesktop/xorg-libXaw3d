@@ -1,5 +1,7 @@
 %option prefix="LayYY"
 %option outfile="lex.yy.c"
+%option noinput
+%option nounput
 %{
 #ifndef FLEX_SCANNER
 #undef input
