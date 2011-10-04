@@ -922,7 +922,7 @@ static void
 NotifyScroll (Widget w, XEvent *event, String *params, Cardinal *num_params)
 {
     ScrollbarWidget sbw = (ScrollbarWidget) w;
-    intptr_t call_data;
+    intptr_t call_data = 0;
     char style;
     Position x, y;
 
