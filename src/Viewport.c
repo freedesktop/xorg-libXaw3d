@@ -57,6 +57,8 @@ SOFTWARE.
 #include <X11/Xaw3d/Scrollbar.h>
 #include <X11/Xaw3d/ViewportP.h>
 
+#include <stdint.h>
+
 static void ScrollUpDownProc(Widget, XtPointer, XtPointer);
 static void ThumbProc(Widget, XtPointer, XtPointer);
 static Boolean GetGeometry(Widget, Dimension, Dimension);
@@ -863,7 +865,7 @@ ScrollUpDownProc(Widget widget, XtPointer closure, XtPointer call_data)
 {
     ViewportWidget w = (ViewportWidget)closure;
     Widget child = w->viewport.child;
-    int pix = (int)call_data;
+    int pix = (intptr_t) call_data;
     Position x, y;
 
     if (child == NULL) return;	/* no child to scroll. */

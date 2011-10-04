@@ -69,6 +69,8 @@ SOFTWARE.
 
 #include <X11/Xmu/Drawing.h>
 
+#include <stdint.h>
+
 /* Private definitions. */
 
 #ifdef XAW_ARROW_SCROLLBARS
@@ -785,7 +787,7 @@ RepeatNotify(XtPointer client_data, XtIntervalId *idp)
 {
 #define A_FEW_PIXELS 5
     ScrollbarWidget sbw = (ScrollbarWidget) client_data;
-    int call_data;
+    intptr_t call_data;
     if (sbw->scrollbar.scroll_mode != 1 && sbw->scrollbar.scroll_mode != 3) {
 	sbw->scrollbar.timer_id = (XtIntervalId) 0;
 	return;
@@ -874,7 +876,7 @@ static void
 NotifyScroll (Widget w, XEvent *event, String *params, Cardinal *num_params)
 {
     ScrollbarWidget sbw = (ScrollbarWidget) w;
-    int call_data;
+    intptr_t call_data;
     Position x, y;
 
     if (sbw->scrollbar.scroll_mode == 2  /* if scroll continuous */
@@ -920,7 +922,7 @@ static void
 NotifyScroll (Widget w, XEvent *event, String *params, Cardinal *num_params)
 {
     ScrollbarWidget sbw = (ScrollbarWidget) w;
-    int call_data;
+    intptr_t call_data;
     char style;
     Position x, y;
 

@@ -63,6 +63,7 @@ in this Software without prior written authorization from the X Consortium.
 #ifdef XAW_INTERNATIONALIZATION
 #include "XawI18n.h"
 #endif
+#include <stdint.h>
 #include <stdio.h>
 #include <X11/Xos.h>		/* for O_RDONLY */
 #include <errno.h>
@@ -805,7 +806,7 @@ DoSearch(struct SearchAndReplace * search)
       text.length = strlen(text.ptr);
   text.firstPos = 0;
 
-  dir = (XawTextScanDirection)(int) ((XPointer)XawToggleGetCurrent(search->left_toggle) -
+  dir = (XawTextScanDirection)(intptr_t) ((XPointer)XawToggleGetCurrent(search->left_toggle) -
 				R_OFFSET);
 
   pos = XawTextSearch( tw, dir, &text);
@@ -939,7 +940,7 @@ Replace(struct SearchAndReplace *search, Boolean once_only, Boolean show_current
 #endif
       replace.length = strlen(replace.ptr);
 
-  dir = (XawTextScanDirection)(int) ((XPointer)XawToggleGetCurrent(search->left_toggle) -
+  dir = (XawTextScanDirection)(intptr_t) ((XPointer)XawToggleGetCurrent(search->left_toggle) -
 				R_OFFSET);
   /* CONSTCOND */
   while (TRUE) {

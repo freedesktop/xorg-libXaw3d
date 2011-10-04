@@ -58,6 +58,7 @@ SOFTWARE.
 #ifdef XAW_INTERNATIONALIZATION
 #include "XawI18n.h"
 #endif
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <X11/Xmu/Atoms.h>
@@ -1271,7 +1272,7 @@ HScroll(Widget w, XtPointer closure, XtPointer callData)
 {
   TextWidget ctx = (TextWidget) closure;
   Widget tw = (Widget) ctx;
-  Position old_left, pixels = (Position)(int) callData;
+  Position old_left, pixels = (Position)(intptr_t) callData;
   XRectangle rect, t_rect;
   int s = ((ThreeDWidget)ctx->text.threeD)->threeD.shadow_width;
 
@@ -1428,7 +1429,7 @@ static void
 VScroll(Widget w, XtPointer closure, XtPointer callData)
 {
   TextWidget ctx = (TextWidget)closure;
-  int height, nlines, lines = (int) callData;
+  int height, nlines, lines = (intptr_t) callData;
 
   height = ctx->core.height - VMargins(ctx);
   if (height < 1)
