@@ -1003,7 +1003,10 @@ MoveThumb (Widget w, XEvent *event, String *params, Cardinal *num_params)
 {
     ScrollbarWidget sbw = (ScrollbarWidget) w;
     Position x, y;
-    float loc, t, s;
+    float loc, s;
+#ifdef XAW_ARROW_SCROLLBARS
+    float t;
+#endif
 
 #ifndef XAW_ARROW_SCROLLBARS
     if (sbw->scrollbar.direction == 0) return; /* if no StartScroll */
@@ -1015,9 +1018,9 @@ MoveThumb (Widget w, XEvent *event, String *params, Cardinal *num_params)
 
     ExtractPosition (event, &x, &y);
     loc = FractionLoc (sbw, x, y);
-    t = sbw->scrollbar.top;
     s = sbw->scrollbar.shown;
 #ifdef XAW_ARROW_SCROLLBARS
+    t = sbw->scrollbar.top;
     if (sbw->scrollbar.scroll_mode != 2 )
       /* initialize picked position */
       sbw->scrollbar.picked = (FloatInRange( loc, t, t + s ) - t);
