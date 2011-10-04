@@ -239,7 +239,7 @@ expr		:   expr PLUS expr
 		|   expr PERCENTOF expr
 		    { goto binary; }
 		|   MINUS expr		    %prec UMINUS
-		    { unary: ;
+		    {
 			$$ = New(ExprRec);
 			$$->type = Unary;
 			$$->u.unary.op = $1;
