@@ -1024,22 +1024,17 @@ HandleGrip(Widget grip, XtPointer junk, XtPointer callData)
     Direction direction = 0;
     Arg arglist[1];
 
-    action_type = *call_data->params[0];
+    action_type = toupper(*call_data->params[0]);
 
     if (call_data->num_params == 0                             ||
 	(action_type == 'C' && call_data->num_params != 1)      ||
 	(action_type != 'C' && call_data->num_params != 2))
       	XtError( "Paned GripAction has been passed incorrect parameters." );
 
-    if (islower(action_type)) action_type = toupper(action_type);
-
     loc = GetEventLocation(pw, (XEvent *) (call_data->event));
 
     if (action_type != 'C') {
-	if ( isupper(*call_data->params[1]) )
-	  direction = (Direction) *call_data->params[1];
-	else
-	  direction = (Direction) toupper(*call_data->params[1]);
+	direction = (Direction) toupper(*call_data->params[1]);
     }
 
     switch (action_type) {
