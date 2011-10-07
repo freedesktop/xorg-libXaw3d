@@ -1287,8 +1287,6 @@ CompileResourceList(XtResourceList res, unsigned int num_res)
 static Boolean
 Initialize(VendorShellWidget vw, XawVendorShellExtPart *ve)
 {
-    int 	i;
-
     if (!XtIsVendorShell((Widget)vw)) return(FALSE);
     ve->parent = (Widget)vw;
     ve->im.xim = NULL;
