@@ -790,7 +790,7 @@ PreferredGeometry(Widget widget, XtWidgetGeometry *request, XtWidgetGeometry *re
  */
 
 void
-XawFormDoLayout(Widget w,
+XawFormDoLayout(Widget _fw,
 #if NeedWidePrototypes
 		int doit)
 #else
@@ -798,11 +798,11 @@ XawFormDoLayout(Widget w,
 #endif
 {
     Widget *childP;
-    FormWidget fw = (FormWidget)w;
+    FormWidget fw = (FormWidget)_fw;
     int num_children = fw->composite.num_children;
     WidgetList children = fw->composite.children;
 
-    if ( ((fw->form.no_refigure = !doit) == TRUE) || !XtIsRealized(w) )
+    if ( ((fw->form.no_refigure = !doit) == TRUE) || !XtIsRealized(_fw) )
 	return;
 
     for (childP = children; childP - children < num_children; childP++) {

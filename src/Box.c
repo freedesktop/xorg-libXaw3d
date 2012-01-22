@@ -262,9 +262,9 @@ DoLayout(BoxWidget bbw, Dimension width, Dimension height,
 	if (bbw->composite.num_children == num_mapped_children)
 	    XMapSubwindows( XtDisplay((Widget)bbw), XtWindow((Widget)bbw) );
 	else {
-	    int i = bbw->composite.num_children;
+	    int j = bbw->composite.num_children;
 	    Widget *childP = bbw->composite.children;
-	    for (; i > 0; childP++, i--)
+	    for (; j > 0; childP++, j--)
 		if (XtIsRealized(*childP) && XtIsManaged(*childP) &&
 		    (*childP)->core.mapped_when_managed)
 		    XtMapWidget(*childP);

@@ -602,12 +602,12 @@ ComputeLayout(Widget widget, Boolean query, Boolean destroy_scrollbars)
 	    if (w->viewport.allowhoriz &&				\
 		    (int)preferred.width > clip_width + 2 * sw) {	\
 		if (!needshoriz) {					\
-		    Widget bar = w->viewport.horiz_bar;			\
+		    Widget horiz_bar = w->viewport.horiz_bar;		\
 		    needshoriz = True;					\
-		    if (bar == (Widget)NULL)				\
-			bar = CreateScrollbar(w, True);			\
-		    clip_height -= bar->core.height +			\
-				   bar->core.border_width + pad;	\
+		    if (horiz_bar == (Widget)NULL)			\
+			horiz_bar = CreateScrollbar(w, True);		\
+		    clip_height -= horiz_bar->core.height +		\
+				   horiz_bar->core.border_width + pad;	\
 		    if (clip_height < 1) clip_height = 1;		\
 		}							\
 		intended.width = preferred.width;			\
@@ -617,12 +617,12 @@ ComputeLayout(Widget widget, Boolean query, Boolean destroy_scrollbars)
 	    if (w->viewport.allowvert &&
 		    (int)preferred.height > clip_height + 2 * sw) {
 		if (!needsvert) {
-		    Widget bar = w->viewport.vert_bar;
+		    Widget vert_bar = w->viewport.vert_bar;
 		    needsvert = True;
-		    if (bar == (Widget)NULL)
-			bar = CreateScrollbar(w, False);
-		    clip_width -= bar->core.width +
-				  bar->core.border_width + pad;
+		    if (vert_bar == (Widget)NULL)
+			vert_bar = CreateScrollbar(w, False);
+		    clip_width -= vert_bar->core.width +
+				  vert_bar->core.border_width + pad;
 		    if (clip_width < 1) clip_width = 1;
 		    if (!needshoriz) CheckHoriz();
 		}
