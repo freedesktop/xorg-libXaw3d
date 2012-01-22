@@ -43,6 +43,8 @@
 #include <X11/Xaw3d/TipP.h>
 #include <X11/Xaw3d/XawInit.h>
 
+#include <stdlib.h>
+
 #define	TIP_EVENT_MASK (ButtonPressMask	  |	\
 			ButtonReleaseMask |	\
 			PointerMotionMask |	\
