@@ -69,7 +69,7 @@ SOFTWARE.
 typedef struct _SmeThreeDClassRec *SmeThreeDObjectClass;
 typedef struct _SmeThreeDRec *SmeThreeDObject;
 
-extern WidgetClass smeThreeDWidgetClass;
+extern WidgetClass smeThreeDObjectClass;
 
 _XFUNCPROTOBEGIN
 
