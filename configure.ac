@@ -38,11 +38,13 @@ AC_TYPE_INTPTR_T
 XAW3D_CPPFLAGS=
 
 AC_ARG_ENABLE([internationalization],
-    [AS_HELP_STRING([--enable-internationalization], dnl
-     [enable utf8 strings])], [XAW3D_CPPFLAGS="${XAW3D_CPPFLAGS} -DXAW_INTERNATIONALIZATION"])
-
-AM_CONDITIONAL(XAW_INTERNATIONALIZATION,
-    [test x${enable_internationalization} = xyes])
+    AS_HELP_STRING([--enable-internationalization], dnl
+    [enable utf8 strings (default: yes)]),
+    [XAW_I18N=$enableval], [XAW_I18N=yes])
+if test "x$XAW_I18N" = xyes; then
+    XAW3D_CPPFLAGS="${XAW3D_CPPFLAGS} -DXAW_INTERNATIONALIZATION"
+fi
+AM_CONDITIONAL(XAW_INTERNATIONALIZATION, [test "x$XAW_I18N" = xyes])
 
 AC_ARG_ENABLE([multiplane-bitmaps],
     [AS_HELP_STRING([--enable-multiplane-bitmaps], dnl
