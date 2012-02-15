@@ -47,7 +47,8 @@ in this Software without prior written authorization from the X Consortium.
 #include <X11/Xaw3d/Layout.h>
 #include <X11/Xaw3d/List.h>
 #include <X11/Xaw3d/MenuButton.h>
-#include <X11/Xaw/MultiSink.h>
+#include <X11/Xaw3d/MultiSink.h>
+#include <X11/Xaw3d/MultiSrc.h>
 #include <X11/Xaw3d/Paned.h>
 #include <X11/Xaw3d/Panner.h>
 #include <X11/Xaw3d/Porthole.h>
