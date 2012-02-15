@@ -606,8 +606,10 @@ TipTimeoutCallback(XtPointer closure, XtIntervalId *id)
 #ifdef XAW_INTERNATIONALIZATION
     info->tip->tip.international = False;
     XtSetArg(args[1], XtNinternational, &info->tip->tip.international);
-#endif
     XtGetValues(winfo->widget, args, 2);
+#else
+    XtGetValues(winfo->widget, args, 1);
+#endif
 
     TipLayout(info);
     TipPosition(info);
