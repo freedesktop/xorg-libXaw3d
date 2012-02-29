@@ -865,7 +865,7 @@ InRange(int num, int small, int big)
  */
 
 static float
-FloatInRange(int num, int small, int big)
+FloatInRange(float num, float small, float big)
 {
     return (num < small) ? small : ((num > big) ? big : num);
 }
