@@ -320,12 +320,12 @@ DestroyAllIM(XawVendorShellExtPart *ve)
     /*
      * Close Input Method
      */
-    CloseIM(ve);
     if (!XFindContext(XDisplayOfIM(ve->im.xim), (Window)ve->im.xim, errContext,
 		      (XPointer*)&contextErrData)) {
 	if (contextErrData) XtFree((char *)contextErrData);
     }
     XDeleteContext(XDisplayOfIM(ve->im.xim), (Window)ve->im.xim, errContext);
+    CloseIM(ve);
     ve->im.xim = NULL;
 
     /*
