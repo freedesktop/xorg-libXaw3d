@@ -351,8 +351,12 @@ PreferredSize(Widget widget, XtWidgetGeometry *constraint, XtWidgetGeometry *pre
 	else {
 	    width = preferred_width;
 	    do { /* find some width big enough to stay within this height */
-		width *= 2;
-		if (width > constraint->width) width = constraint->width;
+	        if (width > constraint->width/2) {  /* avoid short int overflow */
+		    width = constraint->width;
+		}
+		else { 
+		    width *= 2; 
+		}
 		DoLayout(w, width, 0, &preferred_width, &preferred_height, FALSE);
 	    } while (preferred_height > constraint->height &&
 		     width < constraint->width);
