@@ -3312,6 +3312,12 @@ XawTextGetSource(Widget w)
   return ((TextWidget)w)->text.source;
 }
 
+Widget
+XawTextGetSink(Widget w)
+{
+  return (((TextWidget)w)->text.sink);
+}
+
 void
 XawTextDisplayCaret (Widget w,
 #if NeedWidePrototypes

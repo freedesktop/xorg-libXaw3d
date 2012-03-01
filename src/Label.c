@@ -115,6 +115,8 @@ static XtResource resources[] = {
 	offset(label.pixmap), XtRImmediate, (XtPointer)None},
     {XtNresize, XtCResize, XtRBoolean, sizeof(Boolean),
 	offset(label.resize), XtRImmediate, (XtPointer)True},
+    {XtNshadowWidth, XtCShadowWidth, XtRDimension, sizeof(Dimension),
+	offset(threeD.shadow_width), XtRImmediate, (XtPointer) 0},
     {XtNborderWidth, XtCBorderWidth, XtRDimension, sizeof(Dimension),
          XtOffsetOf(RectObjRec,rectangle.border_width), XtRImmediate,
          (XtPointer)1}

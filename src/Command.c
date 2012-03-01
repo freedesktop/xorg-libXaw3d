@@ -92,6 +92,8 @@ static XtResource resources[] = {
    {XtNcornerRoundPercent, XtCCornerRoundPercent, XtRDimension,
         sizeof(Dimension), offset(command.corner_round), XtRImmediate,
 	(XtPointer) 25},
+   {XtNshadowWidth, XtCShadowWidth, XtRDimension, sizeof(Dimension),
+	offset(threeD.shadow_width), XtRImmediate, (XtPointer) 2},
    {XtNborderWidth, XtCBorderWidth, XtRDimension, sizeof(Dimension),
       XtOffsetOf(RectObjRec,rectangle.border_width), XtRImmediate,
       (XtPointer) 0}

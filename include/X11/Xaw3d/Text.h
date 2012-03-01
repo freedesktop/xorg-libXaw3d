@@ -242,6 +242,10 @@ extern Widget XawTextGetSource(
     Widget		/* w */
 );
 
+extern Widget XawTextGetSink(
+    Widget		/* w */
+);
+
 extern XawTextPosition XawTextSearch(
     Widget			/* w */,
 #if NeedWidePrototypes
