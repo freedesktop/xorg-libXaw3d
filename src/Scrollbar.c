@@ -1054,7 +1054,10 @@ static void
 NotifyThumb (Widget w, XEvent *event, String *params, Cardinal *num_params)
 {
     register ScrollbarWidget sbw = (ScrollbarWidget) w;
-    float top = sbw->scrollbar.top;
+    union {
+        XtPointer xtp;
+        float xtf;
+    } xtpf;
 
 #ifndef XAW_ARROW_SCROLLBARS
     if (sbw->scrollbar.direction == 0) return; /* if no StartScroll */
@@ -1065,6 +1068,8 @@ NotifyThumb (Widget w, XEvent *event, String *params, Cardinal *num_params)
     /* thumbProc is not pretty, but is necessary for backwards
        compatibility on those architectures for which it work{s,ed};
        the intent is to pass a (truncated) float by value. */
+    xtpf.xtf = sbw->scrollbar.top;
+
 /* #ifdef XAW_ARROW_SCROLLBARS */
     /* This corrects for rounding errors: If the thumb is moved to the end of
        the scrollable area sometimes the last line/column is not displayed.
@@ -1083,10 +1088,11 @@ NotifyThumb (Widget w, XEvent *event, String *params, Cardinal *num_params)
     /* Removed the dependancy on scrollbar arrows. Xterm as distributed in
        X11R6.6 by The XFree86 Project wants this correction, with or without
        the arrows. */
-    top += 0.0001;
+    xtpf.xtf += 0.0001;
 /* #endif */
-    XtCallCallbacks (w, XtNthumbProc, *(XtPointer*)&top);
-    XtCallCallbacks (w, XtNjumpProc, (XtPointer)&top);
+
+    XtCallCallbacks (w, XtNthumbProc, xtpf.xtp);
+    XtCallCallbacks (w, XtNjumpProc, (XtPointer)&sbw->scrollbar.top);
 }
 
 
