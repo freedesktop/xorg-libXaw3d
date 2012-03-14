@@ -728,6 +728,7 @@ SetValues(Widget current, Widget request, Widget new, ArgList args, Cardinal *nu
 
   if ( string_set || (old_src->multi_src.type != src->multi_src.type) ) {
     RemoveOldStringOrFile(old_src, string_set);
+    src->multi_src.allocated_string = old_src->multi_src.allocated_string;
     file = InitStringOrFile(src, string_set);
 
     /* Load pieces does this logic for us, but it shouldn't.  Its messy.*/
