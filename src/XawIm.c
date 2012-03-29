@@ -1547,11 +1547,10 @@ void
 _XawImCallVendorShellExtResize(
     Widget w)
 {
-    XawVendorShellExtPart	*ve;
     VendorShellWidget		vw;
 
-    if ((vw = SearchVendorShell(w)) && (ve = GetExtPart(vw))) {
-	XawVendorShellExtResize(vw);
+    if ((vw = SearchVendorShell(w)) && GetExtPart(vw)) {
+	XawVendorShellExtResize((Widget)vw);
     }
 }
 
