@@ -1,7 +1,7 @@
 
 # Initialize Autoconf
 AC_PREREQ([2.60])
-AC_INIT([libXaw3d], [1.6.1],
+AC_INIT([libXaw3d], [1.6.2],
         [https://bugs.freedesktop.org/enter_bug.cgi?product=xorg], [libXaw3d])
 AC_CONFIG_SRCDIR([Makefile.am])
 AC_CONFIG_HEADERS([config.h])
