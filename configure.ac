@@ -47,18 +47,29 @@ fi
 AM_CONDITIONAL(XAW_INTERNATIONALIZATION, [test "x$XAW_I18N" = xyes])
 
 AC_ARG_ENABLE([multiplane-bitmaps],
-    [AS_HELP_STRING([--enable-multiplane-bitmaps], dnl
-     [enable XPM support])],
+    [AS_HELP_STRING([--enable-multiplane-bitmaps], [enable XPM support])],
+    [],
+    [enable_multiplane_bitmaps=no])
+
+AS_IF([test "x$enable_multiplane_bitmaps" != xno],
      [XAW3D_CPPFLAGS="${XAW3D_CPPFLAGS} -DXAW_MULTIPLANE_PIXMAPS" dnl
       PKG_CHECK_MODULES(XPM, xpm)])
 
 AC_ARG_ENABLE([gray-stipples],
-    [AS_HELP_STRING([--enable-gray-stipples], dnl
-     [enable gray stipples])], [XAW3D_CPPFLAGS="${XAW3D_CPPFLAGS} -DXAW_GRAY_BLKWHT_STIPPLES"])
+    [AS_HELP_STRING([--enable-gray-stipples], [enable gray stipples])],
+    [],
+    [enable_gray_stipples=no])
+
+AS_IF([test "x$enable_gray_stipples" != xno],
+    [XAW3D_CPPFLAGS="${XAW3D_CPPFLAGS} -DXAW_GRAY_BLKWHT_STIPPLES"])
 
 AC_ARG_ENABLE([arrow-scrollbars],
-    [AS_HELP_STRING([--enable-arrow-scrollbars], dnl
-     [enable arrow scrollbars])], [XAW3D_CPPFLAGS="${XAW3D_CPPFLAGS} -DXAW_ARROW_SCROLLBARS"])
+    [AS_HELP_STRING([--enable-arrow-scrollbars], [enable arrow scrollbars])],
+    [],
+    [enable_arrow_scrollbars=no])
+
+AS_IF([test "x$enable_arrow_scrollbars" != xno],
+    [XAW3D_CPPFLAGS="${XAW3D_CPPFLAGS} -DXAW_ARROW_SCROLLBARS"])
 
 AC_SUBST(XAW3D_CPPFLAGS)
 
