@@ -40,9 +40,7 @@ in this Software without prior written authorization from the X Consortium.
 #include <errno.h>
 #include <X11/StringDefs.h>
 #include <X11/Xos.h>
-#ifndef X_NOT_STDC_ENV
 #include <stdlib.h>
-#endif
 #include <X11/Xfuncs.h>
 #include <X11/Xaw3d/XawInit.h>
 #include <X11/Xaw3d/AsciiSrcP.h>
@@ -116,9 +114,6 @@ static String MyStrncpy(char *, char *, int);
 static String StorePiecesInString(AsciiSrcObject);
 static Boolean SetValues(Widget, Widget, Widget, ArgList, Cardinal *);
 static Boolean WriteToFile(_Xconst _XtString, _Xconst _XtString);
-#ifdef X_NOT_STDC_ENV
-extern int errno;
-#endif
 
 #ifdef X_NOT_POSIX
 #define Off_t long

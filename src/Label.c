@@ -67,11 +67,7 @@ SOFTWARE.
 #include <ctype.h>
 
 /* needed for abs() */
-#ifndef X_NOT_STDC_ENV
 #include <stdlib.h>
-#else
-int abs();
-#endif
 
 #define streq(a,b) (strcmp( (a), (b) ) == 0)
 

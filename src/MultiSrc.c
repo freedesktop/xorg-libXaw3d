@@ -138,9 +138,6 @@ static void (MyWStrncpy)();
 #endif
 
 extern char *tmpnam(String);
-#ifdef X_NOT_STDC_ENV
-extern int errno;
-#endif
 
 #ifdef X_NOT_POSIX
 #define Off_t long

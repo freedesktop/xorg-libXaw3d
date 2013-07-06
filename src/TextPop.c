@@ -68,9 +68,6 @@ in this Software without prior written authorization from the X Consortium.
 #include <X11/Xos.h>		/* for O_RDONLY */
 #include <errno.h>
 
-#ifdef X_NOT_STDC_ENV
-extern int errno;
-#endif
 
 #define INSERT_FILE ("Enter Filename:")
 
