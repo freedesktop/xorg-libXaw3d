@@ -115,13 +115,6 @@ static String StorePiecesInString(AsciiSrcObject);
 static Boolean SetValues(Widget, Widget, Widget, ArgList, Cardinal *);
 static Boolean WriteToFile(_Xconst _XtString, _Xconst _XtString);
 
-#ifdef X_NOT_POSIX
-#define Off_t long
-#define Size_t unsigned int
-#else
-#define Off_t off_t
-#define Size_t size_t
-#endif
 
 #define superclass		(&textSrcClassRec)
 AsciiSrcClassRec asciiSrcClassRec = {
@@ -1039,7 +1032,7 @@ InitStringOrFile(AsciiSrcObject src, Boolean newString)
 
     if (!src->ascii_src.is_tempfile) {
 	if ((file = fopen(src->ascii_src.string, open_mode)) != 0) {
-	    (void) fseek(file, (Off_t)0, 2);
+	    (void) fseek(file, 0, 2);
 	    src->ascii_src.length = (XawTextPosition) ftell(file);
 	    return file;
 	} else {
@@ -1069,9 +1062,9 @@ LoadPieces(AsciiSrcObject src, FILE * file, char * string)
       local_str = XtMalloc((unsigned) (src->ascii_src.length + 1)
 			   * sizeof(unsigned char));
       if (src->ascii_src.length != 0) {
-	fseek(file, (Off_t)0, 0);
-	src->ascii_src.length = fread(local_str, (Size_t)sizeof(unsigned char),
-				      (Size_t)src->ascii_src.length, file);
+	fseek(file, 0, 0);
+	src->ascii_src.length = fread(local_str, sizeof(unsigned char),
+				      (size_t)src->ascii_src.length, file);
 	if (src->ascii_src.length <= 0)
 	  XtErrorMsg("readError", "asciiSourceCreate", "XawError",
 		     "fread returned error.", NULL, NULL);

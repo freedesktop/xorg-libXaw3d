@@ -139,14 +139,6 @@ static void (MyWStrncpy)();
 
 extern char *tmpnam(String);
 
-#ifdef X_NOT_POSIX
-#define Off_t long
-#define Size_t unsigned int
-#else
-#define Off_t off_t
-#define Size_t size_t
-#endif
-
 extern wchar_t* _XawTextMBToWC(Display *, char *, int *);
 extern char *_XawTextWCToMB(Display *, wchar_t *, int *);
 
@@ -1126,7 +1118,7 @@ InitStringOrFile(MultiSrcObject src, Boolean newString)
 
     if (!src->multi_src.is_tempfile) {
 	if ((file = fopen(src->multi_src.string, open_mode)) != 0) {
-	    (void) fseek(file, (Off_t)0, 2);
+	    (void) fseek(file, 0, 2);
             src->multi_src.length = ftell (file);
 	    return file;
 	} else {
@@ -1190,10 +1182,10 @@ LoadPieces(MultiSrcObject src, FILE *file, char *string)
     if (src->multi_src.length != 0) {
       temp_mb_holder =
 	XtMalloc((unsigned)(src->multi_src.length + 1) * sizeof(unsigned char));
-      fseek(file, (Off_t)0, 0);
+      fseek(file, 0, 0);
       src->multi_src.length = fread (temp_mb_holder,
-				     (Size_t)sizeof(unsigned char),
-				     (Size_t)src->multi_src.length, file);
+				     sizeof(unsigned char),
+				     (size_t)src->multi_src.length, file);
       if (src->multi_src.length <= 0)
 	XtAppErrorMsg( XtWidgetToApplicationContext ((Widget) src),
 		       "readError", "multiSource", "XawError",
