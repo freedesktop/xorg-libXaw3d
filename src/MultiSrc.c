@@ -1118,7 +1118,7 @@ InitStringOrFile(MultiSrcObject src, Boolean newString)
 
     if (!src->multi_src.is_tempfile) {
 	if ((file = fopen(src->multi_src.string, open_mode)) != 0) {
-	    (void) fseek(file, 0, 2);
+	    (void) fseek(file, 0, SEEK_END);
             src->multi_src.length = ftell (file);
 	    return file;
 	} else {
@@ -1182,7 +1182,7 @@ LoadPieces(MultiSrcObject src, FILE *file, char *string)
     if (src->multi_src.length != 0) {
       temp_mb_holder =
 	XtMalloc((unsigned)(src->multi_src.length + 1) * sizeof(unsigned char));
-      fseek(file, 0, 0);
+      fseek(file, 0, SEEK_SET);
       src->multi_src.length = fread (temp_mb_holder,
 				     sizeof(unsigned char),
 				     (size_t)src->multi_src.length, file);

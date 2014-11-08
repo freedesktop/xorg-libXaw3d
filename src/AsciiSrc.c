@@ -1032,7 +1032,7 @@ InitStringOrFile(AsciiSrcObject src, Boolean newString)
 
     if (!src->ascii_src.is_tempfile) {
 	if ((file = fopen(src->ascii_src.string, open_mode)) != 0) {
-	    (void) fseek(file, 0, 2);
+	    (void) fseek(file, 0, SEEK_END);
 	    src->ascii_src.length = (XawTextPosition) ftell(file);
 	    return file;
 	} else {
@@ -1062,7 +1062,7 @@ LoadPieces(AsciiSrcObject src, FILE * file, char * string)
       local_str = XtMalloc((unsigned) (src->ascii_src.length + 1)
 			   * sizeof(unsigned char));
       if (src->ascii_src.length != 0) {
-	fseek(file, 0, 0);
+	fseek(file, 0, SEEK_SET);
 	src->ascii_src.length = fread(local_str, sizeof(unsigned char),
 				      (size_t)src->ascii_src.length, file);
 	if (src->ascii_src.length <= 0)

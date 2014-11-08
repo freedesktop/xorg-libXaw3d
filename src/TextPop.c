@@ -279,7 +279,7 @@ InsertFileNamed(Widget tw, char *str)
 
   pos = XawTextGetInsertionPoint(tw);
 
-  fseek(file, 0L, 2);
+  fseek(file, 0L, SEEK_END);
 
 
   text.firstPos = 0;
@@ -287,7 +287,7 @@ InsertFileNamed(Widget tw, char *str)
   text.ptr = XtMalloc((text.length + 1) * sizeof(unsigned char));
   text.format = XawFmt8Bit;
 
-  fseek(file, 0L, 0);
+  fseek(file, 0L, SEEK_SET);
   if (fread(text.ptr, sizeof(unsigned char), text.length, file) != text.length)
       XtErrorMsg("readError", "insertFileNamed", "XawError",
                  "fread returned error.", NULL, NULL);
