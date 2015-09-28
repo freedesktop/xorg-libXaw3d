@@ -148,8 +148,8 @@ NotePosition(TextWidget ctx, XEvent* event)
     {
       XRectangle cursor;
       XawTextSinkGetCursorBounds(ctx->text.sink, &cursor);
-      ctx->text.ev_x = cursor.x + cursor.width / 2;;
-      ctx->text.ev_y = cursor.y + cursor.height / 2;;
+      ctx->text.ev_x = cursor.x + cursor.width / 2;
+      ctx->text.ev_y = cursor.y + cursor.height / 2;
     }
     break;
   case MotionNotify:
