@@ -110,11 +110,20 @@ static void XawVendorShellClassPartInit(WidgetClass);
 void XawVendorShellExtResize(Widget);
 #endif
 
-#if defined(__UNIXOS2__) || defined(__CYGWIN__) || defined(__MINGW32__)
+#if defined(__UNIXOS2__) || defined(__CYGWIN__) || defined(__MINGW32__) || defined(__APPLE__)
 /* to fix the EditRes problem because of wrong linker semantics */
 extern WidgetClass vendorShellWidgetClass; /* from Xt/Vendor.c */
 extern VendorShellClassRec _XawVendorShellClassRec;
 void _XawFixupVendorShell(void);
+
+#if defined(__APPLE__)
+__attribute__((constructor))
+static void __VendorShellHack(void)
+{
+    vendorShellWidgetClass = (WidgetClass)(&_XawVendorShellClassRec);
+    _XawFixupVendorShell();
+}
+#endif
 
 #if defined(__UNIXOS2__)
 unsigned long _DLL_InitTerm(unsigned long mod,unsigned long flag)
@@ -229,9 +238,10 @@ externaldef(vendorshellclassrec) VendorShellClassRec vendorShellClassRec = {
   }
 };
 
+#if !defined(__APPLE__)
 externaldef(vendorshellwidgetclass) WidgetClass vendorShellWidgetClass =
 	(WidgetClass) (&vendorShellClassRec);
-
+#endif
 
 #ifdef XAW_INTERNATIONALIZATION
 /***************************************************************************
@@ -475,7 +485,7 @@ XawVendorShellClassPartInit(WidgetClass class)
 }
 #endif
 
-#if defined(__osf__) || defined(__UNIXOS2__) || defined(__CYGWIN__) || defined(__MINGW32__)
+#if defined(__osf__) || defined(__UNIXOS2__) || defined(__CYGWIN__) || defined(__MINGW32__) || defined(__APPLE__)
 /* stupid OSF/1 shared libraries have the wrong semantics */
 /* symbols do not get resolved external to the shared library */
 void
