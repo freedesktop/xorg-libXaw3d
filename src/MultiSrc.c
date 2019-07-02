@@ -137,8 +137,6 @@ static Boolean WriteToFile(String, String);
 static void (MyWStrncpy)();
 #endif
 
-extern char *tmpnam(String);
-
 extern wchar_t* _XawTextMBToWC(Display *, char *, int *);
 extern char *_XawTextWCToMB(Display *, wchar_t *, int *);
 

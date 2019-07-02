@@ -111,7 +111,7 @@ static void Initialize(Widget, Widget, ArgList, Cardinal *);
 static void Destroy(Widget);
 static void GetValuesHook(Widget, ArgList, Cardinal *);
 static String MyStrncpy(char *, char *, int);
-static String StorePiecesInString(AsciiSrcObject);
+static char * StorePiecesInString(AsciiSrcObject);
 static Boolean SetValues(Widget, Widget, Widget, ArgList, Cardinal *);
 static Boolean WriteToFile(_Xconst _XtString, _Xconst _XtString);
 
@@ -927,10 +927,10 @@ WriteToFile(_Xconst _XtString string, _Xconst _XtString name)
  *	Returns: none.
  */
 
-static String
+static char *
 StorePiecesInString(AsciiSrcObject src)
 {
-  String string;
+  char * string;
   XawTextPosition first;
   Piece * piece;
 
